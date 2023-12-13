@@ -105,12 +105,6 @@ fun LoginForm() {
                 VisualTransformation.None
             } else {
                 PasswordVisualTransformation()
-            },
-            trailingIcon = {
-                PasswordToggle(
-                    isVisible = isPasswordVisible,
-                    onToggle = { isPasswordVisible = it }
-                )
             }
         )
 
@@ -130,12 +124,6 @@ fun LoginForm() {
                 VisualTransformation.None
             } else {
                 PasswordVisualTransformation()
-            },
-            trailingIcon = {
-                PasswordToggle(
-                    isVisible = isConfirmPasswordVisible,
-                    onToggle = { isConfirmPasswordVisible = it }
-                )
             }
         )
 
@@ -146,7 +134,7 @@ fun LoginForm() {
                 // Handle button click
             },
             modifier = Modifier
-                .fillMaxWidth()
+                .width(150.dp)
                 .height(56.dp)
         ) {
             Text("Log In")
@@ -154,14 +142,6 @@ fun LoginForm() {
     }
 }
 
-@Composable
-fun PasswordToggle(isVisible: Boolean, onToggle: (Boolean) -> Unit) {
-    val image = if (isVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-
-    IconButton(onClick = { onToggle(!isVisible) }) {
-        Icon(imageVector = image, contentDescription = null)
-    }
-}
 
 @Composable
 fun detectTapGlobally(function: Any) {

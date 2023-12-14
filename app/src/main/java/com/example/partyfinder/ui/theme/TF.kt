@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import android.view.View
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,7 +60,8 @@ fun LoginForm() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(id = R.drawable.download),
@@ -135,9 +137,10 @@ fun LoginForm() {
             },
             modifier = Modifier
                 .width(150.dp)
-                .height(56.dp)
+//                .height(56.dp)
+                .padding(top = 35.dp)
         ) {
-            Text("Log In")
+            Text("Log In", modifier = Modifier.padding(vertical = 10.dp))
         }
     }
 }

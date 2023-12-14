@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="Profile_Banner_Box_Height">179dp</dimen>>
+    <dimen name="Profile_banner_height">136dp</dimen>
+    <dimen name="profile_picture_height">86dp</dimen>
+</resources>

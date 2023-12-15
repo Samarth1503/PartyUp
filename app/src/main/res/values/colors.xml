@@ -17,4 +17,10 @@
     <color name="on_background">#191C1C</color>
     <color name="tertiary">#006874</color>
 
+//pushkars frames
+    <color name="on_tertiary">#00363D</color>
+    <color name="neutral_20">#2D3131</color>
+    <color name="neutral_40">#5C5F5F</color>
+    <color name="tertiary_40">#006874</color>
+
 </resources>

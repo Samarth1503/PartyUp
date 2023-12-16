@@ -5,6 +5,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.Font
+import com.example.partyfinder.R
+
+val Jura =FontFamily(
+    Font(R.font.jura_regular),
+    Font(R.font.jura_bold)
+)
+
+val Shackle=FontFamily(
+    Font(R.font.shackle_regular)
+
+)
+
+val
+
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -14,7 +29,14 @@ val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
+    ),
+    displayLarge = TextStyle(
+        fontFamily = Jura,
+        fontWeight = FontWeight.Bold,
+        fontSize = 64.sp,
     )
+
+
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
@@ -32,3 +54,4 @@ val Typography = Typography(
     )
     */
 )
+

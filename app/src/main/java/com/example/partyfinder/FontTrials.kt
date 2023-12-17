@@ -54,7 +54,8 @@ fun FontTrials(modifier:Modifier=Modifier){
                 style = MaterialTheme.typography.titleSmall)
 
 
-        Text(text = "Inter Fonts", fontSize = 35.sp,modifier=Modifier.padding(32.dp))
+
+            Text(text = "Inter Fonts", fontSize = 35.sp,modifier=Modifier.padding(32.dp))
 
 
 
@@ -67,7 +68,9 @@ fun FontTrials(modifier:Modifier=Modifier){
             Text(
                 text = "Hello",
                 style = MaterialTheme.typography.bodySmall
-                )
+
+            )
+
             Text(
                 text = "Hello",
                 style= MaterialTheme.typography.labelLarge)

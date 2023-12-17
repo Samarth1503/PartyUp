@@ -8,8 +8,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.Font
 import com.example.partyfinder.R
 
+
 val Jura =FontFamily(
     Font(R.font.jura_regular),
+)
+
+val JuraBold=FontFamily(
     Font(R.font.jura_bold)
 )
 
@@ -23,35 +27,86 @@ val Shackle=FontFamily(
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
+
     displayLarge = TextStyle(
-        fontFamily = Jura,
+        fontFamily = JuraBold,
         fontWeight = FontWeight.Bold,
         fontSize = 64.sp,
-    )
-
-
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
     ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+    displayMedium =TextStyle(
+        fontFamily= JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 52.sp
+    ),
+    displaySmall = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 44.sp
+    ),
+    headlineLarge =TextStyle(
+        fontFamily = Jura,
+        fontSize = 40.sp
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = Jura,
+        fontSize = 36.sp
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = Jura,
+        fontSize = 32.sp
+    ),
+    titleLarge = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 28.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
+    ),
+
+
+
+
+
+//    labelLarge = TextStyle(
+//        fontFamily = JuraBold,
+//        fontWeight = FontWeight.Bold,
+//        fontSize = 20.sp
+//    ),
+//    labelMedium = TextStyle(
+//        fontFamily = JuraBold,
+//        fontWeight = FontWeight.Bold,
+//        fontSize = 16.sp
+//    ),
+//    labelSmall = TextStyle(
+//        fontFamily = Jura,
+//        fontWeight = FontWeight.Bold,
+//        fontSize = 16.sp
+//    )
+
 )
+
+
 

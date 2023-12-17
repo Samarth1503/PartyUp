@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<<<<<<< HEAD
-    <color name="green">#73C711</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#44D9EC</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="on_tertiary">#00363D</color>
-    <color name="neutral_20">#191C1C</color>
-    <color name="neutral_40">#5C5F5F</color>
 
-    <color name="tertiary_40">#006874</color>>
-=======
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
@@ -31,6 +18,7 @@
     <color name="neutral_20">#2D3131</color>
     <color name="neutral_40">#5C5F5F</color>
     <color name="tertiary_40">#006874</color>
+    <color name="Green">#4CAF50</color>
 
->>>>>>> master
+
 </resources>

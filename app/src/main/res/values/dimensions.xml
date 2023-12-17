@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<<<<<<< HEAD
+
     <dimen name="Profile_Banner_Box_Height">179dp</dimen>>
     <dimen name="Profile_banner_height">136dp</dimen>
     <dimen name="profile_picture_height">86dp</dimen>
-=======
+
     <dimen name="main_padding">20.dp</dimen>
     <dimen name="text_field_height">68.dp</dimen>
     <dimen name="generic_button_height">56.dp</dimen>
     <dimen name="top_bar_height">64.dp</dimen>
     <dimen name="small_profile_pic_dim">40.dp</dimen>
->>>>>>> master
+
 </resources>

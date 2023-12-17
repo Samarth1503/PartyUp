@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,10 +34,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ComponentActivity
-
+import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 //creating other screens
+
 @Composable
 fun ProfileScreen(){
     Surface(color= colorResource(id = R.color.black)){
@@ -45,10 +48,13 @@ fun ProfileScreen(){
         }
     }
 }
+
 @Preview
 @Composable
 fun PreviewProfileScreen(){
-    ProfileScreen()
+    PartyFinderTheme{
+        ProfileScreen()
+    }
 }
 
 @Composable
@@ -68,7 +74,7 @@ fun ProfileBannerWidget(modifier: Modifier = Modifier){
                 .width(36.dp)
                 .align(Alignment.TopEnd),
             shape = RoundedCornerShape(50),
-            color = colorResource(id = R.color.teal_200)
+            color = colorResource(id = R.color.primary)
         )
             {
             Image(
@@ -110,16 +116,17 @@ fun ProfileDataWidget(modifier: Modifier = Modifier.padding(16.dp)){
         Column(modifier= Modifier.padding(16.dp)) {
             Text(
                 text = "Kaizoku",
-                fontSize = 32.sp,
-                color = colorResource(id = R.color.teal_200)
+                color = colorResource(id = R.color.primary),
+                style=MaterialTheme.typography.headlineSmall
             )
-            Text(text = "#3347", color = colorResource(id = R.color.teal_200))
+            Text(text = "#3347", color = colorResource(id = R.color.primary))
 
             Row (verticalAlignment = Alignment.CenterVertically){
-                Text(text = "icon", color = colorResource(id = R.color.green))
+                Text(text = "icon", color = colorResource(id = R.color.Green))
                 Text(
                     text = "Status",
                     color = colorResource(id = R.color.white),
+                    style = MaterialTheme.typography.bodySmall,
                     modifier= Modifier.padding(start=4.dp)
                 )
 
@@ -128,7 +135,9 @@ fun ProfileDataWidget(modifier: Modifier = Modifier.padding(16.dp)){
                     onClick = { /*TODO*/ },
                     modifier = Modifier.shadow(elevation =16.dp)
                 ) {
-                    Text(text = "Change Status")
+                    Text(
+                        text = "Change Status",
+                        style = MaterialTheme.typography.bodySmall)
                 }
             }
 
@@ -140,8 +149,9 @@ fun ProfileDataWidget(modifier: Modifier = Modifier.padding(16.dp)){
 fun ProfileScreenBioWidget(modifier: Modifier = Modifier.padding(16.dp)){
     Card(modifier=modifier, colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_20))) {
         Column(modifier= Modifier.padding(16.dp)) {
-            Text(text = "Bio", color = colorResource(id = R.color.teal_200))
+            Text(text = "Bio", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
             Text(color = colorResource(id = R.color.white),
+                style = MaterialTheme.typography.bodySmall,
                 text = " Hello, I play Games for fun mostly.I like to play MMORPG games in which i can explore open world and take Decisions which affect my Gameplay.")
         }
     }
@@ -151,7 +161,7 @@ fun ProfileScreenBioWidget(modifier: Modifier = Modifier.padding(16.dp)){
 fun ProfileRanksWidget(modifier: Modifier = Modifier
     .fillMaxWidth()
     .padding(16.dp)){
-    Card(modifier=modifier.height(245.dp), colors = CardDefaults.cardColors(containerColor = colorResource(
+    Card(modifier=modifier.wrapContentHeight(), colors = CardDefaults.cardColors(containerColor = colorResource(
         id = R.color.neutral_20
     )
     )) {
@@ -160,7 +170,8 @@ fun ProfileRanksWidget(modifier: Modifier = Modifier
                 Text(
                     text = "Ranks",
                     fontSize = 20.sp,
-                    color= colorResource(id = R.color.teal_200)
+                    color= colorResource(id = R.color.primary),
+                    style = MaterialTheme.typography.titleSmall
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
@@ -168,7 +179,7 @@ fun ProfileRanksWidget(modifier: Modifier = Modifier
                     onClick = { /*TODO*/ },
                     modifier = Modifier.shadow(elevation = 16.dp)
                 ) {
-                    Text(text = "Update Ranks")
+                    Text(text = "Update Ranks", style = MaterialTheme.typography.bodySmall)
                 }
             }
             ProfileRankDisplay()
@@ -187,12 +198,14 @@ fun ProfileRankDisplay(modifier: Modifier = Modifier
             painter = painterResource(id = R.drawable.rank1_icon),
             contentDescription = null,
             modifier= Modifier
-                .height(36.dp)
-                .width(36.dp)
+                .padding(top = 8.dp)
+                .height(44.dp)
+                .width(44.dp)
+
         )
         Column {
-            Text(text = "Game_Name", color = colorResource(id = R.color.white))
-            Text(text = "Rank", color = colorResource(id = R.color.white))
+            Text(text = "OverWatch 2", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Rank", color = colorResource(id = R.color.white), style = MaterialTheme.typography.bodySmall)
         }
     }
 

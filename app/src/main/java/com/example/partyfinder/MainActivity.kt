@@ -81,7 +81,7 @@ fun CreateGamerCallTopBar(modifier: Modifier=Modifier){
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "New Gamer Call", fontSize = 16.sp, color = colorResource(id = R.color.teal_200))
+            Text(text = "New Gamer Call", fontSize = 16.sp, color = colorResource(id = R.color.primary))
             Spacer(modifier = modifier.weight(1f))
             Image(painter = painterResource(id = R.drawable.remove_icon), contentDescription =null )
         }

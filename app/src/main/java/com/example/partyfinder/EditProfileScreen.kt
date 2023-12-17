@@ -44,22 +44,28 @@ import androidx.compose.ui.unit.sp
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun EditProfileScreenPreview(){
-    EditProfileScreen()
+    PartyFinderTheme {
+     EditProfileScreen()
+    }
 }
 
 @Composable
-fun EditProfileScreen(){
-
+fun EditProfileScreen(modifier:Modifier=Modifier.fillMaxSize()){
+    Column(modifier=modifier) {
+        EditProfileScreenTopBar()
+    }
 
 }
 
 @Composable
 fun EditProfileScreenTopBar(modifier:Modifier=Modifier){
         Row {
-            
+                Text(
+                    text = "Edit Profile",
+                    style = MaterialTheme.typography.titleLarge)
         }
 }
 

@@ -86,7 +86,7 @@ fun ProfileBannerWidget(modifier: Modifier = Modifier){
             painter = painterResource(id = R.drawable.luffy),
             contentDescription =null,
             modifier= Modifier
-                .padding(start = 16.dp)
+                .padding(start = dimensionResource(id =R.dimen.main_padding))
                 .height(dimensionResource(id = R.dimen.profile_picture_height))
                 .width(dimensionResource(id = R.dimen.profile_picture_height))
                 .clip(RoundedCornerShape(50))
@@ -111,7 +111,7 @@ fun ProfileScreenContent(modifier: Modifier = Modifier){
 fun ProfileDataWidget(modifier: Modifier = Modifier.padding(16.dp)){
     Card(
         modifier=modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_20))
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
     ) {
         Column(modifier= Modifier.padding(16.dp)) {
             Text(
@@ -126,18 +126,18 @@ fun ProfileDataWidget(modifier: Modifier = Modifier.padding(16.dp)){
                 Text(
                     text = "Status",
                     color = colorResource(id = R.color.white),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier= Modifier.padding(start=4.dp)
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
-                Button(colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.neutral_40)),
+                Button(colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.tertiary_40)),
                     onClick = { /*TODO*/ },
                     modifier = Modifier.shadow(elevation =16.dp)
                 ) {
                     Text(
                         text = "Change Status",
-                        style = MaterialTheme.typography.bodySmall)
+                        style = MaterialTheme.typography.titleSmall)
                 }
             }
 
@@ -147,12 +147,12 @@ fun ProfileDataWidget(modifier: Modifier = Modifier.padding(16.dp)){
 
 @Composable
 fun ProfileScreenBioWidget(modifier: Modifier = Modifier.padding(16.dp)){
-    Card(modifier=modifier, colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_20))) {
+    Card(modifier=modifier, colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))) {
         Column(modifier= Modifier.padding(16.dp)) {
             Text(text = "Bio", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
             Text(color = colorResource(id = R.color.white),
-                style = MaterialTheme.typography.bodySmall,
-                text = " Hello, I play Games for fun mostly.I like to play MMORPG games in which i can explore open world and take Decisions which affect my Gameplay.")
+                style = MaterialTheme.typography.bodyLarge,
+                text = "Hello, I play Games for fun mostly.I like to play MMORPG games in which i can explore open world and take Decisions which affect my Gameplay.")
         }
     }
 }
@@ -162,7 +162,7 @@ fun ProfileRanksWidget(modifier: Modifier = Modifier
     .fillMaxWidth()
     .padding(16.dp)){
     Card(modifier=modifier.wrapContentHeight(), colors = CardDefaults.cardColors(containerColor = colorResource(
-        id = R.color.neutral_20
+        id = R.color.neutral_10
     )
     )) {
         Column(modifier= Modifier.padding(16.dp)) {
@@ -171,7 +171,7 @@ fun ProfileRanksWidget(modifier: Modifier = Modifier
                     text = "Ranks",
                     fontSize = 20.sp,
                     color= colorResource(id = R.color.primary),
-                    style = MaterialTheme.typography.titleSmall
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
@@ -179,7 +179,7 @@ fun ProfileRanksWidget(modifier: Modifier = Modifier
                     onClick = { /*TODO*/ },
                     modifier = Modifier.shadow(elevation = 16.dp)
                 ) {
-                    Text(text = "Update Ranks", style = MaterialTheme.typography.bodySmall)
+                    Text(text = "Update Ranks", style = MaterialTheme.typography.titleSmall)
                 }
             }
             ProfileRankDisplay()
@@ -204,8 +204,8 @@ fun ProfileRankDisplay(modifier: Modifier = Modifier
 
         )
         Column {
-            Text(text = "OverWatch 2", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Rank", color = colorResource(id = R.color.white), style = MaterialTheme.typography.bodySmall)
+            Text(text = "OverWatch 2", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
+            Text(text = "Gold", color = colorResource(id = R.color.white), style = MaterialTheme.typography.bodyMedium)
         }
     }
 

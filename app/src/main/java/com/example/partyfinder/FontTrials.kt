@@ -11,12 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 @Composable
 fun FontTrials(modifier:Modifier=Modifier){
     Surface(modifier=modifier.fillMaxSize()) {
         Column (modifier=Modifier.padding(start = 100.dp)){
+
+            Text(text = "Jura Fonts", fontSize = 35.sp,modifier=Modifier.padding(32.dp))
+
             Text(
                 text = "Hello",
                 style = MaterialTheme.typography.displayLarge
@@ -48,6 +52,12 @@ fun FontTrials(modifier:Modifier=Modifier){
             Text(
                 text = "Hello",
                 style = MaterialTheme.typography.titleSmall)
+
+
+        Text(text = "Inter Fonts", fontSize = 35.sp,modifier=Modifier.padding(32.dp))
+
+
+
             Text(
                 text = "Hello",
                 style = MaterialTheme.typography.bodyLarge)

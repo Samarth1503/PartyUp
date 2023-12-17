@@ -22,6 +22,10 @@ val Shackle=FontFamily(
 
 )
 
+val Inter= FontFamily(
+    Font(R.font.inter_regular)
+)
+
 
 
 
@@ -68,43 +72,37 @@ val Typography = Typography(
     titleSmall = TextStyle(
         fontFamily = JuraBold,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp
+        fontSize = 16.sp
     ),
     bodyLarge = TextStyle(
-        fontFamily = JuraBold,
-        fontWeight = FontWeight.Bold,
-        fontSize = 20.sp
+        fontFamily = Inter,
+//        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
     ),
     bodySmall = TextStyle(
-        fontFamily = JuraBold,
-        fontWeight = FontWeight.Bold,
+        fontFamily = Inter,
         fontSize = 12.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = JuraBold,
+        fontFamily = Inter,
+        fontSize = 14.sp
+    ),
+
+    labelLarge = TextStyle(
+        fontFamily = Inter,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp
     ),
-
-
-
-
-
-//    labelLarge = TextStyle(
-//        fontFamily = JuraBold,
-//        fontWeight = FontWeight.Bold,
-//        fontSize = 20.sp
-//    ),
-//    labelMedium = TextStyle(
-//        fontFamily = JuraBold,
-//        fontWeight = FontWeight.Bold,
-//        fontSize = 16.sp
-//    ),
-//    labelSmall = TextStyle(
-//        fontFamily = Jura,
-//        fontWeight = FontWeight.Bold,
-//        fontSize = 16.sp
-//    )
+    labelMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp
+    )
 
 )
 

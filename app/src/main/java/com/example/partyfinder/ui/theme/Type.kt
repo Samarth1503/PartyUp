@@ -8,18 +8,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.Font
 import com.example.partyfinder.R
 
-val Jura =FontFamily(
+val Jura = FontFamily(
     Font(R.font.jura_regular),
     Font(R.font.jura_bold)
 )
 
-val Shackle=FontFamily(
+val Shackle = FontFamily(
     Font(R.font.shackle_regular)
-
 )
-
-val
-
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -34,24 +30,21 @@ val Typography = Typography(
         fontFamily = Jura,
         fontWeight = FontWeight.Bold,
         fontSize = 64.sp,
-    )
-
-
-    /* Other default text styles to override
-    titleLarge = TextStyle(
+    ),
+    headlineLarge = TextStyle(
+        fontFamily = Jura,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp,
+    ),
+    bodyMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
+        fontSize = 16.sp
     ),
-    labelSmall = TextStyle(
+    bodySmall = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        fontWeight = FontWeight.Normal,
+        fontSize = 10.sp
     )
-    */
 )
 

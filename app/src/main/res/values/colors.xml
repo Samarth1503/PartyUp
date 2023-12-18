@@ -11,6 +11,9 @@
     <color name="neutral5">#0E1212</color>
     <color name="on_background">#191C1C</color>
     <color name="tertiary">#006874</color>
+<!--  additions  -->
+    <color name="chatPreview">#CACACA</color>
+    <color name="transparent">#00FFFFFF</color>
 
 //pushkars frames
     <color name="on_tertiary">#00363D</color>

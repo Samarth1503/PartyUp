@@ -38,8 +38,8 @@ import com.example.partyfinder.ui.theme.PartyFinderTheme
 //creating other screens
 
 @Composable
-fun ProfileScreen(){
-    Surface(color= colorResource(id = R.color.black)){
+fun ProfileScreen(modifier:Modifier=Modifier){
+    Surface(color= colorResource(id = R.color.black), modifier = modifier){
         Column(modifier = Modifier.verticalScroll(rememberScrollState(),true)) {
             ProfileBannerWidget()
             ProfileScreenContent()

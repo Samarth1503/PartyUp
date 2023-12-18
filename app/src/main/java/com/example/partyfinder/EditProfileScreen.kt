@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,6 +31,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.ui.theme.PartyFinderTheme
@@ -55,6 +61,10 @@ fun EditProfileScreenPreview(){
 
 @Composable
 fun EditProfileScreen(modifier:Modifier=Modifier.fillMaxSize()){
+
+    var GamerId by remember{ mutableStateOf("") }
+    var Bio by remember{ mutableStateOf("") }
+
     Column(modifier = modifier
         .background(color = colorResource(id = R.color.black))
         .verticalScroll(
@@ -62,7 +72,7 @@ fun EditProfileScreen(modifier:Modifier=Modifier.fillMaxSize()){
         )) {
         EditProfileScreenTopBar()
         EditProfileScreenBanner()
-        EditProfileDataWidget()
+        EditProfileDataWidget(GamerId,{GamerId=it},Bio,{Bio=it})
     }
 
 }
@@ -157,24 +167,29 @@ fun EditProfileScreenBanner(modifier:Modifier=Modifier){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfileDataWidget(modifier:Modifier=Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
+fun EditProfileDataWidget(gamerID:String,onValueChanged:(String)-> Unit,bio:String,onBioValueChanged:(String)->Unit,modifier:Modifier=Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
     Card(modifier= modifier
         .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
     ) {
            OutlinedTextField(
-               value = "",
-               onValueChange = {},
+               value = gamerID,
+               onValueChange =onValueChanged,
+               keyboardOptions = KeyboardOptions.Default.copy(
+                   imeAction = ImeAction.Next
+               ),
                modifier= Modifier
                    .padding(dimensionResource(id = R.dimen.main_padding))
                    .fillMaxWidth()
                    .border(
                        (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
-                       RoundedCornerShape(15.dp)
+                       RoundedCornerShape(5.dp)
                    ),
                label = { Text(text = "Gamer_ID")},
                colors = TextFieldDefaults.outlinedTextFieldColors(
                    cursorColor = colorResource(id = R.color.primary),
+                   focusedTextColor = colorResource(id = R.color.primary),
+                   unfocusedTextColor = colorResource(id = R.color.primary),
                    focusedLabelColor = colorResource(id = R.color.primary),
                    unfocusedLabelColor = colorResource(id = R.color.primary),
                    containerColor = colorResource(id = R.color.black),
@@ -182,9 +197,12 @@ fun EditProfileDataWidget(modifier:Modifier=Modifier.padding(dimensionResource(i
                    unfocusedBorderColor = colorResource(id = R.color.black))
                )
         TextField(
-            value = "",
-            onValueChange = {},
+            value = bio,
+            onValueChange =onBioValueChanged,
             label = { Text(text = "Bio")},
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
             modifier= Modifier
                 .padding(dimensionResource(id = R.dimen.main_padding))
                 .fillMaxWidth()
@@ -201,6 +219,8 @@ fun EditProfileDataWidget(modifier:Modifier=Modifier.padding(dimensionResource(i
                 ,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = colorResource(id = R.color.black),
+                focusedTextColor = colorResource(id = R.color.primary),
+                unfocusedTextColor = colorResource(id = R.color.primary),
                 unfocusedLabelColor = colorResource(id = R.color.primary),
                 focusedLabelColor = colorResource(id = R.color.primary)
             )

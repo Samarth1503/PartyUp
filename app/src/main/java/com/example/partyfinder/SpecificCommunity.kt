@@ -101,14 +101,14 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(0.75.dp) // Change this to adjust the border thickness
+                .height(1.dp) // Change this to adjust the border thickness
                 .background(Color.Red)
                 .align(Alignment.TopCenter)
         )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(0.75.dp) // Change this to adjust the border thickness
+                .height(1.dp) // Change this to adjust the border thickness
                 .background(Color.Red)
                 .align(Alignment.BottomCenter)
         )

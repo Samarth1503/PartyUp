@@ -1,10 +1,15 @@
 package com.example.partyfinder
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
@@ -59,7 +64,7 @@ fun CreatePartyTopBar(modifier: Modifier = Modifier) {
         )
         Text(
             text = "Create Party",
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = colorResource(id = R.color.primary)
         )
     }
@@ -100,7 +105,7 @@ fun CreatePartyContent(modifier: Modifier = Modifier) {
         }
         Text(
             text = "Party Icon",
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = colorResource(id = R.color.white)
         )
 
@@ -118,6 +123,7 @@ fun CreatePartyContent(modifier: Modifier = Modifier) {
                 label = {
                     Text(
                         text = "Party Name",
+                        style = MaterialTheme.typography.titleSmall,
                         color = colorResource(id = R.color.primary)
                     )
                 },
@@ -149,54 +155,63 @@ fun CreatePartyContent(modifier: Modifier = Modifier) {
                 Spacer(modifier = modifier.weight(1f))
                 Text(
                     text = "Party Members",
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = colorResource(id = R.color.primary),
                     modifier = modifier
                         .padding(10.dp,0.dp, 0.dp, 0.dp)
                 )
                 Spacer(modifier = modifier.weight(1f))
             }
-            Row ( modifier = modifier
-                .padding(10.dp, 15.dp, 10.dp, 10.dp)
-                .fillMaxWidth()
+            val scrollState = rememberLazyListState()
+
+            LazyRow(
+                modifier = modifier
+                    .padding(10.dp, 10.dp, 10.dp, 10.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                state = scrollState
             ) {
-                Image (
-                    painter = painterResource(id = R.drawable.pp),
-                    contentDescription = "58008",
-                    modifier = Modifier
-                        .padding(20.dp, 10.dp, 10.dp, 10.dp)
-                        .size(45.dp)
-                        .border(
-                            (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
-                            RoundedCornerShape(50.dp)
-                        )
-                )
-                Image (
-                    painter = painterResource(id = R.drawable.pp),
-                    contentDescription = "58008",
-                    modifier = Modifier
-                        .padding(20.dp, 10.dp, 10.dp, 0.dp)
-                        .size(45.dp)
-                        .border(
-                            (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
-                            RoundedCornerShape(50.dp)
-                        )
-                )
-                Image (
-                    painter = painterResource(id = R.drawable.add_member),
-                    contentDescription = "Add New Member",
-                    modifier = Modifier
-                        .padding(20.dp, 10.dp, 10.dp, 0.dp)
-                        .size(45.dp)
-                        .clip(CircleShape)
-                )
+                items(13) { index ->
+                    CreatePartyMemberIcon()
+                }
             }
+
+
+
+//            Add new member
+            Column ( modifier = modifier
+                .padding(10.dp, 4.dp, 10.dp, 20.dp)
+                .background(
+                    color = colorResource(id = R.color.DarkBG),
+                    shape = RoundedCornerShape(5.dp)
+                )
+                .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(
+                    modifier = modifier
+                        .height(40.dp),
+                    shape = RoundedCornerShape(5.dp),
+                    onClick = { },
+                    border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
+                ) {
+                    Text(text = "Add",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = colorResource(id = R.color.primary),
+                        modifier = modifier
+                            .padding(bottom = 4.dp)
+                    )
+                }
+            }
+
         }
 
 
         //        CreatePartyButton
         Column ( modifier = modifier
-            .padding(10.dp, 24.dp, 10.dp, 10.dp)
+            .padding(10.dp, 36.dp, 10.dp, 10.dp)
             .background(
                 color = colorResource(id = R.color.DarkBG),
                 shape = RoundedCornerShape(5.dp)
@@ -204,19 +219,53 @@ fun CreatePartyContent(modifier: Modifier = Modifier) {
         ) {
             Button(
                 modifier = modifier
-                    .height(40.dp)
-                    .width(100.dp),
+                    .height(40.dp),
                 shape = RoundedCornerShape(5.dp),
                 onClick = { },
                 border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
             ) {
-                Text(text = "Create", color = colorResource(id = R.color.primary))
+                Text(text = "Create",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.primary),
+                    modifier = modifier
+                        .padding(bottom = 4.dp)
+                )
             }
         }
     }
 }
 
+
+@Composable
+fun CreatePartyMemberIcon(modifier: Modifier = Modifier){
+    Column ( modifier = modifier
+        .padding(10.dp, 15.dp, 10.dp, 10.dp)
+        .background(
+            color = colorResource(id = R.color.DarkBG),
+            shape = RoundedCornerShape(5.dp)
+        ),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image (
+            painter = painterResource(id = R.drawable.pp),
+            contentDescription = "58008",
+            modifier = Modifier
+                .size(45.dp)
+                .border(
+                    (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
+                    RoundedCornerShape(50.dp)
+                )
+        )
+        Text(text = "Kawakbanga",
+            style = MaterialTheme.typography.labelSmall,
+            color = colorResource(id = R.color.white),
+            modifier = modifier
+                .padding(top = 8.dp)
+        )
+    }
+}
 
 @Preview
 @Composable

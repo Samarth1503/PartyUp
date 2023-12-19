@@ -74,7 +74,7 @@ fun ChatTopBar(modifier: Modifier = Modifier) {
         )
         Text(
             text = "Chat",
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = colorResource(id = R.color.primary),
             modifier = Modifier.align(Alignment.Center)
         )
@@ -103,7 +103,12 @@ fun ChatMenu(modifier: Modifier = Modifier) {
 //        ) {}
         Surface(color = colorResource(id = R.color.black),
             modifier = modifier
-                .padding( 194.dp, (dimensionResource(id = R.dimen.top_bar_height)-24.dp), 36.dp, 0.dp)
+                .padding( 182.dp, (dimensionResource(id = R.dimen.top_bar_height)-24.dp), 30.dp, 0.dp)
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(4.dp)
+                )
         ) {
             Column ( modifier = modifier
                 .padding(20.dp, 8.dp, 20.dp, 8.dp)
@@ -122,6 +127,7 @@ fun ChatMenu(modifier: Modifier = Modifier) {
                     )
                     Text(
                         text = "Clear Chats",
+                        style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.primary)
                     )
                 }
@@ -139,6 +145,7 @@ fun ChatMenu(modifier: Modifier = Modifier) {
                     )
                     Text(
                         text = "Report",
+                        style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.primary)
                     )
                 }

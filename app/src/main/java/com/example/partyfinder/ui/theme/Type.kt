@@ -8,43 +8,103 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.Font
 import com.example.partyfinder.R
 
-val Jura = FontFamily(
+
+val Jura =FontFamily(
     Font(R.font.jura_regular),
+)
+
+val JuraBold=FontFamily(
     Font(R.font.jura_bold)
 )
 
-val Shackle = FontFamily(
+val Shackle=FontFamily(
     Font(R.font.shackle_regular)
+
 )
+
+val Inter= FontFamily(
+    Font(R.font.inter_regular)
+)
+
+
+
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
+
     displayLarge = TextStyle(
-        fontFamily = Jura,
+        fontFamily = JuraBold,
         fontWeight = FontWeight.Bold,
         fontSize = 64.sp,
     ),
-    headlineLarge = TextStyle(
-        fontFamily = Jura,
+    displayMedium =TextStyle(
+        fontFamily= JuraBold,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
+        fontSize = 52.sp
     ),
-    bodyMedium = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+    displaySmall = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 44.sp
+    ),
+    headlineLarge =TextStyle(
+        fontFamily = Jura,
+        fontSize = 40.sp
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = Jura,
+        fontSize = 36.sp
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = Jura,
+        fontSize = 32.sp
+    ),
+    titleLarge = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 28.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = JuraBold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = Inter,
+//        fontWeight = FontWeight.Bold,
         fontSize = 16.sp
     ),
     bodySmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 10.sp
+        fontFamily = Inter,
+        fontSize = 12.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = Inter,
+        fontSize = 14.sp
+    ),
+
+    labelLarge = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
+    ),
+    labelMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp
     )
+
 )
+
+
 

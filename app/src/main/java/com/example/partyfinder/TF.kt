@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -20,16 +21,9 @@ import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.*
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.app.NotificationCompat.TvExtender
-import com.example.partyfinder.ui.theme.Jura
 import com.example.partyfinder.ui.theme.PartyFinderTheme
-import kotlin.text.Typography
 
 
 @Composable
@@ -40,41 +34,15 @@ fun TF(){
             .height(808.dp)
             .width(393.dp)
         ) {
-                CreatePartyTopBar()
-                CreatePartyContent()
+            GamersCallTopBar()
+            GamersCallContent()
         }
     }
 }
 
 
-//@Composable
-//fun CreatePartyTopBar(modifier: Modifier = Modifier) {
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        modifier = modifier
-//            .height(dimensionResource(id = (R.dimen.top_bar_height)))
-//            .fillMaxWidth()
-//            .background(color = colorResource(id = R.color.DarkBG))
-//    ) {
-//        Image(
-//            painter = painterResource(id = (R.drawable.back_blue)),
-//            contentDescription = "BackIcon",
-//            modifier = modifier
-//                .padding(25.dp, 5.dp, 0.dp, 0.dp)
-//                .size(25.dp)
-//        )
-//        Spacer(modifier = Modifier.weight(0.75f))
-//        Text(
-//            text = "Create Party",
-//            style = MaterialTheme.typography.headlineLarge,
-//            color = colorResource(id = R.color.primary)
-//        )
-//        Spacer(modifier = Modifier.weight(1f))
-//    }
-//}
-
 @Composable
-fun CreatePartyTopBar(modifier: Modifier = Modifier) {
+fun GamersCallTopBar(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .height(dimensionResource(id = (R.dimen.top_bar_height)))
@@ -91,18 +59,18 @@ fun CreatePartyTopBar(modifier: Modifier = Modifier) {
                 .align(Alignment.CenterStart)
         )
         Text(
-            text = "Create Party",
+            text = "Gamers Call",
             style = MaterialTheme.typography.headlineLarge,
             color = colorResource(id = R.color.primary)
         )
     }
 }
 
-
 @Composable
-fun CreatePartyContent(modifier: Modifier = Modifier) {
+fun GamersCallContent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
+            .padding(0.dp, 5.dp)
             .background(
                 color = colorResource(id = R.color.black),
                 shape = RoundedCornerShape(15.dp)
@@ -112,53 +80,106 @@ fun CreatePartyContent(modifier: Modifier = Modifier) {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-//      Party Icon
-        Row ( modifier = modifier
-            .height(140.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image (
-                painter = painterResource(id = R.drawable.pp),
-                contentDescription = "58008",
-                modifier = Modifier
-                    .size(76.dp)
-                    .clip(RoundedCornerShape(50.dp))
-            )
-        }
-        Text(
-            text = "Party Icon",
-            style = MaterialTheme.typography.headlineLarge,
-            color = colorResource(id = R.color.white)
-        )
-
-        var partyName by remember { mutableStateOf("") }
-        Surface ( modifier = modifier
-            .padding(10.dp, 25.dp,10.dp, 0.dp)
-            .fillMaxWidth()
-            ) {
-            TextField(
-                value = partyName,
-                onValueChange = { partyName = it },
-                label = { Text("Party Name") }
-            )
-        }
-        Row ( modifier = modifier
-            .padding(10.dp, 25.dp,10.dp, 0.dp)
-            .fillMaxWidth()
-        ) {
-            Text(
-                text = "Party Members",
-                style = MaterialTheme.typography.headlineLarge,
-                color = colorResource(id = R.color.primary),
-                modifier = modifier
-                    .padding(10.dp,0.dp, 0.dp, 0.dp)
-            )
-        }
-
-
+        G_Calls()
+        G_Calls()
     }
 }
+
+
+@Composable
+fun G_Calls(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .padding(0.dp, 10.dp, 0.dp, 0.dp)
+            .background(
+                color = colorResource(id = R.color.DarkBG),
+                shape = RoundedCornerShape(15.dp)
+            )
+            .height(160.dp)
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = colorResource(id = R.color.CallWidgetBorder),
+                shape = RoundedCornerShape(10.dp)
+            )
+    ){
+        Row(
+            modifier = modifier
+                .background(
+                    color = colorResource(id = R.color.DarkBG),
+                    shape = RoundedCornerShape(15.dp)
+                )
+                .height(100.dp)
+                .fillMaxWidth()
+                .padding(16.dp, 8.dp, 16.dp, 0.dp)
+        ){
+            Image(
+                painter = painterResource(id = R.drawable.pp),
+                contentDescription = "GamerIcon",
+                modifier = modifier
+                    .size(76.dp)
+            )
+
+            Column {
+//                Menu Icon
+                Row(
+                    modifier = modifier
+                        .padding(top = 6.dp)
+                        .background(
+                            color = colorResource(id = R.color.DarkBG),
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ){
+                    Image(
+                        painter = painterResource(id = R.drawable.menu_icon_blue),
+                        contentDescription = "MenuIcon",
+                        modifier = modifier
+                            .size(16.dp)
+                    )
+                }
+
+//                Name + Other details
+                Row(
+                    modifier = modifier
+                        .padding(top = 6.dp)
+                        .background(
+                            color = colorResource(id = R.color.DarkBG),
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.End
+                ){
+                    Text(
+                        text = "58008",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colorResource(id = R.color.white)
+                    )
+                }
+            }
+        }
+
+        Divider(color = colorResource(id = R.color.CallWidgetBorder), thickness = 1.dp)
+
+//        Description
+        Row(
+                modifier = modifier
+                    .background(
+                        color = colorResource(id = R.color.DarkBG),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                    .height(60.dp)
+                    .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+                ){
+
+        }
+    }
+}
+
 
 
 @Preview

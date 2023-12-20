@@ -94,7 +94,7 @@ fun EditProfileScreenTopBar(modifier:Modifier=Modifier){
                         .width(dimensionResource(id = R.dimen.top_bar_back_icon_size))
                 )
 
-            Spacer(modifier = Modifier.width(96.dp))
+            Spacer(modifier = Modifier.width(112.dp))
                 Text(
                     text = "Profile",
                     modifier = Modifier.align(alignment = Alignment.CenterVertically),

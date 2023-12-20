@@ -55,7 +55,7 @@ fun GamersCallTopBar(modifier: Modifier = Modifier) {
             contentDescription = "BackIcon",
             modifier = modifier
                 .padding(25.dp, 5.dp, 0.dp, 0.dp)
-                .size(25.dp)
+                .size(26.dp)
                 .align(Alignment.CenterStart)
         )
         Text(

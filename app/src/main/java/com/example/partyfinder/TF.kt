@@ -40,12 +40,72 @@ fun TF(){
             .height(808.dp)
             .width(393.dp)
         ) {
-            SpecificCommunityTopBar()
-            SpecificCommunityContent()
+            DmTopBar()
+            DmChat()
         }
     }
 }
 
+
+@Composable
+fun DmTopBar(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .height(dimensionResource(id = (R.dimen.top_bar_height)))
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.DarkBG)),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = (R.drawable.back_blue)),
+            contentDescription = "BackIcon",
+            modifier = modifier
+                .padding(16.dp, 2.dp, 0.dp, 0.dp)
+                .size(24.dp)
+        )
+        Image (
+            painter = painterResource(id = R.drawable.pp),
+            contentDescription = "58008",
+            modifier = Modifier
+                .padding(20.dp, 0.dp, 10.dp, 0.dp)
+                .size(40.dp)
+                .border(
+                    (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
+                    RoundedCornerShape(50.dp)
+                )
+        )
+        Text(
+            text = "58008",
+            style = MaterialTheme.typography.titleSmall,
+            color = colorResource(id = R.color.primary)
+        )
+    }
+}
+
+@Composable
+fun DmChat(modifier: Modifier = Modifier) {
+    Box(modifier = modifier
+        .padding(dimensionResource(id = R.dimen.main_padding), 16.dp)
+.fillMaxWidth()
+        .background(color = colorResource(id = R.color.DarkBG)),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Row(
+            modifier = modifier
+                .heightIn(min = 28.dp, max = 300.dp)
+                .width(280.dp)
+                .background(colorResource(id = R.color.SubliminalText))
+        ) {
+            Text(
+                text = "Need a 4 stack of cracked Valorant gamers for comp grind, And I mean Cracked(CRAZY) ",
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorResource(id = R.color.black),
+                modifier = modifier
+                    .padding(12.dp, 0.dp)
+            )
+        }
+    }
+}
 @Preview
 @Composable
 fun PreviewTF(){

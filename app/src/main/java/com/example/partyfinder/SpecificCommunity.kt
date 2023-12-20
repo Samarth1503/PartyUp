@@ -73,7 +73,7 @@ fun SpecificCommunityTopBar(modifier: Modifier = Modifier) {
             contentDescription = "BackIcon",
             modifier = modifier
                 .padding(25.dp, 2.dp, 16.dp, 0.dp)
-                .size(25.dp)
+                .size(20.dp)
                 .align(Alignment.CenterEnd)
         )
     }
@@ -133,6 +133,10 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier) {
 
 @Composable
 fun CommunityComments(modifier: Modifier = Modifier) {
+
+//        Variable declaration for menu
+    var isLiked by remember { mutableStateOf(false) }
+
     Box ( modifier = modifier) {
         Column(
             modifier = modifier
@@ -227,16 +231,30 @@ fun CommunityComments(modifier: Modifier = Modifier) {
                         .padding(start = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ){
-                    Image(
-                        painter = painterResource(id = R.drawable.empty_heart_blue),
-                        contentDescription = "Like",
-                        modifier = modifier
-                            .padding(0.dp, 5.dp, 6.dp, 4.dp)
-                            .size(16.dp)
-                    )
+
+                    if (!isLiked) {
+                        Image(
+                            painter = painterResource(id = R.drawable.empty_heart_blue),
+                            contentDescription = "Like",
+                            modifier = modifier
+                                .padding(0.dp, 5.dp, 6.dp, 4.dp)
+                                .size(16.dp)
+                                .clickable { isLiked = !isLiked }
+                        )
+                    }
+                    if (isLiked) {
+                        Image(
+                            painter = painterResource(id = R.drawable.filled_heart_blue),
+                            contentDescription = "Like",
+                            modifier = modifier
+                                .padding(0.dp, 5.dp, 6.dp, 4.dp)
+                                .size(16.dp)
+                                .clickable { isLiked = !isLiked }
+                        )
+                    }
                     Text(
                         text = "Like",
-                        style = TextStyle(fontSize = 12.sp, fontFamily = JuraBold, fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.labelLarge,
                         color = colorResource(id = R.color.white)
                     )
                 }
@@ -254,7 +272,7 @@ fun CommunityComments(modifier: Modifier = Modifier) {
                     )
                     Text(
                         text = "Share",
-                        style = TextStyle(fontSize = 12.sp, fontFamily = JuraBold, fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.labelLarge,
                         color = colorResource(id = R.color.white)
                     )
                 }
@@ -272,7 +290,7 @@ fun CommunityComments(modifier: Modifier = Modifier) {
                     )
                     Text(
                         text = "Report",
-                        style = TextStyle(fontSize = 12.sp, fontFamily = JuraBold, fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.labelLarge,
                         color = colorResource(id = R.color.white)
                     )
                 }

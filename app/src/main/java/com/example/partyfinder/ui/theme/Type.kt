@@ -89,9 +89,8 @@ val Typography = Typography(
     ),
 
     labelLarge = TextStyle(
-        fontFamily = Inter,
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp
+        fontFamily = JuraBold,
+        fontSize = 12.sp
     ),
     labelMedium = TextStyle(
         fontFamily = Inter,

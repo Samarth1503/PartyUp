@@ -13,6 +13,11 @@
     <color name="on_background">#191C1C</color>
     <color name="tertiary">#006874</color>
 <!--  additions  -->
+<!--    <color name="senderDmBackground">#43A047</color>-->
+    <color name="senderDmBackground">#3F51B5</color>
+<!--    <color name="receiverDmBackground">#512DA8</color>-->
+    <color name="receiverDmBackground">#368039</color>
+<!--    <color name="receiverDmBackground">#43A047</color>-->
     <color name="chatPreview">#CACACA</color>
     <color name="transparent">#00FFFFFF</color>
 

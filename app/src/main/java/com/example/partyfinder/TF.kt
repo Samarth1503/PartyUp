@@ -21,11 +21,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.partyfinder.ui.theme.JuraBold
@@ -41,7 +47,8 @@ fun TF(){
             .width(393.dp)
         ) {
             DmTopBar()
-            DmChat()
+            SenderDM()
+            ReceiverDm()
         }
     }
 }
@@ -82,30 +89,134 @@ fun DmTopBar(modifier: Modifier = Modifier) {
     }
 }
 
+
+//val ReceiverTriangle = object : Shape {
+//    override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
+//        return Outline.Generic(Path().apply {
+//            moveTo(size.width - size.width / 180f, 20f)
+//            lineTo(0f, size.height)
+//            lineTo(size.width, size.height)
+//            close()
+//        })
+//    }
+//}
+
+val ReceiverTriangle = object : Shape {
+    override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
+        return Outline.Generic(Path().apply {
+            moveTo(size.width - size.width / 180f, 0f)
+            lineTo(0f, size.height - 8f)
+            lineTo(size.width, size.height - 20f)
+            close()
+        })
+    }
+}
+
+val SenderTriangle = object : Shape {
+    override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
+        return Outline.Generic(Path().apply {
+            moveTo(size.width / 180f, 0f)
+            lineTo(0f, size.height - 20f)
+            lineTo(size.width, size.height - 8f)
+//            lineTo(size.width, size.height)
+//            lineTo(0f, size.height)
+            close()
+        })
+    }
+}
+
+
 @Composable
-fun DmChat(modifier: Modifier = Modifier) {
+fun ReceiverDm(modifier: Modifier = Modifier) {
+
+    var bgcolor_of_dm = colorResource(id = R.color.DarkBG)
+
     Box(modifier = modifier
-        .padding(dimensionResource(id = R.dimen.main_padding), 16.dp)
-.fillMaxWidth()
-        .background(color = colorResource(id = R.color.DarkBG)),
-        contentAlignment = Alignment.CenterEnd
+        .padding(dimensionResource(id = R.dimen.main_padding), 16.dp, 0.dp, 16.dp)
+        .fillMaxWidth()
+        .background(color = colorResource(id = R.color.SubliminalText))
     ) {
         Row(
             modifier = modifier
+                .padding(start = 12.dp, bottom = 7.dp)
                 .heightIn(min = 28.dp, max = 300.dp)
                 .width(280.dp)
-                .background(colorResource(id = R.color.SubliminalText))
+                .background(bgcolor_of_dm)
+                .align(Alignment.BottomStart)
+        ) {
+
+
+            Text(
+                text = "Need a 4 stack of cracked Valorant gamers for comp grind, And I mean Cracked(CRAZY) ",
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorResource(id = R.color.white),
+                modifier = modifier
+                    .padding(16.dp, 8.dp, 8.dp, 8.dp)
+            )
+        }
+        Box(modifier = modifier
+            .align(Alignment.BottomStart)
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(16.dp)
+                    .height(20.dp)
+                    .background(
+                        color = bgcolor_of_dm,
+                        ReceiverTriangle
+                    )
+            )
+
+        }
+    }
+}
+
+
+
+@Composable
+fun SenderDM(modifier: Modifier = Modifier) {
+
+    var bgcolor_of_dm = colorResource(id = R.color.DarkBG)
+
+    Box(modifier = modifier
+        .padding(dimensionResource(id = R.dimen.main_padding), 16.dp, 0.dp, 16.dp)
+        .fillMaxWidth()
+        .background(color = colorResource(id = R.color.SubliminalText))
+    ) {
+        Row(
+            modifier = modifier
+                .padding(end = 12.dp, bottom = 7.dp)
+                .heightIn(min = 28.dp, max = 300.dp)
+                .width(280.dp)
+                .background(bgcolor_of_dm)
+                .align(Alignment.BottomEnd)
         ) {
             Text(
                 text = "Need a 4 stack of cracked Valorant gamers for comp grind, And I mean Cracked(CRAZY) ",
                 style = MaterialTheme.typography.bodyMedium,
-                color = colorResource(id = R.color.black),
+                color = colorResource(id = R.color.white),
                 modifier = modifier
-                    .padding(12.dp, 0.dp)
+                    .padding(16.dp, 8.dp, 8.dp, 8.dp)
             )
+        }
+        Box(modifier = modifier
+            .align(Alignment.BottomEnd)
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(16.dp)
+                    .height(20.dp)
+                    .background(
+                        color = bgcolor_of_dm,
+                        SenderTriangle
+                    )
+            )
+
         }
     }
 }
+
+
 @Preview
 @Composable
 fun PreviewTF(){

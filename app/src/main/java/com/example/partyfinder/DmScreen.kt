@@ -5,13 +5,21 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.*
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
@@ -25,28 +33,41 @@ import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 @Composable
 fun DmScreen(){
-    Box(modifier = Modifier
-        .height(808.dp)
-        .width(393.dp))
-    {
+    Surface(modifier = Modifier) {
         DmTopBar()
         Column(modifier = Modifier
-            .padding(
-                top = dimensionResource(id = R.dimen.top_bar_height), bottom = dimensionResource(
-                    id = R.dimen.top_bar_height
-                )
-            )
-            .fillMaxHeight()
+            .padding(top = dimensionResource(id = R.dimen.top_bar_height))
+            .height(808.dp)
+            .width(393.dp)
             .background(color = colorResource(id = R.color.black))
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            SenderDM()
-            ReceiverDm()
-            SenderDM()
-            SenderDM()
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+            }
+            DmChatInput()
         }
-        DmChatInput(modifier = Modifier.align(Alignment.BottomCenter))
     }
+
 }
 
 
@@ -178,7 +199,7 @@ fun SenderDM(modifier: Modifier = Modifier) {
         .fillMaxWidth()
 //        .background(color = colorResource(id = R.color.SubliminalText))
     ) {
-        Row(
+        Column(
             modifier = modifier
                 .padding(start = 60.dp, end = 12.dp, bottom = 7.dp)
                 .heightIn(min = 28.dp, max = 300.dp)
@@ -196,6 +217,14 @@ fun SenderDM(modifier: Modifier = Modifier) {
                 modifier = modifier
                     .padding(12.dp, 8.dp, 12.dp, 8.dp)
             )
+//            Text(
+//                text = "5:00pm",
+//                style = MaterialTheme.typography.bodyMedium,
+//                color = colorResource(id = R.color.white),
+//                modifier = modifier
+//                    .padding(0.dp, 2.dp, 12.dp, 8.dp)
+//                    .align(Alignment.End)
+//            )
         }
         Box(modifier = modifier
             .align(Alignment.BottomEnd)
@@ -220,26 +249,78 @@ fun SenderDM(modifier: Modifier = Modifier) {
 fun DmChatInput(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .height(dimensionResource(id = (R.dimen.top_bar_height)))
+//            .height(dimensionResource(id = (R.dimen.top_bar_height)))
             .fillMaxWidth()
-            .background(color = colorResource(id = R.color.DarkBG)),
+            .background(color = colorResource(id = R.color.black)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "TF",
-            style = MaterialTheme.typography.bodyMedium,
-            color = colorResource(id = R.color.white),
+        var message by remember { mutableStateOf("") }
+
+        TextField(
+            value = message,
+            onValueChange = { message = it },
+            placeholder = {
+                Text("Enter Message",
+                    style = MaterialTheme.typography.bodyMedium
+                ) },
+            modifier = Modifier
+                .padding(8.dp, 4.dp, 8.dp, 4.dp)
+                .weight(1f)
+                .background(
+                    colorResource(id = R.color.DarkBG),
+                    shape = RoundedCornerShape(40.dp)
+                )
+                .clip(CircleShape),
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = colorResource(id = R.color.DarkBG),
+                focusedContainerColor = colorResource(id = R.color.black),
+                focusedPlaceholderColor = colorResource(id = R.color.primary),
+                unfocusedPlaceholderColor = colorResource(id = R.color.primary),
+                focusedTextColor = colorResource(id = R.color.SubliminalText),
+                unfocusedTextColor = colorResource(id = R.color.SubliminalText),
+                cursorColor = colorResource(id = R.color.primary))
         )
+
         Image (
             painter = painterResource(id = R.drawable.send_4),
             contentDescription = "Send",
             modifier = Modifier
-                .padding(20.dp, 0.dp, 10.dp, 0.dp)
-                .size(40.dp),
+                .padding(4.dp, 2.dp, 12.dp, 0.dp)
+                .size(32.dp),
             alignment = Alignment.CenterEnd
         )
     }
 }
+
+
+
+
+
+//
+//@Composable
+//fun DmChatInput(modifier: Modifier = Modifier) {
+//    Row(
+//        modifier = modifier
+//            .height(dimensionResource(id = (R.dimen.top_bar_height)))
+//            .fillMaxWidth()
+//            .background(color = colorResource(id = R.color.DarkBG)),
+//        verticalAlignment = Alignment.CenterVertically
+//    ) {
+//        Text(
+//            text = "TF",
+//            style = MaterialTheme.typography.bodyMedium,
+//            color = colorResource(id = R.color.white),
+//        )
+//        Image (
+//            painter = painterResource(id = R.drawable.send_4),
+//            contentDescription = "Send",
+//            modifier = Modifier
+//                .padding(20.dp, 0.dp, 10.dp, 0.dp)
+//                .size(40.dp),
+//            alignment = Alignment.CenterEnd
+//        )
+//    }
+//}
 
 
 @Preview

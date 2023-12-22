@@ -81,7 +81,7 @@ fun GamersCallContent(modifier: Modifier = Modifier) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(2) {
+            items(3) {
                 G_Calls()
             }
         }
@@ -96,6 +96,7 @@ fun GamersCallContent(modifier: Modifier = Modifier) {
 //                    .clickable { isMenuVisible = !isMenuVisible }
 //        ) {}
 //        }
+
     }
 }
 
@@ -237,8 +238,15 @@ fun G_Calls(modifier: Modifier = Modifier) {
                                 .padding(bottom = 1.dp)
                                 .size(16.dp)
                         )
-
-                        Spacer(modifier = modifier.width(20.dp))
+                        Spacer(modifier = modifier.width(4.dp))
+                        Text(
+                            text = "PartyUp!",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = colorResource(id = R.color.white),
+                            modifier = modifier
+                                .padding(bottom = 2.dp)
+                        )
+                        Spacer(modifier = modifier.width(12.dp))
 
                     }
                 }

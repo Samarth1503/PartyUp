@@ -41,30 +41,46 @@ import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 @Composable
-fun TF(){
-    Box(modifier = Modifier
-        .height(808.dp)
-        .width(393.dp))
-    {
+fun TF() {
+    Surface(modifier = Modifier) {
         DmTopBar()
         Column(modifier = Modifier
-            .padding(
-                top = dimensionResource(id = R.dimen.top_bar_height), bottom = dimensionResource(
-                    id = R.dimen.top_bar_height
-                )
-            )
-            .fillMaxHeight()
+            .padding(top = dimensionResource(id = R.dimen.top_bar_height))
+            .height(808.dp)
+            .width(393.dp)
             .background(color = colorResource(id = R.color.black))
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            SenderDM()
-            ReceiverDm()
-            SenderDM()
-            SenderDM()
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+                item { ReceiverDm() }
+                item { SenderDM() }
+                item { SenderDM() }
+            }
+            DmChatInput()
         }
-        DmChatInput(modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
+
+
+
+
 
 
 @Composable

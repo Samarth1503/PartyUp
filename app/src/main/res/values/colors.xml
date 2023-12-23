@@ -13,6 +13,7 @@
     <color name="on_background">#191C1C</color>
     <color name="tertiary">#006874</color>
 <!--  additions  -->
+    <color name="progressBarGreen">#43A047</color>
 <!--    <color name="senderDmBackground">#43A047</color>-->
     <color name="senderDmBackground">#3F51B5</color>
 <!--    <color name="receiverDmBackground">#512DA8</color>-->

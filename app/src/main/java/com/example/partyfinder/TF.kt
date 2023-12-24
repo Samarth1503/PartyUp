@@ -1,12 +1,11 @@
 package com.example.partyfinder
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,14 +20,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,13 +40,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.toLowerCase
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import androidx.compose.ui.zIndex
-import java.util.Locale
 
 
 @Composable
@@ -65,6 +59,7 @@ fun TF() {
 @Composable
 fun HomepageContent(modifier: Modifier = Modifier) {
     Column(modifier = Modifier
+        .verticalScroll(rememberScrollState(), true)
         .fillMaxWidth()
         .fillMaxHeight()
         .background(color = colorResource(id = R.color.black))
@@ -179,6 +174,7 @@ fun HomepageContent(modifier: Modifier = Modifier) {
         }
 
 
+//        My Calls
         Column(modifier = modifier
             .padding(12.dp, 12.dp, 12.dp, 0.dp)
             .fillMaxWidth()
@@ -230,69 +226,28 @@ fun HomepageContent(modifier: Modifier = Modifier) {
             modifier = modifier
                 .padding(dimensionResource(id = R.dimen.main_padding),16.dp)
         )
-
-        LazyColumn {
-            items(2) {
-                Row(modifier = modifier
-                    .padding(24.dp, 4.dp)
-                ){
-                    CommunityCard_Mini()
-                    Spacer(modifier = modifier.weight(1f))
-                    CommunityCard_Mini()
-                }
+        Column {
+            Row(modifier = modifier
+                .padding(24.dp, 4.dp)
+            ){
+                CommunityCard_Mini(gameName = "alorant")
+                Spacer(modifier = modifier.weight(1f))
+                CommunityCard_Mini(gameName = "Valorant")
+            }
+            Row(modifier = modifier
+                .padding(24.dp, 4.dp)
+            ){
+                CommunityCard_Mini(gameName = "Valorant")
+                Spacer(modifier = modifier.weight(1f))
+                CommunityCard_Mini(gameName = "Valorant")
             }
         }
     }
 }
 
 
-@Composable
-fun CommunityCard_Mini(modifier: Modifier = Modifier) {
-    Box(
-        modifier = Modifier
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color.Transparent, Color.Transparent),
-                    startY = 0.0f
-                ),
-                shape = RoundedCornerShape(15.dp)
-            )
-            .height(120.dp)
-            .width(160.dp)
-            .border(
-                width = 1.dp,
-                color = colorResource(id = R.color.CallWidgetBorder),
-                shape = RoundedCornerShape(10.dp)
-            )
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.valorant),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.black).copy(alpha = 0.5f))
-        ) {}
-        Text(
-            text = "Valorant",
-            style = MaterialTheme.typography.titleSmall,
-            color = colorResource(id = R.color.primary),
-            modifier = Modifier
-                .background(colorResource(id = R.color.black).copy(alpha = 0.75f))
-                .align(Alignment.Center)
-        )
-    }
-}
-
-//
 //@Composable
-//fun CommunityCard_Mini(modifier: Modifier = Modifier, gameName : String) {
-//    val gameDrawableString = "R.drawable.${gameName.lowercase()}"
-//    val gameDrawable = gameDrawableString.toInt()
+//fun CommunityCard_Mini(modifier: Modifier = Modifier) {
 //    Box(
 //        modifier = Modifier
 //            .background(
@@ -303,7 +258,7 @@ fun CommunityCard_Mini(modifier: Modifier = Modifier) {
 //                shape = RoundedCornerShape(15.dp)
 //            )
 //            .height(120.dp)
-//            .fillMaxWidth(0.4f)
+//            .width(160.dp)
 //            .border(
 //                width = 1.dp,
 //                color = colorResource(id = R.color.CallWidgetBorder),
@@ -323,7 +278,7 @@ fun CommunityCard_Mini(modifier: Modifier = Modifier) {
 //                .background(colorResource(id = R.color.black).copy(alpha = 0.5f))
 //        ) {}
 //        Text(
-//            text = gameName,
+//            text = "Valorant",
 //            style = MaterialTheme.typography.titleSmall,
 //            color = colorResource(id = R.color.primary),
 //            modifier = Modifier
@@ -332,6 +287,63 @@ fun CommunityCard_Mini(modifier: Modifier = Modifier) {
 //        )
 //    }
 //}
+
+
+@Composable
+fun CommunityCard_Mini(modifier: Modifier = Modifier, gameName: String) {
+    val gameDrawable = when(gameName) {
+        "Valorant" -> R.drawable.valorant
+        "CS:GO" -> R.drawable.valorant
+        "Overwatch" -> R.drawable.valorant
+        "Albion" -> R.drawable.valorant
+        "COC" -> R.drawable.valorant
+        "WOW" -> R.drawable.valorant
+        "LOL" -> R.drawable.valorant
+        else -> R.drawable.default_community_filler
+    }
+
+    Box(
+        modifier = Modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color.Transparent, Color.Transparent),
+                    startY = 0.0f
+                ),
+                shape = RoundedCornerShape(15.dp)
+            )
+            .height(120.dp)
+            .width(160.dp)
+            .border(
+                width = 1.dp,
+                color = colorResource(id = R.color.CallWidgetBorder),
+                shape = RoundedCornerShape(10.dp)
+            )
+    ) {
+        Image(
+            painter = painterResource(id = gameDrawable),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorResource(id = R.color.black).copy(alpha = 0.35f))
+        ) {}
+        Text(
+            text = gameName,
+            style = MaterialTheme.typography.titleMedium,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Black,
+            color = colorResource(id = R.color.primary),
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .background(colorResource(id = R.color.black).copy(alpha = 0.5f))
+                .align(Alignment.BottomCenter)
+        )
+    }
+}
 
 
 

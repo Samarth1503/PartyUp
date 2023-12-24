@@ -1,9 +1,11 @@
 package com.example.partyfinder
 
+import android.media.ImageWriter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -73,36 +75,113 @@ fun DmScreen(){
 
 @Composable
 fun DmTopBar(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .height(dimensionResource(id = (R.dimen.top_bar_height)))
-            .fillMaxWidth()
-            .background(color = colorResource(id = R.color.DarkBG)),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = (R.drawable.back_blue)),
-            contentDescription = "BackIcon",
+
+//        Variable declaration for menu
+    var isMenuVisible by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier
+        .fillMaxWidth()
+        .zIndex(1f)
+    ){
+        Row(
             modifier = modifier
-                .padding(16.dp, 2.dp, 0.dp, 0.dp)
-                .size(24.dp)
-        )
-        Image (
-            painter = painterResource(id = R.drawable.pp),
-            contentDescription = "58008",
-            modifier = Modifier
-                .padding(20.dp, 0.dp, 10.dp, 0.dp)
-                .size(40.dp)
-                .border(
-                    (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
-                    RoundedCornerShape(50.dp)
+                .height(dimensionResource(id = (R.dimen.top_bar_height)))
+                .fillMaxWidth()
+                .background(color = colorResource(id = R.color.DarkBG)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = (R.drawable.back_blue)),
+                contentDescription = "BackIcon",
+                modifier = modifier
+                    .padding(16.dp, 2.dp, 0.dp, 0.dp)
+                    .size(24.dp)
+            )
+            Image (
+                painter = painterResource(id = R.drawable.pp),
+                contentDescription = "58008",
+                modifier = Modifier
+                    .padding(20.dp, 0.dp, 10.dp, 0.dp)
+                    .size(40.dp)
+                    .border(
+                        (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
+                        RoundedCornerShape(50.dp)
+                    )
+            )
+            Text(
+                text = "58008",
+                style = MaterialTheme.typography.titleSmall,
+                color = colorResource(id = R.color.primary)
+            )
+            Spacer(modifier = modifier.weight(1f))
+            Image(
+                painterResource(id = R.drawable.threesquaremenu_blue),
+                contentDescription = "menu",
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .size(24.dp)
+                    .clickable { isMenuVisible = !isMenuVisible }
+            )
+        }
+    }
+
+//        Menu
+    if (isMenuVisible) {
+        Surface(color = colorResource(id = R.color.black),
+            modifier = modifier
+                .padding(
+                    220.dp,
+                    (dimensionResource(id = R.dimen.top_bar_height) - 24.dp),
+                    0.dp,
+                    0.dp
                 )
-        )
-        Text(
-            text = "58008",
-            style = MaterialTheme.typography.titleSmall,
-            color = colorResource(id = R.color.primary)
-        )
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .zIndex(2f)
+        ) {
+            Column ( modifier = modifier
+                .padding(20.dp, 8.dp, 20.dp, 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Row ( verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier
+                        .height(36.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.report_blue),
+                        contentDescription = "DeleteChats",
+                        modifier = modifier
+                            .padding(0.dp, 5.dp, 12.dp, 4.dp)
+                            .size(20.dp)
+                    )
+                    Text(
+                        text = "Report",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colorResource(id = R.color.primary)
+                    )
+                }
+                Row ( verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier
+                        .height(36.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.delete_blue),
+                        contentDescription = "DeleteIcon",
+                        modifier = modifier
+                            .padding(0.dp, 5.dp, 12.dp, 4.dp)
+                            .size(18.dp)
+                    )
+                    Text(
+                        text = "Delete Chats",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colorResource(id = R.color.primary)
+                    )
+                }
+            }
+        }
     }
 }
 

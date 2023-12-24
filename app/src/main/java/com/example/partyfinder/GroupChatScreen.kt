@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -101,6 +102,14 @@ fun GroupChatTopBar(modifier: Modifier = Modifier) {
             text = "58008",
             style = MaterialTheme.typography.titleSmall,
             color = colorResource(id = R.color.primary)
+        )
+        Spacer(modifier = modifier.weight(1f))
+        Image(
+            painter = painterResource(id = R.drawable.settings_blue),
+            contentDescription = "MenuIcon",
+            modifier = modifier
+                .padding(0.dp, 0.dp, 20.dp, 0.dp)
+                .size(20.dp)
         )
     }
 }

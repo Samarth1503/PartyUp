@@ -1,4 +1,4 @@
-package com.example.partyfinder
+package com.example.partyfinder.ui.theme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -32,7 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.R
 
 
 //creating other screens
@@ -84,7 +84,7 @@ fun ProfileBannerWidget(modifier: Modifier = Modifier){
             painter = painterResource(id = R.drawable.luffy),
             contentDescription =null,
             modifier= Modifier
-                .padding(start = dimensionResource(id =R.dimen.main_padding))
+                .padding(start = dimensionResource(id = R.dimen.main_padding))
                 .height(dimensionResource(id = R.dimen.profile_picture_height))
                 .width(dimensionResource(id = R.dimen.profile_picture_height))
                 .clip(RoundedCornerShape(50))

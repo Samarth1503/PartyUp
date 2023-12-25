@@ -1,4 +1,4 @@
-package com.example.partyfinder
+package com.example.partyfinder.ui.theme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,7 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.R
 
 @Composable
 fun UpdateRanksScreen(modifier:Modifier=Modifier){
@@ -164,7 +164,9 @@ fun UpdateRankWidget(
                         focusedTextColor = colorResource(id = R.color.primary),
                         unfocusedTextColor = colorResource(id = R.color.primary),
                         focusedLabelColor = colorResource(id = R.color.primary),
-                        focusedBorderColor = colorResource(id = R.color.primary)
+                        focusedBorderColor = colorResource(id = R.color.primary),
+                        cursorColor = colorResource(id = R.color.primary)
+
                     )
                 )
                 OutlinedTextField(
@@ -180,7 +182,8 @@ fun UpdateRankWidget(
                         focusedTextColor = colorResource(id = R.color.primary),
                         unfocusedTextColor = colorResource(id = R.color.primary),
                         focusedLabelColor = colorResource(id = R.color.primary),
-                        focusedBorderColor = colorResource(id = R.color.primary)
+                        focusedBorderColor = colorResource(id = R.color.primary),
+                        cursorColor = colorResource(id = R.color.primary)
                     )
                 )
             }

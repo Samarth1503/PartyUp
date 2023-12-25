@@ -1,4 +1,4 @@
-package com.example.partyfinder
+package com.example.partyfinder.ui.theme
 
 
 
@@ -48,7 +48,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.R
 
 
 @Preview(showBackground = true)
@@ -222,7 +222,8 @@ fun EditProfileDataWidget(gamerID:String,onValueChanged:(String)-> Unit,bio:Stri
                 focusedTextColor = colorResource(id = R.color.primary),
                 unfocusedTextColor = colorResource(id = R.color.primary),
                 unfocusedLabelColor = colorResource(id = R.color.primary),
-                focusedLabelColor = colorResource(id = R.color.primary)
+                focusedLabelColor = colorResource(id = R.color.primary),
+
             )
         )
 

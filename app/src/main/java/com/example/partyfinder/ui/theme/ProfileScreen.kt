@@ -1,6 +1,7 @@
 package com.example.partyfinder.ui.theme
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,11 +39,15 @@ import com.example.partyfinder.R
 //creating other screens
 
 @Composable
-fun ProfileScreen(modifier:Modifier=Modifier){
+fun ProfileScreen(
+    modifier:Modifier=Modifier,
+    onEditProfileClick:()->Unit,
+    onUpdateRanksClick:()->Unit
+    ){
     Surface(color= colorResource(id = R.color.black), modifier = modifier){
         Column(modifier = Modifier.verticalScroll(rememberScrollState(),true)) {
-            ProfileBannerWidget()
-            ProfileScreenContent()
+            ProfileBannerWidget(onEditProfileClick=onEditProfileClick)
+            ProfileScreenContent(onUpdateRanksClick=onUpdateRanksClick)
         }
     }
 }
@@ -51,12 +56,15 @@ fun ProfileScreen(modifier:Modifier=Modifier){
 @Composable
 fun PreviewProfileScreen(){
     PartyFinderTheme{
-        ProfileScreen()
+        ProfileScreen(onEditProfileClick = {}, onUpdateRanksClick = {})
     }
 }
 
 @Composable
-fun ProfileBannerWidget(modifier: Modifier = Modifier){
+fun ProfileBannerWidget(
+    modifier: Modifier = Modifier,
+    onEditProfileClick: () -> Unit
+){
     Box(modifier =modifier.height(dimensionResource(id = R.dimen.Profile_Banner_Box_Height))){
         Surface(modifier= Modifier
             .fillMaxWidth()
@@ -70,6 +78,7 @@ fun ProfileBannerWidget(modifier: Modifier = Modifier){
                 .padding(12.dp)
                 .height(36.dp)
                 .width(36.dp)
+                .clickable { onEditProfileClick() }
                 .align(Alignment.TopEnd),
             shape = RoundedCornerShape(50),
             color = colorResource(id = R.color.primary)
@@ -96,11 +105,13 @@ fun ProfileBannerWidget(modifier: Modifier = Modifier){
 }
 
 @Composable
-fun ProfileScreenContent(modifier: Modifier = Modifier){
+fun ProfileScreenContent(
+    modifier: Modifier = Modifier,
+    onUpdateRanksClick: () -> Unit){
     Column {
         ProfileDataWidget()
         ProfileScreenBioWidget()
-        ProfileRanksWidget()
+        ProfileRanksWidget(onUpdateRanksClick=onUpdateRanksClick)
         ProfileMyGamerCallsWidget()
     }
 }
@@ -156,7 +167,8 @@ fun ProfileScreenBioWidget(modifier: Modifier = Modifier.padding(16.dp)){
 }
 
 @Composable
-fun ProfileRanksWidget(modifier: Modifier = Modifier
+fun ProfileRanksWidget(onUpdateRanksClick: () -> Unit,
+    modifier: Modifier = Modifier
     .fillMaxWidth()
     .padding(16.dp)){
     Card(modifier=modifier.wrapContentHeight(), colors = CardDefaults.cardColors(containerColor = colorResource(
@@ -174,7 +186,7 @@ fun ProfileRanksWidget(modifier: Modifier = Modifier
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.tertiary_40)),
-                    onClick = { /*TODO*/ },
+                    onClick = { onUpdateRanksClick()},
                     modifier = Modifier.shadow(elevation = 16.dp)
                 ) {
                     Text(text = "Update Ranks", style = MaterialTheme.typography.titleSmall)

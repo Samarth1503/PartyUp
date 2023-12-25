@@ -2,6 +2,7 @@ package com.example.partyfinder.ui.theme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
 
 @Composable
-fun UpdateRanksScreen(modifier:Modifier=Modifier){
+fun UpdateRanksScreen(modifier:Modifier=Modifier,navigateBack:()->Unit){
 Surface(modifier=modifier.fillMaxSize(), color = colorResource(id = R.color.black)) {
 
     var gameName1 by remember{ mutableStateOf("") }
@@ -51,7 +52,7 @@ Surface(modifier=modifier.fillMaxSize(), color = colorResource(id = R.color.blac
     var rank3 by remember { mutableStateOf("") }
 
     Column(modifier=Modifier.verticalScroll(rememberScrollState(),true)) {
-        UpdateRanksScreenTopBar()
+        UpdateRanksScreenTopBar(navigateBack=navigateBack)
         UpdateRankWidget("Game 1 ",gameName1,{gameName1=it},rank1,{rank1=it})
         UpdateRankWidget("Game 2 ",gameName2,{gameName2=it},rank2,{rank2=it})
         UpdateRankWidget("Game 3 ",gameName3,{gameName3=it},rank3,{rank3=it})
@@ -83,13 +84,15 @@ Surface(modifier=modifier.fillMaxSize(), color = colorResource(id = R.color.blac
 fun PreviewUpdateRanksScreen(){
 
     PartyFinderTheme{
-        UpdateRanksScreen()
+        UpdateRanksScreen(navigateBack = {})
     }
 }
 
 
 @Composable
-fun UpdateRanksScreenTopBar(modifier:Modifier=Modifier){
+fun UpdateRanksScreenTopBar(
+    modifier:Modifier=Modifier,
+    navigateBack: () -> Unit){
     Row(modifier= modifier
         .height(dimensionResource(id = R.dimen.top_bar_height))
         .background(color = colorResource(id = R.color.DarkBG))
@@ -103,6 +106,7 @@ fun UpdateRanksScreenTopBar(modifier:Modifier=Modifier){
             modifier= Modifier
                 .height(dimensionResource(id = R.dimen.top_bar_back_icon_size))
                 .width(dimensionResource(id = R.dimen.top_bar_back_icon_size))
+                .clickable { navigateBack() }
         )
 
         Spacer(modifier = Modifier.width(60.dp))

@@ -6,6 +6,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,12 +56,15 @@ import com.example.partyfinder.R
 @Composable
 fun EditProfileScreenPreview(){
     PartyFinderTheme {
-     EditProfileScreen()
+     EditProfileScreen(navigateBack = {})
     }
 }
 
 @Composable
-fun EditProfileScreen(modifier:Modifier=Modifier.fillMaxSize()){
+fun EditProfileScreen(
+    modifier:Modifier=Modifier.fillMaxSize(),
+    navigateBack: () -> Unit
+    ){
 
     var GamerId by remember{ mutableStateOf("") }
     var Bio by remember{ mutableStateOf("") }
@@ -70,7 +74,7 @@ fun EditProfileScreen(modifier:Modifier=Modifier.fillMaxSize()){
         .verticalScroll(
             rememberScrollState()
         )) {
-        EditProfileScreenTopBar()
+        EditProfileScreenTopBar(navigateBack = navigateBack)
         EditProfileScreenBanner()
         EditProfileDataWidget(GamerId,{GamerId=it},Bio,{Bio=it})
     }
@@ -78,7 +82,7 @@ fun EditProfileScreen(modifier:Modifier=Modifier.fillMaxSize()){
 }
 
 @Composable
-fun EditProfileScreenTopBar(modifier:Modifier=Modifier){
+fun EditProfileScreenTopBar(modifier:Modifier=Modifier,navigateBack:()->Unit){
         Row(modifier= modifier
             .height(dimensionResource(id = R.dimen.top_bar_height))
             .background(color = colorResource(id = R.color.DarkBG))
@@ -92,6 +96,7 @@ fun EditProfileScreenTopBar(modifier:Modifier=Modifier){
                     modifier= Modifier
                         .height(dimensionResource(id = R.dimen.top_bar_back_icon_size))
                         .width(dimensionResource(id = R.dimen.top_bar_back_icon_size))
+                        .clickable { navigateBack() }
                 )
 
             Spacer(modifier = Modifier.width(112.dp))

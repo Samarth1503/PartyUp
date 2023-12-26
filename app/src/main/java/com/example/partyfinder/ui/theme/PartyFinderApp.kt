@@ -19,6 +19,7 @@ enum class PartyFinderScreen(){
     FindPartyScreen,
     UpdateRanksScreen,
 
+
 }
 
 private fun
@@ -77,5 +78,7 @@ fun PartyFinderApp(profileViewModel: ProfileViewModel= viewModel()){
         composable(route=PartyFinderScreen.FindPartyScreen.name){
             FindPartyScreen()
         }
+
+
     }
 }

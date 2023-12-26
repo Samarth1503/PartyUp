@@ -4,19 +4,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.*
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
@@ -130,143 +122,21 @@ val GroupReceiverTriangle = object : Shape {
 
 
 
-//@Composable
-//fun GroupReceiverDm(modifier: Modifier = Modifier) {
-//
-//    val bgcolor_of_dm = colorResource(id = R.color.DarkBG)
-//
-//    Row(modifier = modifier
-//        .padding(0.dp, 8.dp, 0.dp, 0.dp)
-//        .fillMaxWidth()
-////        .background(color = colorResource(id = R.color.SubliminalText))
-//    ){
-//        Image (
-//            painter = painterResource(id = R.drawable.pp),
-//            contentDescription = "58008",
-//            modifier = Modifier
-//                .padding(20.dp, 4.dp, 0.dp, 0.dp)
-//                .size(40.dp)
-//                .border(
-//                    (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
-//                    RoundedCornerShape(50.dp)
-//                )
-//        )
-//
-//        Box(modifier = modifier
-//            .padding(0.dp, 0.dp, 0.dp, 4.dp)
-//            .fillMaxWidth()
-////        .background(color = colorResource(id = R.color.SubliminalText))
-//        ) {
-//            Column(
-//                modifier = modifier
-//                    .padding(start = 12.dp, end = 60.dp, top = 7.dp)
-//                    .heightIn(min = 28.dp, max = 300.dp)
-//                    .widthIn(min = 24.dp, max = 360.dp)
-//                    .background(
-//                        bgcolor_of_dm,
-//                        shape = RoundedCornerShape(0.dp, 12.dp, 12.dp, 12.dp)
-//                    )
-//                    .align(Alignment.BottomStart)
-//            ) {
-//                Text(
-//                    text = "GroupChatScreen",
-//                    style = MaterialTheme.typography.bodySmall,
-//                    fontSize = 10.sp,
-//                    color = colorResource(id = R.color.primary),
-//                    modifier = modifier
-//                        .padding(12.dp, 8.dp, 12.dp, 0.dp)
-//                )
-//                Text(
-//                    text = "TF",
-//                    style = MaterialTheme.typography.bodyMedium,
-//                    color = colorResource(id = R.color.white),
-//                    modifier = modifier
-//                        .padding(12.dp, 0.dp, 12.dp, 8.dp)
-//                )
-//            }
-//            Box(modifier = modifier
-//                .align(Alignment.TopStart)
-//            ) {
-//                Box(
-//                    modifier = Modifier
-//                        .width(16.dp)
-//                        .height(20.dp)
-////                    .padding(top = 2.dp)
-//                        .background(
-//                            color = bgcolor_of_dm,
-//                            GroupReceiverTriangle
-//                        )
-//                )
-//
-//            }
-//        }
-//    }
-//}
-
-
-//
-//
-//@Composable
-//fun GroupReceiverDm(modifier: Modifier = Modifier) {
-//    Row(modifier = modifier
-//        .padding(0.dp, 8.dp, 0.dp, 4.dp)
-//        .fillMaxWidth()
-//    ){
-//        Image (
-//            painter = painterResource(id = R.drawable.pp),
-//            contentDescription = "58008",
-//            modifier = Modifier
-//                .padding(20.dp, 0.dp, 0.dp, 0.dp)
-//                .size(40.dp)
-//                .border(
-//                    (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
-//                    RoundedCornerShape(50.dp)
-//                )
-//        )
-//
-//            Column(
-//                modifier = modifier
-//                    .padding(start = 4.dp, end = 60.dp, top = 0.dp)
-//                    .heightIn(min = 28.dp, max = 300.dp)
-//                    .widthIn(min = 24.dp, max = 360.dp)
-//                    .background(
-//                        colorResource(id = R.color.DarkBG),
-//                        shape = RoundedCornerShape(12.dp, 12.dp, 12.dp, 12.dp)
-//                    )
-//            ) {
-//                Text(
-//                    text = "GroupChatScreen",
-//                    style = MaterialTheme.typography.bodySmall,
-//                    fontSize = 10.sp,
-//                    color = colorResource(id = R.color.primary),
-//                    modifier = modifier
-//                        .padding(12.dp, 8.dp, 12.dp, 0.dp)
-//                )
-//                Text(
-//                    text = "TF",
-//                    style = MaterialTheme.typography.bodyMedium,
-//                    color = colorResource(id = R.color.white),
-//                    modifier = modifier
-//                        .padding(12.dp, 0.dp, 12.dp, 8.dp)
-//                )
-//            }
-//    }
-//}
-
-
-
-
 @Composable
 fun GroupReceiverDm(modifier: Modifier = Modifier) {
+
+    val bgcolor_of_dm = colorResource(id = R.color.DarkBG)
+
     Row(modifier = modifier
-        .padding(0.dp, 8.dp, 0.dp, 4.dp)
+        .padding(0.dp, 8.dp, 0.dp, 0.dp)
         .fillMaxWidth()
+//        .background(color = colorResource(id = R.color.SubliminalText))
     ){
         Image (
             painter = painterResource(id = R.drawable.pp),
             contentDescription = "58008",
             modifier = Modifier
-                .padding(20.dp, 0.dp, 0.dp, 0.dp)
+                .padding(20.dp, 4.dp, 0.dp, 0.dp)
                 .size(40.dp)
                 .border(
                     (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
@@ -274,36 +144,56 @@ fun GroupReceiverDm(modifier: Modifier = Modifier) {
                 )
         )
 
-        Column(
-            modifier = modifier
-                .padding(start = 4.dp, end = 60.dp, top = 0.dp)
-                .heightIn(min = 28.dp, max = 300.dp)
-                .widthIn(min = 24.dp, max = 360.dp)
-                .background(
-                    colorResource(id = R.color.DarkBG),
-                    shape = RoundedCornerShape(0.dp, 12.dp, 12.dp, 12.dp)
-                )
+        Box(modifier = modifier
+            .padding(0.dp, 0.dp, 0.dp, 4.dp)
+            .fillMaxWidth()
+//        .background(color = colorResource(id = R.color.SubliminalText))
         ) {
-            Text(
-                text = "GroupChatScreen",
-                style = MaterialTheme.typography.bodySmall,
-                fontSize = 10.sp,
-                color = colorResource(id = R.color.primary),
+            Column(
                 modifier = modifier
-                    .padding(12.dp, 8.dp, 12.dp, 0.dp)
-            )
-            Text(
-                text = "TF",
-                style = MaterialTheme.typography.bodyMedium,
-                color = colorResource(id = R.color.white),
-                modifier = modifier
-                    .padding(12.dp, 0.dp, 12.dp, 8.dp)
-            )
+                    .padding(start = 12.dp, end = 60.dp, top = 7.dp)
+                    .heightIn(min = 28.dp, max = 300.dp)
+                    .widthIn(min = 24.dp, max = 360.dp)
+                    .background(
+                        bgcolor_of_dm,
+                        shape = RoundedCornerShape(0.dp, 12.dp, 12.dp, 12.dp)
+                    )
+                    .align(Alignment.BottomStart)
+            ) {
+                Text(
+                    text = "GroupChatScreen",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 10.sp,
+                    color = colorResource(id = R.color.primary),
+                    modifier = modifier
+                        .padding(12.dp, 8.dp, 12.dp, 0.dp)
+                )
+                Text(
+                    text = "TF",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.white),
+                    modifier = modifier
+                        .padding(12.dp, 0.dp, 12.dp, 8.dp)
+                )
+            }
+            Box(modifier = modifier
+                .align(Alignment.TopStart)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(16.dp)
+                        .height(20.dp)
+//                    .padding(top = 2.dp)
+                        .background(
+                            color = bgcolor_of_dm,
+                            GroupReceiverTriangle
+                        )
+                )
+
+            }
         }
     }
 }
-
-
 
 
 

@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
@@ -49,12 +50,133 @@ import androidx.compose.ui.zIndex
 
 
 @Composable
-fun TF() {
-    Surface(modifier = Modifier) {
+public fun TF(modifier: Modifier = Modifier) {
+    Box(modifier = modifier) {
+
         HomepageContent()
+
+//        NavigationBar
+        Row(modifier = modifier
+            .height(52.dp)
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.DarkBG))
+            .align(Alignment.BottomCenter)
+            .zIndex(5f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Row(modifier = modifier
+                .background(color = colorResource(id = R.color.black),
+                    shape = RoundedCornerShape(6.dp))
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(6.dp)
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.bookmark_blue),
+                    contentDescription = "Share",
+                    modifier = modifier
+                        .padding(12.dp, 4.dp)
+                        .size(24.dp)
+                )
+            }
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Row(modifier = modifier
+                .background(color = colorResource(id = R.color.black),
+                    shape = RoundedCornerShape(6.dp))
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(6.dp)
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.hastagthick_blue),
+                    contentDescription = "Share",
+                    modifier = modifier
+                        .padding(12.dp, 4.dp)
+                        .size(24.dp)
+                )
+            }
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Row(modifier = modifier
+                .background(color = colorResource(id = R.color.black),
+                    shape = RoundedCornerShape(6.dp))
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(6.dp)
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.link_blue),
+                    contentDescription = "Share",
+                    modifier = modifier
+                        .padding(12.dp, 4.dp)
+                        .size(24.dp)
+                )
+            }
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Row(modifier = modifier
+                .background(color = colorResource(id = R.color.black),
+                    shape = RoundedCornerShape(6.dp))
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(6.dp)
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.messagefilled_blue),
+                    contentDescription = "Share",
+                    modifier = modifier
+                        .padding(12.dp, 4.dp)
+                        .size(24.dp)
+                )
+            }
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Row(modifier = modifier
+                .background(color = colorResource(id = R.color.black),
+                    shape = RoundedCornerShape(6.dp))
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(6.dp)
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.user_blue),
+                    contentDescription = "Share",
+                    modifier = modifier
+                        .padding(12.dp, 4.dp)
+                        .size(24.dp)
+                )
+            }
+
+            Spacer(modifier = modifier.weight(1f))
+
+        }
     }
 }
 
+
+
+@Composable
+fun PartyUpNavigationBar(modifier: Modifier = Modifier) {
+
+}
 
 @Composable
 fun HomepageContent(modifier: Modifier = Modifier) {
@@ -65,13 +187,12 @@ fun HomepageContent(modifier: Modifier = Modifier) {
         .background(color = colorResource(id = R.color.black))
     ) {
 
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .background(
-                    color = colorResource(id = R.color.black),
+        Box(modifier = modifier
+            .fillMaxWidth()
+            .background(
+                color = colorResource(id = R.color.black),
 //                shape = RoundedCornerShape(15.dp)
-                )
+            )
         ) {
             Image(
                 painter = painterResource(id = (R.drawable.valorant)),
@@ -237,7 +358,7 @@ fun HomepageContent(modifier: Modifier = Modifier) {
             Row(modifier = modifier
                 .padding(24.dp, 4.dp)
             ){
-                CommunityCard_Mini(gameName = "Valorant")
+                CommunityCard_Mini(gameName = "aalorant")
                 Spacer(modifier = modifier.weight(1f))
                 CommunityCard_Mini(gameName = "Valorant")
             }

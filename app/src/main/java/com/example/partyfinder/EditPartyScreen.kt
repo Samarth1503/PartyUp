@@ -104,13 +104,19 @@ fun EditPartyContent(modifier: Modifier = Modifier) {
                     .size(76.dp)
                     .clip(RoundedCornerShape(50.dp))
                     .align(Alignment.BottomCenter)
+                    .border(
+                        (BorderStroke(1.5.dp, colorResource(id = R.color.SubliminalText))),
+                        RoundedCornerShape(50.dp)
+                    )
             )
             Image (
-                painter = painterResource(id = R.drawable.),
+                painter = painterResource(id = R.drawable.edit_blue),
                 contentDescription = "58008",
                 modifier = Modifier
-                    .size(76.dp)
-                    .clip(RoundedCornerShape(50.dp))
+                    .size(22.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(colorResource(id = R.color.black))
+                    .align(Alignment.BottomEnd)
             )
         }
         Text(
@@ -132,7 +138,7 @@ fun EditPartyContent(modifier: Modifier = Modifier) {
                 onValueChange = { partyName = it },
                 label = {
                     Text(
-                        text = "Party Name",
+                        text = "Edit Party Name",
                         style = MaterialTheme.typography.titleSmall,
                         color = colorResource(id = R.color.primary)
                     )
@@ -164,7 +170,7 @@ fun EditPartyContent(modifier: Modifier = Modifier) {
             ) {
                 Spacer(modifier = modifier.weight(1f))
                 Text(
-                    text = "Party Members",
+                    text = "Edit Members",
                     style = MaterialTheme.typography.titleMedium,
                     color = colorResource(id = R.color.primary),
                     modifier = modifier
@@ -218,10 +224,9 @@ fun EditPartyContent(modifier: Modifier = Modifier) {
 
         }
 
-
-        //        CreatePartyButton
+        //        SavePartyButton
         Column ( modifier = modifier
-            .padding(10.dp, 36.dp, 10.dp, 10.dp)
+            .padding(10.dp, 20.dp, 10.dp, 10.dp)
             .background(
                 color = colorResource(id = R.color.DarkBG),
                 shape = RoundedCornerShape(5.dp)
@@ -235,7 +240,7 @@ fun EditPartyContent(modifier: Modifier = Modifier) {
                 border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
             ) {
-                Text(text = "Create",
+                Text(text = "Save",
                     style = MaterialTheme.typography.titleSmall,
                     color = colorResource(id = R.color.primary),
                     modifier = modifier
@@ -243,6 +248,69 @@ fun EditPartyContent(modifier: Modifier = Modifier) {
                 )
             }
         }
+
+
+//        Report n Delete Group
+        Row ( modifier = modifier
+            .padding(top = 28.dp)
+        ) {
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Row ( modifier = modifier
+                .height(44.dp)
+                .background(
+                    color = colorResource(id = R.color.DarkBG),
+                    shape = RoundedCornerShape(5.dp)
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.report_blue),
+                    contentDescription = "ReportIcon",
+                    modifier = modifier
+                        .padding(16.dp, 5.dp, 12.dp, 4.dp)
+                        .size(24.dp)
+                )
+                Text(
+                    text = "Report",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.primary),
+                    modifier = modifier
+                        .padding(0.dp, 0.dp, 16.dp, 4.dp)
+                )
+            }
+
+            Spacer(modifier = modifier.weight(0.75f))
+
+            Row ( modifier = modifier
+                .height(44.dp)
+                .background(
+                    color = colorResource(id = R.color.DarkBG),
+                    shape = RoundedCornerShape(5.dp)
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.delete_blue),
+                    contentDescription = "ReportIcon",
+                    modifier = modifier
+                        .padding(16.dp, 5.dp, 12.dp, 4.dp)
+                        .size(24.dp)
+                )
+                Text(
+                    text = "Delete",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.primary),
+                    modifier = modifier
+                        .padding(0.dp, 0.dp, 16.dp, 4.dp)
+                )
+            }
+
+            Spacer(modifier = modifier.weight(1f))
+
+        }
+
     }
 }
 //

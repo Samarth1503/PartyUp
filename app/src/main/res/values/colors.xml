@@ -8,14 +8,9 @@
 //Sams frames
     <color name="primary">#95F1FF</color>
     <color name="DarkBG">#121212</color>
-<<<<<<< HEAD
-    <color name="CallWidgetBorder">#858585</color>
-    <color name="neutral_5">#0E1212</color>
-=======
     <color name="SubliminalText">#CACACA</color>
     <color name="CallWidgetBorder">#4A4A4A</color>
     <color name="neutral5">#0E1212</color>
->>>>>>> Sam
     <color name="on_background">#191C1C</color>
     <color name="tertiary">#006874</color>
 <!--  additions  -->

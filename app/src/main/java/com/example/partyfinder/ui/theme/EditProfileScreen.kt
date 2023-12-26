@@ -32,10 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,18 +52,28 @@ import com.example.partyfinder.R
 @Composable
 fun EditProfileScreenPreview(){
     PartyFinderTheme {
-     EditProfileScreen(navigateBack = {})
+     EditProfileScreen(
+         navigateBack = {},
+         gamerID = "Kaizoku",
+         onGamerIDchanged = {},
+         bio = "hello",
+         onGamerBioChanged = {},
+         onSaveChanges = {})
     }
 }
 
 @Composable
 fun EditProfileScreen(
     modifier:Modifier=Modifier.fillMaxSize(),
+    gamerID: String,
+    onGamerIDchanged:(String)->Unit,
+    bio:String,
+    onGamerBioChanged:(String) ->Unit,
+    onSaveChanges:()->Unit,
     navigateBack: () -> Unit
     ){
 
-    var GamerId by remember{ mutableStateOf("") }
-    var Bio by remember{ mutableStateOf("") }
+
 
     Column(modifier = modifier
         .background(color = colorResource(id = R.color.black))
@@ -76,7 +82,12 @@ fun EditProfileScreen(
         )) {
         EditProfileScreenTopBar(navigateBack = navigateBack)
         EditProfileScreenBanner()
-        EditProfileDataWidget(GamerId,{GamerId=it},Bio,{Bio=it})
+        EditProfileDataWidget(
+            gamerID = gamerID,
+            onValueChanged = onGamerIDchanged,
+            bio = bio,
+            onBioValueChanged = onGamerBioChanged,
+            onSaveChanges=onSaveChanges)
     }
 
 }
@@ -172,7 +183,13 @@ fun EditProfileScreenBanner(modifier:Modifier=Modifier){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfileDataWidget(gamerID:String,onValueChanged:(String)-> Unit,bio:String,onBioValueChanged:(String)->Unit,modifier:Modifier=Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
+fun EditProfileDataWidget(
+    gamerID:String,
+    onValueChanged:(String)-> Unit,
+    bio:String,
+    onBioValueChanged:(String)->Unit,
+    onSaveChanges: () -> Unit,
+    modifier:Modifier=Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
     Card(modifier= modifier
         .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
@@ -237,7 +254,7 @@ fun EditProfileDataWidget(gamerID:String,onValueChanged:(String)-> Unit,bio:Stri
         ))){
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { onSaveChanges()},
                 modifier=Modifier.shadow(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.tertiary_40)),
             ) {

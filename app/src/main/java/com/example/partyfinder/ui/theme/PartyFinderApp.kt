@@ -1,6 +1,9 @@
 package com.example.partyfinder.ui.theme
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,9 +27,9 @@ private fun
         }
 
 @Composable
-fun PartyFinderApp(){
+fun PartyFinderApp(profileViewModel: ProfileViewModel= viewModel()){
 
-
+    val profileUiState by profileViewModel.profileState.collectAsState()
     val navController : NavHostController= rememberNavController()
 
     NavHost(
@@ -45,13 +48,27 @@ fun PartyFinderApp(){
 
         composable(route=PartyFinderScreen.ProfileScreen.name){
             ProfileScreen(
+                gamerID = profileUiState.gamerID,
+                gamerTag = profileUiState.gamerTag,
+                userStatus = profileUiState.status,
+                gamerBio = profileUiState.bio,
                 onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name)},
                 onUpdateRanksClick = { navController.navigate(PartyFinderScreen.UpdateRanksScreen.name)}
             )
         }
 
         composable(route=PartyFinderScreen.EditProfileScreen.name){
-            EditProfileScreen(navigateBack = {navigateBack(navController)})
+            EditProfileScreen(
+                gamerID = profileViewModel.gamerIDtextfieldValue,
+                onGamerIDchanged = {profileViewModel.onGamerIDtextFieldChanged(it)},
+                bio = profileViewModel.gamerBiotextfieldValue,
+                onGamerBioChanged = {profileViewModel.onGamerBioFieldChanged(it)},
+                navigateBack = {navigateBack(navController)},
+                onSaveChanges = {
+                    profileViewModel.onSaveChangesClicked()
+                    navController.navigate(PartyFinderScreen.ProfileScreen.name)
+                }
+            )
         }
 
         composable(route=PartyFinderScreen.UpdateRanksScreen.name){

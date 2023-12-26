@@ -30,10 +30,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.partyfinder.R
+import com.example.partyfinder.datasource.datasource
 
 
 //creating other screens
@@ -41,13 +43,22 @@ import com.example.partyfinder.R
 @Composable
 fun ProfileScreen(
     modifier:Modifier=Modifier,
+    gamerID:String,
+    gamerTag:String,
+    gamerBio: String,
+    userStatus:Pair<Int,Int>,
     onEditProfileClick:()->Unit,
     onUpdateRanksClick:()->Unit
     ){
     Surface(color= colorResource(id = R.color.black), modifier = modifier){
         Column(modifier = Modifier.verticalScroll(rememberScrollState(),true)) {
             ProfileBannerWidget(onEditProfileClick=onEditProfileClick)
-            ProfileScreenContent(onUpdateRanksClick=onUpdateRanksClick)
+            ProfileScreenContent(
+                gamerID = gamerID,
+                gamerBio=gamerBio,
+                gamerTag = gamerTag,
+                userStatus = userStatus,
+                onUpdateRanksClick=onUpdateRanksClick)
         }
     }
 }
@@ -56,7 +67,13 @@ fun ProfileScreen(
 @Composable
 fun PreviewProfileScreen(){
     PartyFinderTheme{
-        ProfileScreen(onEditProfileClick = {}, onUpdateRanksClick = {})
+        ProfileScreen(
+            onEditProfileClick = {},
+            gamerID ="Kaizoku",
+            gamerTag = "2323",
+            gamerBio = "",
+            userStatus = datasource.userStatusOption.get(0),
+            onUpdateRanksClick = {})
     }
 }
 
@@ -106,34 +123,46 @@ fun ProfileBannerWidget(
 
 @Composable
 fun ProfileScreenContent(
+    gamerID:String,
+    gamerTag:String,
+    userStatus:Pair<Int,Int>,
+    gamerBio: String,
     modifier: Modifier = Modifier,
     onUpdateRanksClick: () -> Unit){
     Column {
-        ProfileDataWidget()
-        ProfileScreenBioWidget()
+        ProfileDataWidget(
+            gamerID=gamerID,
+            gamerTag = gamerTag,
+            userStatus = userStatus)
+        ProfileScreenBioWidget(gamerBio=gamerBio)
         ProfileRanksWidget(onUpdateRanksClick=onUpdateRanksClick)
         ProfileMyGamerCallsWidget()
     }
 }
 
 @Composable
-fun ProfileDataWidget(modifier: Modifier = Modifier.padding(16.dp)){
+fun ProfileDataWidget(
+    modifier: Modifier = Modifier.padding(16.dp),
+    gamerID:String,
+    gamerTag:String,
+    userStatus:Pair<Int,Int>,
+    ){
     Card(
         modifier=modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
     ) {
         Column(modifier= Modifier.padding(16.dp)) {
             Text(
-                text = "Kaizoku",
+                text = gamerID,
                 color = colorResource(id = R.color.primary),
                 style=MaterialTheme.typography.headlineSmall
             )
-            Text(text = "#3347", color = colorResource(id = R.color.primary))
+            Text(text = gamerTag, color = colorResource(id = R.color.primary))
 
             Row (verticalAlignment = Alignment.CenterVertically){
-                Text(text = "icon", color = colorResource(id = R.color.Green))
+               Image(painter = painterResource(userStatus.second) , contentDescription = null)
                 Text(
-                    text = "Status",
+                    text = stringResource(id = userStatus.first),
                     color = colorResource(id = R.color.white),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier= Modifier.padding(start=4.dp)
@@ -155,13 +184,16 @@ fun ProfileDataWidget(modifier: Modifier = Modifier.padding(16.dp)){
 }
 
 @Composable
-fun ProfileScreenBioWidget(modifier: Modifier = Modifier.padding(16.dp)){
-    Card(modifier=modifier, colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))) {
+fun ProfileScreenBioWidget(
+    modifier: Modifier = Modifier.padding(16.dp),
+    gamerBio:String,
+){
+    Card(modifier=modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))) {
         Column(modifier= Modifier.padding(16.dp)) {
             Text(text = "Bio", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
             Text(color = colorResource(id = R.color.white),
                 style = MaterialTheme.typography.bodyLarge,
-                text = "Hello, I play Games for fun mostly.I like to play MMORPG games in which i can explore open world and take Decisions which affect my Gameplay.")
+                text = gamerBio)
         }
     }
 }
@@ -169,8 +201,8 @@ fun ProfileScreenBioWidget(modifier: Modifier = Modifier.padding(16.dp)){
 @Composable
 fun ProfileRanksWidget(onUpdateRanksClick: () -> Unit,
     modifier: Modifier = Modifier
-    .fillMaxWidth()
-    .padding(16.dp)){
+        .fillMaxWidth()
+        .padding(16.dp)){
     Card(modifier=modifier.wrapContentHeight(), colors = CardDefaults.cardColors(containerColor = colorResource(
         id = R.color.neutral_10
     )

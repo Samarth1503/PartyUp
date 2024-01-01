@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.partyfinder" />
+                  <option name="mobileSdkAppId" value="1:573411744067:android:c56551f1293d561988f7f6" />
+                  <option name="projectId" value="partyup-sam" />
+                  <option name="projectNumber" value="573411744067" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

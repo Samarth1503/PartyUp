@@ -79,257 +79,257 @@ public fun TF(modifier: Modifier = Modifier) {
         HomepageContent()
 
 
-        val items = listOf(
-            BottomNavigationItem(
-                title = "Home",
-                selectedIcon = Icons.Filled.Home,
-                unselectedIcon = Icons.Outlined.Home,
-                hasNews = false,
-            ),
-            BottomNavigationItem(
-                title = "Chat",
-                selectedIcon = Icons.Filled.Email,
-                unselectedIcon = Icons.Outlined.Email,
-                hasNews = false,
-                badgeCount = 45
-            ),
-            BottomNavigationItem(
-                title = "Settings",
-                selectedIcon = Icons.Filled.Settings,
-                unselectedIcon = Icons.Outlined.Settings,
-                hasNews = true,
-            ),
-        )
-        var selectedItemIndex by rememberSaveable {
-            mutableStateOf(0)
-        }
-
-            Scaffold(
-                modifier = Modifier.zIndex(2f),
-                bottomBar = {
-                    NavigationBar {
-                        items.forEachIndexed { index, item ->
-                            NavigationBarItem(
-                                selected = selectedItemIndex == index,
-                                onClick = {
-                                    selectedItemIndex = index
-                                     navController.navigate(item.title)
-                                },
-                                label = {
-                                    Text(text = item.title)
-                                },
-                                alwaysShowLabel = false,
-                                icon = {
-                                    BadgedBox(
-                                        badge = {
-                                            if(item.badgeCount != null) {
-                                                Badge {
-                                                    Text(text = item.badgeCount.toString())
-                                                }
-                                            } else if(item.hasNews) {
-                                                Badge()
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (index == selectedItemIndex) {
-                                                item.selectedIcon
-                                            } else item.unselectedIcon,
-                                            contentDescription = item.title
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
-            ) {
-//                HomepageContent()
-            }
+//        val items = listOf(
+//            BottomNavigationItem(
+//                title = "Home",
+//                selectedIcon = Icons.Filled.Home,
+//                unselectedIcon = Icons.Outlined.Home,
+//                hasNews = false,
+//            ),
+//            BottomNavigationItem(
+//                title = "Chat",
+//                selectedIcon = Icons.Filled.Email,
+//                unselectedIcon = Icons.Outlined.Email,
+//                hasNews = false,
+//                badgeCount = 45
+//            ),
+//            BottomNavigationItem(
+//                title = "Settings",
+//                selectedIcon = Icons.Filled.Settings,
+//                unselectedIcon = Icons.Outlined.Settings,
+//                hasNews = true,
+//            ),
+//        )
+//        var selectedItemIndex by rememberSaveable {
+//            mutableStateOf(0)
+//        }
+//
+//            Scaffold(
+//                modifier = Modifier.zIndex(2f),
+//                bottomBar = {
+//                    NavigationBar {
+//                        items.forEachIndexed { index, item ->
+//                            NavigationBarItem(
+//                                selected = selectedItemIndex == index,
+//                                onClick = {
+//                                    selectedItemIndex = index
+//                                     navController.navigate(item.title)
+//                                },
+//                                label = {
+//                                    Text(text = item.title)
+//                                },
+//                                alwaysShowLabel = false,
+//                                icon = {
+//                                    BadgedBox(
+//                                        badge = {
+//                                            if(item.badgeCount != null) {
+//                                                Badge {
+//                                                    Text(text = item.badgeCount.toString())
+//                                                }
+//                                            } else if(item.hasNews) {
+//                                                Badge()
+//                                            }
+//                                        }
+//                                    ) {
+//                                        Icon(
+//                                            imageVector = if (index == selectedItemIndex) {
+//                                                item.selectedIcon
+//                                            } else item.unselectedIcon,
+//                                            contentDescription = item.title
+//                                        )
+//                                    }
+//                                }
+//                            )
+//                        }
+//                    }
+//                }
+//            ) {
+////                HomepageContent()
+//            }
 
 //        NavigationBar
-//        Row(modifier = modifier
-//            .fillMaxWidth()
-//            .background(color = colorResource(id = R.color.DarkBG))
-//            .align(Alignment.BottomCenter)
-//            .zIndex(5f),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//
-//            Spacer(modifier = modifier.weight(1f))
-//
-//            Column(modifier = modifier
-//                .padding(top = 4.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Row(modifier = modifier
-//                    .background(color = colorResource(id = R.color.black),
-//                        shape = RoundedCornerShape(6.dp))
-//                    .border(
-//                        width = 0.5.dp,
-//                        color = colorResource(id = R.color.CallWidgetBorder),
-//                        shape = RoundedCornerShape(6.dp)
-//                    )
-//                ) {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.networkingone_blue),
-//                        contentDescription = "Share",
-//                        modifier = modifier
-//                            .padding(14.dp, 8.dp)
-//                            .size(24.dp)
-//                    )
-//                }
-//                Text(
-//                    text = "Community",
-//                    style = MaterialTheme.typography.titleSmall,
-//                    color = colorResource(id = R.color.SubliminalText),
-//                    fontSize = 10.sp,
-//                    modifier = modifier
-////                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
-//                )
-//            }
-//
-//
-//            Spacer(modifier = modifier.weight(1f))
-//
-//            Column(modifier = modifier
-//                .padding(top = 4.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Row(modifier = modifier
-//                    .background(color = colorResource(id = R.color.black),
-//                        shape = RoundedCornerShape(6.dp))
-//                    .border(
-//                        width = 0.5.dp,
-//                        color = colorResource(id = R.color.CallWidgetBorder),
-//                        shape = RoundedCornerShape(6.dp)
-//                    )
-//                ) {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.bookmark_blue),
-//                        contentDescription = "Share",
-//                        modifier = modifier
-//                            .padding(14.dp, 6.dp)
-//                            .size(24.dp)
-//                    )
-//                }
-//                Text(
-//                    text = "Gamer Calls",
-//                    style = MaterialTheme.typography.titleSmall,
-//                    color = colorResource(id = R.color.SubliminalText),
-//                    fontSize = 10.sp,
-//                    modifier = modifier
-////                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
-//                )
-//            }
-//
-//
-//            Spacer(modifier = modifier.weight(1f))
-//
-//            Column(modifier = modifier
-//                .padding(top = 4.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Row(modifier = modifier
-//                    .background(color = colorResource(id = R.color.black),
-//                        shape = RoundedCornerShape(6.dp))
-//                    .border(
-//                        width = 0.5.dp,
-//                        color = colorResource(id = R.color.CallWidgetBorder),
-//                        shape = RoundedCornerShape(6.dp)
-//                    )
-//                ) {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.link_blue),
-//                        contentDescription = "Share",
-//                        modifier = modifier
-//                            .padding(14.dp, 6.dp)
-//                            .size(30.dp)
-//                    )
-//                }
-//                Text(
-//                    text = "PartyUp!",
-//                    style = MaterialTheme.typography.titleSmall,
-//                    color = colorResource(id = R.color.SubliminalText),
-//                    fontSize = 10.sp,
-//                    modifier = modifier
-////                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
-//                )
-//            }
-//
-//            Spacer(modifier = modifier.weight(1f))
-//
-//            Column(modifier = modifier
-//                .padding(top = 4.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Row(modifier = modifier
-//                    .background(color = colorResource(id = R.color.black),
-//                        shape = RoundedCornerShape(6.dp))
-//                    .border(
-//                        width = 0.5.dp,
-//                        color = colorResource(id = R.color.CallWidgetBorder),
-//                        shape = RoundedCornerShape(6.dp)
-//                    )
-//                ) {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.messagefilled_blue),
-//                        contentDescription = "Share",
-//                        modifier = modifier
-//                            .padding(14.dp, 6.dp)
-//                            .size(24.dp)
-//                    )
-//                }
-//
-//                Text(
-//                    text = "Chats",
-//                    style = MaterialTheme.typography.titleSmall,
-//                    color = colorResource(id = R.color.SubliminalText),
-//                    fontSize = 10.sp,
-//                    modifier = modifier
-////                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
-//                )
-//            }
-//
-//
-//            Spacer(modifier = modifier.weight(1f))
-//
-//            Column(modifier = modifier
-//                .padding(top = 4.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Row(modifier = modifier
-//                    .background(color = colorResource(id = R.color.black),
-//                        shape = RoundedCornerShape(6.dp))
-//                    .border(
-//                        width = 0.5.dp,
-//                        color = colorResource(id = R.color.CallWidgetBorder),
-//                        shape = RoundedCornerShape(6.dp)
-//                    )
-//                ) {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.user_blue),
-//                        contentDescription = "Share",
-//                        modifier = modifier
-//                            .padding(14.dp, 6.dp)
-//                            .size(24.dp)
-//                    )
-//                }
-//
-//                Text(
-//                    text = "Profile",
-//                    style = MaterialTheme.typography.titleSmall,
-//                    color = colorResource(id = R.color.SubliminalText),
-//                    fontSize = 10.sp,
-//                    modifier = modifier
-////                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
-//                )
-//            }
-//
-//
-//            Spacer(modifier = modifier.weight(1f))
-//
-//        }
+        Row(modifier = modifier
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.DarkBG))
+            .align(Alignment.BottomCenter)
+            .zIndex(5f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Column(modifier = modifier
+                .padding(top = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(modifier = modifier
+                    .background(color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp))
+                    .border(
+                        width = 0.5.dp,
+                        color = colorResource(id = R.color.CallWidgetBorder),
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.networkingone_blue),
+                        contentDescription = "Share",
+                        modifier = modifier
+                            .padding(14.dp, 8.dp)
+                            .size(24.dp)
+                    )
+                }
+                Text(
+                    text = "Community",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.SubliminalText),
+                    fontSize = 10.sp,
+                    modifier = modifier
+//                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
+                )
+            }
+
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Column(modifier = modifier
+                .padding(top = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(modifier = modifier
+                    .background(color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp))
+                    .border(
+                        width = 0.5.dp,
+                        color = colorResource(id = R.color.CallWidgetBorder),
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.bookmark_blue),
+                        contentDescription = "Share",
+                        modifier = modifier
+                            .padding(14.dp, 6.dp)
+                            .size(24.dp)
+                    )
+                }
+                Text(
+                    text = "Gamer Calls",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.SubliminalText),
+                    fontSize = 10.sp,
+                    modifier = modifier
+//                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
+                )
+            }
+
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Column(modifier = modifier
+                .padding(top = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(modifier = modifier
+                    .background(color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp))
+                    .border(
+                        width = 0.5.dp,
+                        color = colorResource(id = R.color.CallWidgetBorder),
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.link_blue),
+                        contentDescription = "Share",
+                        modifier = modifier
+                            .padding(14.dp, 6.dp)
+                            .size(30.dp)
+                    )
+                }
+                Text(
+                    text = "PartyUp!",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.SubliminalText),
+                    fontSize = 10.sp,
+                    modifier = modifier
+//                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
+                )
+            }
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Column(modifier = modifier
+                .padding(top = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(modifier = modifier
+                    .background(color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp))
+                    .border(
+                        width = 0.5.dp,
+                        color = colorResource(id = R.color.CallWidgetBorder),
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.messagefilled_blue),
+                        contentDescription = "Share",
+                        modifier = modifier
+                            .padding(14.dp, 6.dp)
+                            .size(24.dp)
+                    )
+                }
+
+                Text(
+                    text = "Chats",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.SubliminalText),
+                    fontSize = 10.sp,
+                    modifier = modifier
+//                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
+                )
+            }
+
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Column(modifier = modifier
+                .padding(top = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(modifier = modifier
+                    .background(color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp))
+                    .border(
+                        width = 0.5.dp,
+                        color = colorResource(id = R.color.CallWidgetBorder),
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.user_blue),
+                        contentDescription = "Share",
+                        modifier = modifier
+                            .padding(14.dp, 6.dp)
+                            .size(24.dp)
+                    )
+                }
+
+                Text(
+                    text = "Profile",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.SubliminalText),
+                    fontSize = 10.sp,
+                    modifier = modifier
+//                            .padding(start = 12.dp, top = 2.dp, end = 16.dp)
+                )
+            }
+
+
+            Spacer(modifier = modifier.weight(1f))
+
+        }
     }
 }
 

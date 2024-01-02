@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "573411744067",
+    "project_id": "partyup-sam",
+    "storage_bucket": "partyup-sam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573411744067:android:c56551f1293d561988f7f6",
+        "android_client_info": {
+          "package_name": "com.example.partyfinder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAktBhj3DCfpXQoFrLLxd7HUQ3TQEoEqtQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

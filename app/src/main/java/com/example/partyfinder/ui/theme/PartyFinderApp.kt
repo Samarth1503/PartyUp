@@ -37,24 +37,29 @@ fun PartyFinderApp(profileViewModel: ProfileViewModel= viewModel()){
         navController = navController,
         startDestination = PartyFinderScreen.HomeScreen.name){
         composable(route=PartyFinderScreen.HomeScreen.name){
-            HomeScreen(
-                navigateToProfileScreen={navController.navigate(PartyFinderScreen.ProfileScreen.name)},
-                navigateToChats = {},
-                navigateToPartyFinder = {navController.navigate(PartyFinderScreen.FindPartyScreen.name)},
-                navigateToGamerCalls = {},
-                navigateToCommunities = {}
-
-            )
+            HomeScreen(navigateToProfileScreen = {navController.navigate(PartyFinderScreen.ProfileScreen.name)})
         }
 
         composable(route=PartyFinderScreen.ProfileScreen.name){
             ProfileScreen(
-                gamerID = profileUiState.gamerID,
-                gamerTag = profileUiState.gamerTag,
-                userStatus = profileUiState.status,
-                gamerBio = profileUiState.bio,
-                onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name)},
-                onUpdateRanksClick = { navController.navigate(PartyFinderScreen.UpdateRanksScreen.name)}
+                ProfileBannerWidget = {
+                    ProfileBannerWidget(onEditProfileClick = {
+                            navController.navigate(PartyFinderScreen.EditProfileScreen.name)
+                        })
+                                      },
+                ProfileScreenContent = {
+                    ProfileScreenContent(
+                        ProfileDataWidget = { ProfileDataWidget(
+                            gamerID =profileUiState.gamerID,
+                            gamerTag =profileUiState.gamerTag,
+                            userStatus =profileUiState.status 
+                        ) },
+                        ProfileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = profileUiState.bio)},
+                        ProfileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { navController.navigate(PartyFinderScreen.UpdateRanksScreen.name) })}) {
+                        
+                    }
+                }
+
             )
         }
 

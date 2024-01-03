@@ -230,7 +230,7 @@ fun Chats(modifier: Modifier = Modifier) {
         LazyColumn(
             modifier = modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)
         ) {
-            items(13) { index ->
+            items(20) { index ->
                 Chat()
             }
         }

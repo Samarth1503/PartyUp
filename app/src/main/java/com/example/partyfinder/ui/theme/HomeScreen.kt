@@ -61,7 +61,14 @@ data class BottomNavigationItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-public fun TF(modifier: Modifier = Modifier) {
+public fun HomeScreen(
+    modifier: Modifier = Modifier,
+    navigateToProfileScreen:()->Unit,
+    navigateToChats :()->Unit,
+    navigateToPartyFinder:()->Unit,
+    navigateToGamerCalls:()->Unit,
+    navigateToCommunities:()->Unit
+    ) {
     Box(modifier = modifier) {
 
         HomepageContent()
@@ -147,7 +154,8 @@ public fun TF(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable { navigateToCommunities() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -181,7 +189,8 @@ public fun TF(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable { navigateToGamerCalls() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -215,7 +224,8 @@ public fun TF(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable {navigateToPartyFinder() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -248,7 +258,8 @@ public fun TF(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable { navigateToChats() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -283,7 +294,8 @@ public fun TF(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable { navigateToProfileScreen() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -818,7 +830,13 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewTF(){
     PartyFinderTheme {
-        TF()
+        HomeScreen(
+            navigateToProfileScreen={},
+            navigateToChats = {},
+            navigateToPartyFinder = {},
+            navigateToGamerCalls = {},
+            navigateToCommunities = {}
+        )
     }
 }
 

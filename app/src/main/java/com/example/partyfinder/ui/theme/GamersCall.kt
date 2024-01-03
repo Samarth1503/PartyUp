@@ -1,5 +1,6 @@
 package com.example.partyfinder.ui.theme
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +21,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -40,15 +44,35 @@ import com.example.partyfinder.R
 
 
 @Composable
-fun GamersCall(){
+fun GamersCall(modifier:Modifier=Modifier){
     Surface(color= colorResource(id = R.color.black)){
-        Column(modifier = Modifier
-            .verticalScroll(rememberScrollState(), true)
-            .height(808.dp)
-            .width(393.dp)
-        ) {
-            GamersCallTopBar()
-            GamersCallContent()
+        Box(modifier=Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState(), true)
+                    .height(808.dp)
+                    .width(393.dp)
+            ) {
+                GamersCallTopBar()
+                GamersCallContent()
+            }
+            Button(
+                modifier = Modifier
+                    .padding(bottom = 32.dp)
+                    .height(40.dp)
+                    .align(Alignment.BottomCenter),
+                shape = RoundedCornerShape(5.dp),
+                onClick = { },
+                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
+            ) {
+                Text(text = "Create",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.primary),
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                )
+            }
         }
     }
 }

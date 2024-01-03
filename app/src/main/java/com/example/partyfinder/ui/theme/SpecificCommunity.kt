@@ -42,7 +42,7 @@ import com.example.partyfinder.R
 
 
 @Composable
-fun Community(){
+fun SpecificCommunityScreen(){
     Surface(color= colorResource(id = R.color.black)){
         Column(modifier = Modifier
             .verticalScroll(rememberScrollState(), true)
@@ -312,7 +312,7 @@ fun CommunityComments(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewCommunity(){
     PartyFinderTheme {
-        Community()
+        SpecificCommunityScreen()
     }
 }
 

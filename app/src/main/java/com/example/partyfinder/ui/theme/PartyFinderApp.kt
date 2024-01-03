@@ -18,6 +18,9 @@ enum class PartyFinderScreen(){
     EditProfileScreen,
     FindPartyScreen,
     UpdateRanksScreen,
+    SpecificCommunityScreen,
+    GamerCallsScreen,
+    ChatsScreen
 
 
 }
@@ -39,23 +42,46 @@ fun PartyFinderApp(profileViewModel: ProfileViewModel= viewModel()){
         composable(route=PartyFinderScreen.HomeScreen.name){
             HomeScreen(
                 navigateToProfileScreen={navController.navigate(PartyFinderScreen.ProfileScreen.name)},
-                navigateToChats = {},
+                navigateToChats = {navController.navigate(PartyFinderScreen.ChatsScreen.name)},
                 navigateToPartyFinder = {navController.navigate(PartyFinderScreen.FindPartyScreen.name)},
-                navigateToGamerCalls = {},
-                navigateToCommunities = {}
+                navigateToGamerCalls = {navController.navigate(PartyFinderScreen.GamerCallsScreen.name)},
+                navigateToCommunities = {navController.navigate(PartyFinderScreen.SpecificCommunityScreen.name)}
 
             )
         }
 
+        composable(route = PartyFinderScreen.SpecificCommunityScreen.name){
+            SpecificCommunityScreen()
+        }
+
+        composable(route = PartyFinderScreen.GamerCallsScreen.name){
+            GamersCall()
+        }
+
+        composable(route = PartyFinderScreen.ChatsScreen.name){
+            ChatsScreen()
+        }
+
+        composable(route=PartyFinderScreen.FindPartyScreen.name){
+            FindPartyScreen()
+        }
+
         composable(route=PartyFinderScreen.ProfileScreen.name){
             ProfileScreen(
-                gamerID = profileUiState.gamerID,
-                gamerTag = profileUiState.gamerTag,
-                userStatus = profileUiState.status,
-                gamerBio = profileUiState.bio,
-                onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name)},
-                onUpdateRanksClick = { navController.navigate(PartyFinderScreen.UpdateRanksScreen.name)}
+                profileBannerWidget = { ProfileBannerWidget(onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name) }) }, 
+                profileScreenContent = {
+                    ProfileScreenContent(
+                        profileDataWidget = { ProfileDataWidget(
+                            gamerID = profileUiState.gamerID,
+                            gamerTag = profileUiState.gamerTag,
+                            userStatus =profileUiState.status
+                        )},
+                        profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = profileUiState.bio) },
+                        profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { navController.navigate(PartyFinderScreen.UpdateRanksScreen.name)}) },
+                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget() })
+                }
             )
+
         }
 
         composable(route=PartyFinderScreen.EditProfileScreen.name){
@@ -74,9 +100,6 @@ fun PartyFinderApp(profileViewModel: ProfileViewModel= viewModel()){
 
         composable(route=PartyFinderScreen.UpdateRanksScreen.name){
             UpdateRanksScreen(navigateBack = {navigateBack(navController)})
-        }
-        composable(route=PartyFinderScreen.FindPartyScreen.name){
-            FindPartyScreen()
         }
 
 

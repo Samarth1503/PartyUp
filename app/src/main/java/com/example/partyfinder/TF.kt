@@ -1,5 +1,6 @@
 package com.example.partyfinder
 
+import RegisterViewModel
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -39,7 +41,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 
 
-class TF : Activity() {
+public class TFClass : Activity() {
 
     // [START declare_auth]
     private lateinit var auth: FirebaseAuth
@@ -148,6 +150,7 @@ fun TF(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterPage() {
+    val viewModel: RegisterViewModel = viewModel()
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -204,9 +207,7 @@ fun RegisterPage() {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = {
-//                createAccount(username, password)
-            },
+            onClick = { viewModel.createAccount(username, password) },
             colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG)),
             border = BorderStroke(1.dp, colorResource(id = R.color.CallWidgetBorder))
         ) {

@@ -230,7 +230,7 @@ fun EditProfileDataWidget(
                 .fillMaxWidth()
                 .height(400.dp)
                 .drawBehind {
-                    val borderSize = 0.dp.toPx()
+                    val borderSize = 4.dp.toPx()
                     drawLine(
                         color = Color.Cyan,
                         start = Offset(0f, size.height),
@@ -245,7 +245,7 @@ fun EditProfileDataWidget(
                 unfocusedTextColor = colorResource(id = R.color.primary),
                 unfocusedLabelColor = colorResource(id = R.color.primary),
                 focusedLabelColor = colorResource(id = R.color.primary),
-                focusedIndicatorColor = colorResource(id = R.color.primary)
+
             )
         )
 

@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.partyfinder.R
+import com.example.partyfinder.datasource.datasource
 
 
 //creating other screens
@@ -42,13 +43,22 @@ import com.example.partyfinder.R
 @Composable
 fun ProfileScreen(
     modifier:Modifier=Modifier,
-    ProfileBannerWidget:@Composable () ->Unit,
-    ProfileScreenContent:@Composable () -> Unit
+    gamerID:String,
+    gamerTag:String,
+    gamerBio: String,
+    userStatus:Pair<Int,Int>,
+    onEditProfileClick:()->Unit,
+    onUpdateRanksClick:()->Unit
     ){
     Surface(color= colorResource(id = R.color.black), modifier = modifier){
         Column(modifier = Modifier.verticalScroll(rememberScrollState(),true)) {
-            ProfileBannerWidget()
-            ProfileScreenContent()
+            ProfileBannerWidget(onEditProfileClick=onEditProfileClick)
+            ProfileScreenContent(
+                gamerID = gamerID,
+                gamerBio=gamerBio,
+                gamerTag = gamerTag,
+                userStatus = userStatus,
+                onUpdateRanksClick=onUpdateRanksClick)
         }
     }
 }
@@ -58,11 +68,12 @@ fun ProfileScreen(
 fun PreviewProfileScreen(){
     PartyFinderTheme{
         ProfileScreen(
-            ProfileBannerWidget = {ProfileBannerWidget(onEditProfileClick = {})},
-            ProfileScreenContent = {
-
-            }
-           )
+            onEditProfileClick = {},
+            gamerID ="Kaizoku",
+            gamerTag = "2323",
+            gamerBio = "",
+            userStatus = datasource.userStatusOption.get(0),
+            onUpdateRanksClick = {})
     }
 }
 
@@ -112,15 +123,19 @@ fun ProfileBannerWidget(
 
 @Composable
 fun ProfileScreenContent(
-    ProfileDataWidget: @Composable () -> Unit,
-    ProfileScreenBioWidget: @Composable () -> Unit,
-    ProfileRanksWidget:@Composable () -> Unit,
-    ProfileMyGamerCallsWidget:@Composable () -> Unit
-    ){
+    gamerID:String,
+    gamerTag:String,
+    userStatus:Pair<Int,Int>,
+    gamerBio: String,
+    modifier: Modifier = Modifier,
+    onUpdateRanksClick: () -> Unit){
     Column {
-        ProfileDataWidget()
-        ProfileScreenBioWidget()
-        ProfileRanksWidget()
+        ProfileDataWidget(
+            gamerID=gamerID,
+            gamerTag = gamerTag,
+            userStatus = userStatus)
+        ProfileScreenBioWidget(gamerBio=gamerBio)
+        ProfileRanksWidget(onUpdateRanksClick=onUpdateRanksClick)
         ProfileMyGamerCallsWidget()
     }
 }

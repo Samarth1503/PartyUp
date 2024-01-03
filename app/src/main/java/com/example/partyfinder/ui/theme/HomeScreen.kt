@@ -61,13 +61,10 @@ data class BottomNavigationItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-public fun HomeScreen(
-    modifier: Modifier = Modifier,
-    navigateToProfileScreen:() ->Unit,
-    ) {
+public fun TF(modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
 
-        HomepageContent(navigateToProfileScreen = navigateToProfileScreen)
+        HomepageContent()
 
 
 //        val items = listOf(
@@ -150,8 +147,7 @@ public fun HomeScreen(
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp)
-                ,
+                .padding(top = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -169,8 +165,6 @@ public fun HomeScreen(
                         modifier = modifier
                             .padding(14.dp, 8.dp)
                             .size(24.dp)
-
-
                     )
                 }
                 Text(
@@ -289,8 +283,7 @@ public fun HomeScreen(
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp)
-                .clickable { navigateToProfileScreen() },
+                .padding(top = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -336,10 +329,7 @@ fun PartyUpNavigationBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun HomepageContent(
-    modifier: Modifier = Modifier,
-    navigateToProfileScreen: () -> Unit
-) {
+fun HomepageContent(modifier: Modifier = Modifier) {
     Column(modifier = Modifier
         .verticalScroll(rememberScrollState(), true)
         .fillMaxWidth()
@@ -426,7 +416,7 @@ fun HomepageContent(
                     text = "Update",
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(id = R.color.white),
-                    modifier = modifier.padding(10.dp, 6.dp).clickable {navigateToProfileScreen()}
+                    modifier = modifier.padding(10.dp, 6.dp)
                 )
             }
         }
@@ -512,7 +502,7 @@ fun HomepageContent(
             Row(modifier = modifier
                 .padding(24.dp, 4.dp)
             ){
-                CommunityCard_Mini(gameName = "Valorant")
+                CommunityCard_Mini(gameName = "alorant")
                 Spacer(modifier = modifier.weight(1f))
                 CommunityCard_Mini(gameName = "Valorant")
             }
@@ -828,7 +818,7 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewTF(){
     PartyFinderTheme {
-        HomeScreen(navigateToProfileScreen = {})
+        TF()
     }
 }
 

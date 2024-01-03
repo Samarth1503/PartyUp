@@ -133,25 +133,19 @@ fun EditPartyContent(modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(4.dp)
             )
         ) {
-            TextField(
+            OutlinedTextField(
                 value = partyName,
                 onValueChange = { partyName = it },
-                label = {
-                    Text(
-                        text = "Edit Party Name",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = colorResource(id = R.color.primary)
-                    )
-                },
+                label = { Text("Password") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-//                    backgroundColor = Color.Black,
-                    cursorColor = colorResource(id = R.color.primary),
+                    focusedLabelColor = colorResource(id = R.color.SubliminalText),
+                    unfocusedLabelColor = colorResource(id = R.color.SubliminalText),
+                    focusedTextColor = colorResource(id = R.color.primary),
+                    unfocusedTextColor = colorResource(id = R.color.primary),
                     focusedBorderColor = colorResource(id = R.color.primary),
-                    unfocusedBorderColor = colorResource(id = R.color.primary)
-                ),
-                modifier = Modifier
-                    .background(colorResource(id = R.color.DarkBG))
-                    .fillMaxWidth()
+                    unfocusedBorderColor = colorResource(id = R.color.primary))
             )
         }
 

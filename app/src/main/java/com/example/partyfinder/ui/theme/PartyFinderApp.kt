@@ -9,7 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
+import com.example.partyfinder.datasource.datasource
 
 
 enum class PartyFinderScreen(){
@@ -74,11 +74,21 @@ fun PartyFinderApp(profileViewModel: ProfileViewModel= viewModel()){
                         profileDataWidget = { ProfileDataWidget(
                             gamerID = profileUiState.gamerID,
                             gamerTag = profileUiState.gamerTag,
-                            userStatus =profileUiState.status
+                            userStatus =profileUiState.status,
+                            isChangeStatusExapanded = profileUiState.isChangeStatusExpanded,
+                            onChangeStatusClick = {profileViewModel.onChangeStatusClicked(profileUiState.isChangeStatusExpanded,profileViewModel.selectedStatus)},
+                            profileUpdateStatus = {
+                                ProfileUpdateStatus(
+                                    selectedStatusOption = profileViewModel.selectedStatus,
+                                    onSelectionChanged = { profileViewModel.updateStatus(it)},
+                                    options =datasource.userStatusOption
+                                )
+                            }
+
                         )},
                         profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = profileUiState.bio) },
                         profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { navController.navigate(PartyFinderScreen.UpdateRanksScreen.name)}) },
-                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget() })
+                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls =profileUiState.UserGamerCalls) })
                 }
             )
 
@@ -93,7 +103,7 @@ fun PartyFinderApp(profileViewModel: ProfileViewModel= viewModel()){
                 navigateBack = {navigateBack(navController)},
                 onSaveChanges = {
                     profileViewModel.onSaveChangesClicked()
-                    navController.navigate(PartyFinderScreen.ProfileScreen.name)
+                    navController.navigate(PartyFinderScreen.ProfileScreen.name){popUpTo(PartyFinderScreen.HomeScreen.name)}
                 }
             )
         }

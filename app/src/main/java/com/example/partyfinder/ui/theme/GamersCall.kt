@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -41,6 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.partyfinder.R
+import com.example.partyfinder.data.GamerCalls
+import com.example.partyfinder.datasource.datasource
 
 
 @Composable
@@ -54,7 +57,7 @@ fun GamersCall(modifier:Modifier=Modifier){
                     .width(393.dp)
             ) {
                 GamersCallTopBar()
-                GamersCallContent()
+                GamersCallContent(gamerCalls = datasource.MyGamerCalls)
             }
             Button(
                 modifier = Modifier
@@ -104,7 +107,7 @@ fun GamersCallTopBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GamersCallContent(modifier: Modifier = Modifier) {
+fun GamersCallContent(modifier: Modifier = Modifier,gamerCalls:List<GamerCalls>) {
     Box(modifier = modifier){
         LazyColumn(
             modifier = modifier
@@ -118,8 +121,15 @@ fun GamersCallContent(modifier: Modifier = Modifier) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(3) {
-                G_Calls()
+            items(gamerCalls) {
+                G_Calls(
+                    gameName =it.gameName,
+                    callDes = it.callDes,
+                    partySize = it.partySize,
+                    profilePic = it.ProfilePic,
+                    gamerID = it.gamerID,
+                    gamerTag = it.gamerTag
+                    )
             }
         }
 
@@ -139,7 +149,14 @@ fun GamersCallContent(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun G_Calls(modifier: Modifier = Modifier) {
+fun G_Calls(
+    modifier: Modifier = Modifier,
+    profilePic:Int,
+    gamerID:String,
+    gamerTag:String,
+    gameName:String,
+    partySize:Int,
+    callDes:String) {
 
 //        Variable declaration for menu
     var isMenuVisible by remember { mutableStateOf(false) }
@@ -174,7 +191,7 @@ fun G_Calls(modifier: Modifier = Modifier) {
                     .padding(16.dp, 8.dp, 16.dp, 0.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.pp),
+                    painter = painterResource(id = profilePic),
                     contentDescription = "GamerIcon",
                     modifier = modifier
                         .padding(top = 4.dp)
@@ -196,7 +213,7 @@ fun G_Calls(modifier: Modifier = Modifier) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Valorant",
+                            text = gameName,
                             style = MaterialTheme.typography.titleSmall,
                             color = colorResource(id = R.color.white),
                             modifier = modifier
@@ -236,11 +253,19 @@ fun G_Calls(modifier: Modifier = Modifier) {
 //                    horizontalArrangement = Arrangement.End
                     ) {
                         Text(
-                            text = "#58008",
+                            text = gamerID,
                             style = MaterialTheme.typography.labelSmall,
                             color = colorResource(id = R.color.SubliminalText),
                             modifier = modifier
                                 .padding(start = 4.dp)
+                        )
+
+                        Text(
+                            text = gamerTag,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = colorResource(id = R.color.SubliminalText),
+                            modifier = modifier
+                                .padding(start = 2.dp)
                         )
 
                         Spacer(modifier = modifier.weight(1f))
@@ -258,7 +283,7 @@ fun G_Calls(modifier: Modifier = Modifier) {
                             )
                             Spacer(modifier = modifier.width(4.dp))
                             Text(
-                                text = "5",
+                                text =partySize.toString(),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = colorResource(id = R.color.white),
                                 modifier = modifier
@@ -303,7 +328,7 @@ fun G_Calls(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = "Need a 4 stack of cracked Valorant gamers for comp grind, And I mean Cracked(CRAZY) ",
+                    text = callDes,
                     style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.white),
                     modifier = modifier

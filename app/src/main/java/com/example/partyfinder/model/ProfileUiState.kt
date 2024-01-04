@@ -1,5 +1,6 @@
 package com.example.partyfinder.model
 
+import com.example.partyfinder.data.GamerCalls
 import com.example.partyfinder.datasource.datasource
 
 data class ProfileUiState(
@@ -13,7 +14,7 @@ data class ProfileUiState(
     val rank2GameRank:String="",
     val rank3GameName :String="",
     val rank3GameRank:String="",
-
-    val UserGamerCalls:List<String> = listOf()
+    val isChangeStatusExpanded:Boolean=false,
+    val UserGamerCalls:List<GamerCalls> = datasource.MyGamerCalls
 
 )

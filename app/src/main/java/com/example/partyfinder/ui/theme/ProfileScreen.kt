@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -20,6 +20,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,10 +37,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.partyfinder.R
+import com.example.partyfinder.data.GamerCalls
 import com.example.partyfinder.datasource.datasource
 
 
+
+
+
 //creating other screens
+
 
 @Composable
 fun ProfileScreen(
@@ -64,10 +71,19 @@ fun PreviewProfileScreen(){
                 profileDataWidget = { ProfileDataWidget(
                     gamerID ="Kaizoku",
                     gamerTag ="#2342" ,
+                    isChangeStatusExapanded = false,
+                    onChangeStatusClick ={},
+                    profileUpdateStatus = {
+                        ProfileUpdateStatus(
+                            selectedStatusOption = datasource.userStatusOption.get(0),
+                            onSelectionChanged = { /*TODO*/ },
+                            options = datasource.userStatusOption
+                        )
+                    },
                     userStatus =datasource.userStatusOption.get(0) )},
                 profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = "Hello I like to play games")},
                 profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { /*TODO*/ }) },
-                profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget() }) }
+                profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = datasource.MyGamerCalls) }) }
             )
 
     }
@@ -136,10 +152,14 @@ fun ProfileScreenContent(
 @Composable
 fun ProfileDataWidget(
     modifier: Modifier = Modifier.padding(16.dp),
+    profileUpdateStatus: @Composable () -> Unit,
     gamerID:String,
     gamerTag:String,
+    isChangeStatusExapanded:Boolean,
+    onChangeStatusClick:()->Unit,
     userStatus:Pair<Int,Int>,
     ){
+
     Card(
         modifier=modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
@@ -163,14 +183,29 @@ fun ProfileDataWidget(
 
                 Spacer(modifier = Modifier.weight(1f))
                 Button(colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.tertiary_40)),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                            onChangeStatusClick()
+                    },
                     modifier = Modifier.shadow(elevation =16.dp)
                 ) {
-                    Text(
-                        text = "Change Status",
-                        style = MaterialTheme.typography.titleSmall)
+                    if(isChangeStatusExapanded){
+                        Text(
+                            text = "Save Status",
+                            style = MaterialTheme.typography.titleSmall)
+                    }
+                    else{
+                        Text(
+                            text = "Change Status",
+                            style = MaterialTheme.typography.titleSmall)
+                    }
+
                 }
             }
+            if(isChangeStatusExapanded){
+
+                profileUpdateStatus()
+            }
+
 
         }
     }
@@ -248,17 +283,74 @@ fun ProfileRankDisplay(modifier: Modifier = Modifier
 
 
 @Composable
-fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp)){
-    Card(modifier=modifier.fillMaxWidth()) {
+fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userGamerCalls:List<GamerCalls>){
+    Card(modifier= modifier
+        .fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
+        ) {
         Column(modifier= Modifier.padding(16.dp)) {
-            Text(text = "My Gamer Calls")
-            Surface(modifier= Modifier
-                .height(30.dp)
-                .padding(top = 8.dp)) {
-                Row(modifier= Modifier) {
-                    Text(text = "No Gamer Calls Present add a gamer Call Right Now",modifier= Modifier.width(300.dp))
-                    Text(text = "Add",modifier= Modifier.wrapContentWidth())
+            Text(text = "My Gamer Calls", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
+                if (userGamerCalls.isEmpty()){
+                    Row(modifier= Modifier
+                        .padding(
+                            top = dimensionResource(id = R.dimen.main_padding),
+                            end = dimensionResource(
+                                id = R.dimen.main_padding
+                            )
+                        )
+                        .wrapContentHeight()
+                        .fillMaxWidth()) {
+                        Text(
+                            text = "No Gamer Calls Present add a gamer Call Right Now",
+                            color = colorResource(id = R.color.white),
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier= Modifier
+                                .width(200.dp)
+                                .weight(1f))
+
+                        Image(
+                            modifier= Modifier
+                                .width(dimensionResource(id = R.dimen.profile_add_gamercall_icon_size))
+                                .height(
+                                    dimensionResource(id = R.dimen.profile_add_gamercall_icon_size)
+                                ),
+                            painter = painterResource(id = R.drawable.new_chat_img),
+                            contentDescription = null)
+                    }
                 }
+            else
+                {
+                    Column(modifier=Modifier.padding(top = 16.dp)) {
+                        userGamerCalls.forEach(){
+                            G_Calls(
+                                profilePic = it.ProfilePic,
+                                gamerID = it.gamerID,
+                                gamerTag = it.gamerTag,
+                                gameName = it.gameName,
+                                partySize = it.partySize,
+                                callDes =it.callDes
+                            )
+                        }
+                    }
+                }
+
+
+        }
+    }
+}
+
+@Composable
+fun ProfileUpdateStatus(
+    selectedStatusOption:Pair<Int,Int>,
+    onSelectionChanged:(Pair<Int,Int>)->Unit,
+    modifier:Modifier=Modifier,
+    options:List<Pair<Int,Int>>
+){
+    Column(modifier=Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
+        options.forEach{ item ->
+            Row(modifier=Modifier.selectable(selected = selectedStatusOption.first == item.first , onClick ={onSelectionChanged(item)}), verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(colors = RadioButtonDefaults.colors(selectedColor = colorResource(id = R.color.primary)),selected = selectedStatusOption.first == item.first , onClick ={onSelectionChanged(item)})
+                    Text(text = stringResource(id = item.first), color = colorResource(id = R.color.primary))
             }
         }
     }

@@ -10,6 +10,7 @@
     <dimen name="top_bar_height">64dp</dimen>
     <dimen name="small_profile_pic_dim">40dp</dimen>
     <dimen name="top_bar_back_icon_size">26dp</dimen>
+    <dimen name="profile_add_gamercall_icon_size">32dp</dimen>
 
 
 </resources>

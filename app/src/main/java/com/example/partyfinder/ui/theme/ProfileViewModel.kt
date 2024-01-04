@@ -15,6 +15,8 @@ class ProfileViewModel:ViewModel() {
     val profileState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
     var gamerIDtextfieldValue by mutableStateOf("")
     var gamerBiotextfieldValue by mutableStateOf("")
+    var selectedStatus by mutableStateOf(Pair(0,0))
+
 
     fun onGamerIDtextFieldChanged(gamerID: String){
         gamerIDtextfieldValue=gamerID
@@ -83,4 +85,25 @@ class ProfileViewModel:ViewModel() {
             )
         }
     }
+    fun updateStatus(changedStatus:Pair<Int,Int>){
+        selectedStatus=changedStatus
+    }
+
+    fun onChangeStatusClicked(isExpanded:Boolean,selectedStatus:Pair<Int,Int>){
+       if(isExpanded){
+           _profileUiState.update { currentState -> currentState.copy(
+            status = selectedStatus,
+            isChangeStatusExpanded = !isExpanded,) }
+       }
+        else{
+            _profileUiState.update{
+                currentState -> currentState.copy(
+                    isChangeStatusExpanded = !isExpanded
+                )
+            }
+       }
+    }
 }
+
+
+

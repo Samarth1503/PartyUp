@@ -6,9 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.partyfinder.datasource.datasource
 
 
@@ -20,9 +22,8 @@ enum class PartyFinderScreen(){
     UpdateRanksScreen,
     SpecificCommunityScreen,
     GamerCallsScreen,
-    ChatsScreen
-
-
+    ChatsScreen,
+    DMScreen
 }
 
 private fun
@@ -31,9 +32,13 @@ private fun
         }
 
 @Composable
-fun PartyFinderApp(profileViewModel: ProfileViewModel= viewModel()){
+fun PartyFinderApp(
+    profileViewModel: ProfileViewModel= viewModel(),
+    chatScreenViewModel: chatScreenViewModel = viewModel()
+){
 
     val profileUiState by profileViewModel.profileState.collectAsState()
+    val chatScreenUiState by chatScreenViewModel.chatsScreenUiState.collectAsState()
     val navController : NavHostController= rememberNavController()
 
     NavHost(
@@ -59,7 +64,39 @@ fun PartyFinderApp(profileViewModel: ProfileViewModel= viewModel()){
         }
 
         composable(route = PartyFinderScreen.ChatsScreen.name){
-            ChatsScreen()
+            ChatsScreen(
+                chatTopBar = { ChatTopBar(
+                    isMenuClicked = chatScreenUiState.isMenuClicked,
+                    navigateBack = { navigateBack(navController) },
+                    onMenuClick ={chatScreenViewModel.onChatsScreenMenuClick()}
+                )},
+                chatMenu = { ChatMenu(
+                    isMenuClicked = chatScreenUiState.isMenuClicked,
+                    onMenuItemClicked = {},
+                    onMenuClicked ={chatScreenViewModel.onChatsScreenMenuClick()}
+                ) },
+                chats = { Chats(
+                    chatChannelList = chatScreenUiState.channelList,
+                    userAccountList =datasource.UserAccounts,
+                    navController = navController
+                    )},
+                isMenuClicked = chatScreenUiState.isMenuClicked,
+            )
+        }
+
+        composable("DMScreen/{channelID}", arguments = listOf(navArgument("channelID"){type= NavType.StringType}))
+        {backStackEntry ->
+            DmScreen(
+                currentChatChannel = chatScreenViewModel.retreiveCurrentChannel(backStackEntry.arguments?.getString("channelID")),
+                dmTopBar ={
+                    DmTopBar(
+                        isMenuClicked = chatScreenViewModel.isDmScreenMenuClicked,
+                        onMenuItemClicked = {},
+                        currentChatChannel =chatScreenViewModel.retreiveCurrentChannel(backStackEntry.arguments?.getString("channelID")),
+                        onMenuClicked = {chatScreenViewModel.onDmScreenMenuClicked()},
+                        navigateBack = { navigateBack(navController) },
+                        retreivedGamerAccount =chatScreenViewModel.retreiveGamerAccount(chatScreenViewModel.retreiveCurrentChannel(backStackEntry.arguments?.getString("channelID")),datasource.UserAccounts) )
+                })
         }
 
         composable(route=PartyFinderScreen.FindPartyScreen.name){

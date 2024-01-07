@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -19,8 +20,10 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -32,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
@@ -43,14 +47,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.example.partyfinder.R
+import com.example.partyfinder.data.ChatChannel
+import com.example.partyfinder.data.UserAccount
+import com.example.partyfinder.datasource.datasource
 
 
 @Composable
-fun DmScreen(){
-    Surface(modifier = Modifier) {
-        DmTopBar()
+fun DmScreen(
+    modifier:Modifier=Modifier,
+
+    dmTopBar:@Composable ()->Unit,
+    currentChatChannel: ChatChannel){
+    Box(modifier=Modifier.fillMaxSize()){
+
+        dmTopBar()
+
         Column(modifier = Modifier
             .padding(top = dimensionResource(id = R.dimen.top_bar_height))
             .height(808.dp)
@@ -88,15 +100,47 @@ fun DmScreen(){
 
 
 @Composable
-fun DmTopBar(modifier: Modifier = Modifier) {
-
-//        Variable declaration for menu
-    var isMenuVisible by remember { mutableStateOf(false) }
+fun DmTopBar(
+    isMenuClicked:Boolean,
+    onMenuItemClicked:(item:Pair<String,Int>)->Unit,
+    modifier: Modifier = Modifier,
+    currentChatChannel: ChatChannel,
+    navigateBack:() -> Unit,
+    onMenuClicked:()->Unit,
+    retreivedGamerAccount:UserAccount) {
 
     Box(modifier = modifier
         .fillMaxWidth()
-        .zIndex(1f)
     ){
+        Card(modifier=Modifier
+            .align(Alignment.CenterEnd)
+            .shadow(10.dp)
+            .padding(end = 8.dp)) {
+
+            if (isMenuClicked) {
+                DropdownMenu(
+                    modifier= Modifier
+                        .background(color = colorResource(id = R.color.neutral_10)),
+
+                    expanded = isMenuClicked,
+                    onDismissRequest = { onMenuClicked() }) {
+                    datasource.dmScreenDropDownOptions.forEach{
+                            item ->
+                        DropdownMenuItem(text = { Row(modifier=Modifier.width(110.dp)) {
+                            Image(modifier=Modifier.size(18.dp),painter = painterResource(id = item.second), contentDescription =item.first )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = item.first, color = colorResource(id = R.color.primary))
+                        }},
+                            onClick = {
+                                onMenuItemClicked(item)
+                                onMenuClicked()}
+                        )
+                    }
+
+                }
+            }
+        }
+
         Row(
             modifier = modifier
                 .height(dimensionResource(id = (R.dimen.top_bar_height)))
@@ -105,14 +149,20 @@ fun DmTopBar(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = (R.drawable.back_blue)),
+                painter = painterResource(id = R.drawable.icons8_left_arrow_48),
                 contentDescription = "BackIcon",
                 modifier = modifier
                     .padding(16.dp, 2.dp, 0.dp, 0.dp)
                     .size(24.dp)
+                    .clickable { navigateBack() }
             )
             Image (
-                painter = painterResource(id = R.drawable.pp),
+                painter = if (currentChatChannel.isGroupChat){
+                    painterResource(id = currentChatChannel.channelProfile)
+                }
+                else{
+                    painterResource(id = retreivedGamerAccount.profilePic)
+                },
                 contentDescription = "58008",
                 modifier = Modifier
                     .padding(20.dp, 0.dp, 10.dp, 0.dp)
@@ -123,7 +173,12 @@ fun DmTopBar(modifier: Modifier = Modifier) {
                     )
             )
             Text(
-                text = "58008",
+                text = if(currentChatChannel.isGroupChat){
+                    currentChatChannel.channelName
+                }else
+                {
+                    retreivedGamerAccount.gamerID
+                },
                 style = MaterialTheme.typography.titleSmall,
                 color = colorResource(id = R.color.primary)
             )
@@ -134,69 +189,16 @@ fun DmTopBar(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .padding(end = 12.dp)
                     .size(24.dp)
-                    .clickable { isMenuVisible = !isMenuVisible }
+                    .clickable { onMenuClicked() }
             )
+
+
         }
+
     }
 
-//        Menu
-    if (isMenuVisible) {
-        Surface(color = colorResource(id = R.color.black),
-            modifier = modifier
-                .padding(
-                    220.dp,
-                    (dimensionResource(id = R.dimen.top_bar_height) - 24.dp),
-                    0.dp,
-                    0.dp
-                )
-                .border(
-                    width = 1.dp,
-                    color = colorResource(id = R.color.CallWidgetBorder),
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .zIndex(2f)
-        ) {
-            Column ( modifier = modifier
-                .padding(20.dp, 8.dp, 20.dp, 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Row ( verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier
-                        .height(36.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.report_blue),
-                        contentDescription = "DeleteChats",
-                        modifier = modifier
-                            .padding(0.dp, 5.dp, 12.dp, 4.dp)
-                            .size(20.dp)
-                    )
-                    Text(
-                        text = "Report",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = colorResource(id = R.color.primary)
-                    )
-                }
-                Row ( verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier
-                        .height(36.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.delete_blue),
-                        contentDescription = "DeleteIcon",
-                        modifier = modifier
-                            .padding(0.dp, 5.dp, 12.dp, 4.dp)
-                            .size(18.dp)
-                    )
-                    Text(
-                        text = "Delete Chats",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = colorResource(id = R.color.primary)
-                    )
-                }
-            }
-        }
-    }
+
+
 }
 
 
@@ -420,7 +422,17 @@ fun DmChatInput(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewDmScreen(){
     PartyFinderTheme {
-        DmScreen()
+        DmScreen(
+            currentChatChannel = datasource.ChatChannels.get(0),
+            dmTopBar = { DmTopBar(
+                navigateBack = {},
+                onMenuItemClicked = {},
+                isMenuClicked = true,
+            currentChatChannel = datasource.ChatChannels.get(0),
+            onMenuClicked = { /*TODO*/ },
+            retreivedGamerAccount = datasource.UserAccounts.get(0),
+
+        )})
     }
 }
 

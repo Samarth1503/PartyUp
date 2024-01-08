@@ -1,8 +1,12 @@
 package com.example.partyfinder.ui.theme
 
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.colorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -11,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
 
 
@@ -31,14 +36,17 @@ private fun
             navController.navigateUp()
         }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PartyFinderApp(
     profileViewModel: ProfileViewModel= viewModel(),
-    chatScreenViewModel: chatScreenViewModel = viewModel()
+    chatScreenViewModel: chatScreenViewModel = viewModel(),
+    partyFinderScreenViewModel:PartyFinderViewModel = viewModel()
 ){
 
     val profileUiState by profileViewModel.profileState.collectAsState()
     val chatScreenUiState by chatScreenViewModel.chatsScreenUiState.collectAsState()
+    val partyFinderScreenUiState by partyFinderScreenViewModel.partyFinderUiState.collectAsState()
     val navController : NavHostController= rememberNavController()
 
     NavHost(
@@ -100,7 +108,25 @@ fun PartyFinderApp(
         }
 
         composable(route=PartyFinderScreen.FindPartyScreen.name){
-            FindPartyScreen()
+            FindPartyScreen(
+                findPartyScreenTopBar = {FindPartyScreenTopBar()},
+                partyFinderContent = { PartyFinderContent(
+                    gameNameExposedDD = { CustomExposedDropDownMenu(
+                        placeholder = "Select the Game",
+                        isDropDownExpanded =partyFinderScreenUiState.isGameNameDDExtended ,
+                        onExpandChange = { newValue ->  partyFinderScreenViewModel.onGameNameExpandedChanged(newValue)},
+                        DropDownSelectedValue =partyFinderScreenUiState.gameNameSelectedValue ,
+                        onValueChange = {newValue -> partyFinderScreenViewModel.onGameNameValueChange(newValue)  },
+                        onDismissRequest = { partyFinderScreenViewModel.onGameNameDismissRequest() },
+                        exposedMenuContent = {
+                            datasource.FindPartyGamesMenuItems.forEach{item ->
+                                DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { partyFinderScreenViewModel.onGameNameItemClicked(item) })
+                            }
+                        }
+
+                    )}
+                )}
+            )
         }
 
         composable(route=PartyFinderScreen.ProfileScreen.name){

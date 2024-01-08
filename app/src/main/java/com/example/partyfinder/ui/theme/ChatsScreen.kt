@@ -188,9 +188,10 @@ fun ChatMenu(
         .fillMaxWidth()
     ) {
         Card(modifier=Modifier
+            .padding(end = 8.dp,)
             .align(Alignment.CenterEnd)
             .shadow(10.dp)
-            .padding(end = 8.dp)) {
+            ) {
 
             if (isMenuClicked) {
                 DropdownMenu(

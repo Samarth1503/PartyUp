@@ -39,4 +39,7 @@ object datasource {
         ChatChannel(channelID = 4,isGroupChat = false, gamerTag = "5", memberTags = listOf("1"), channelName = "Ganesh", channelProfile = R.drawable.pp),
         ChatChannel(channelID = 5,isGroupChat = false, gamerTag = "6", memberTags = listOf("6"), channelName = "Kaizoku", channelProfile = R.drawable.pp),
     )
+
+    val FindPartyGamesMenuItems = listOf("Valorant", "CS : GO", "Overwatch","Team Fortress2")
+    val FindPartyNoOfPlayerMenuItems = listOf("1","2","3","4","5","more than 6")
 }

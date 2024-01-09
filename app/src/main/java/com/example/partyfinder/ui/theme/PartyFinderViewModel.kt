@@ -41,4 +41,51 @@ class PartyFinderViewModel :ViewModel(){
             isGameNameDDExtended = false
         ) }
     }
+
+    fun onNoOfPartyExpandedChanged(newValue:Boolean){
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            isNoOfPlayerDDExtended = newValue
+        ) }
+    }
+
+    fun onNoOfPartyValueChange(newValue:String){
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            noOfPlayersInParty = newValue
+        ) }
+    }
+
+    fun onNoOfPartyDismissRequest(){
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            isNoOfPlayerDDExtended = false
+        )}
+    }
+    fun onNoOfPartyItemClicked(item:String){
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            noOfPlayersInParty = item,
+            isNoOfPlayerDDExtended = false
+        ) }
+    }
+
+    fun onNoOfRequiredExpandedChanged(newValue:Boolean){
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            isNoOfPlayerRequiredDDExtended = newValue
+        ) }
+    }
+    fun onNoOfRequiredValueChange(newValue:String){
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            noOfPlayerRequired = newValue
+        ) }
+    }
+
+    fun onNoOfRequiredDismissRequest(){
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            isNoOfPlayerRequiredDDExtended = false
+        )}
+    }
+    fun onNoOfRequiredItemClicked(item:String){
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            noOfPlayerRequired = item,
+            isNoOfPlayerRequiredDDExtended = false
+        ) }
+    }
 }

@@ -119,12 +119,33 @@ fun PartyFinderApp(
                         onValueChange = {newValue -> partyFinderScreenViewModel.onGameNameValueChange(newValue)  },
                         onDismissRequest = { partyFinderScreenViewModel.onGameNameDismissRequest() },
                         exposedMenuContent = {
-                            datasource.FindPartyGamesMenuItems.forEach{item ->
+                            partyFinderScreenUiState.listOfGameNameDDitems.forEach{item ->
                                 DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { partyFinderScreenViewModel.onGameNameItemClicked(item) })
                             }
+                        })},
+                    noOfPlayerInParty = { CustomExposedDropDownMenu(
+                        placeholder = "Count",
+                        isDropDownExpanded = partyFinderScreenUiState.isNoOfPlayerDDExtended,
+                        onExpandChange ={newValue ->partyFinderScreenViewModel.onNoOfPartyExpandedChanged(newValue) } ,
+                        onValueChange = {newValue -> partyFinderScreenViewModel.onNoOfPartyValueChange(newValue)  },
+                        DropDownSelectedValue =partyFinderScreenUiState.noOfPlayersInParty,
+                        onDismissRequest = { partyFinderScreenViewModel.onNoOfPartyDismissRequest() }) {
+                        partyFinderScreenUiState.listOfNoOfPLayerDDitems.forEach { item ->
+                            DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { partyFinderScreenViewModel.onNoOfPartyItemClicked(item) })
                         }
 
-                    )}
+                    }},
+                    noOfPlayersRequired = { CustomExposedDropDownMenu(
+                        placeholder = "Count",
+                        isDropDownExpanded = partyFinderScreenUiState.isNoOfPlayerRequiredDDExtended,
+                        onExpandChange = {newValue -> partyFinderScreenViewModel.onNoOfRequiredExpandedChanged(newValue)  },
+                        onValueChange = {newValue -> partyFinderScreenViewModel.onNoOfRequiredValueChange(newValue)  },
+                        DropDownSelectedValue = partyFinderScreenUiState.noOfPlayerRequired,
+                        onDismissRequest = { partyFinderScreenViewModel.onNoOfRequiredDismissRequest() }) {
+                        partyFinderScreenUiState.listOfNoOfPLayerDDitems.forEach { item ->
+                            DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { partyFinderScreenViewModel.onNoOfRequiredItemClicked(item) })
+                        }
+                    }}
                 )}
             )
         }

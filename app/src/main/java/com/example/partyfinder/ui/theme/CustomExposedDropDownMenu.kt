@@ -3,8 +3,10 @@ package com.example.partyfinder.ui.theme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -20,6 +22,7 @@ import com.example.partyfinder.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomExposedDropDownMenu(
+    modifier: Modifier=Modifier,
     placeholder:String,
     isDropDownExpanded:Boolean,
     onExpandChange:(newValue:Boolean)->Unit,
@@ -29,13 +32,13 @@ fun CustomExposedDropDownMenu(
     exposedMenuContent:@Composable ColumnScope.()->Unit
 ){
     ExposedDropdownMenuBox(
+        modifier = Modifier.fillMaxWidth(),
         expanded = isDropDownExpanded,
         onExpandedChange =onExpandChange,
     ) {
 
         TextField(
             modifier = Modifier
-                .padding(start = 20.dp, top = 20.dp, end = 20.dp)
                 .fillMaxWidth()
                 .menuAnchor(),
             value = DropDownSelectedValue,
@@ -59,10 +62,17 @@ fun CustomExposedDropDownMenu(
             placeholder = { Text(text = placeholder) }
         )
         Box(modifier = Modifier
-            .padding(top = 80.dp, start = 20.dp)
+            .padding(top = 60.dp)
+            .fillMaxWidth(1f)
              ){
 
-            ExposedDropdownMenu(modifier = Modifier.background(color = colorResource(id = R.color.neutral_10)), expanded =isDropDownExpanded, onDismissRequest = onDismissRequest, content = exposedMenuContent)
+            ExposedDropdownMenu(
+                modifier = Modifier
+                    .background(color = colorResource(id = R.color.neutral_10))
+                    .width(IntrinsicSize.Max),
+                expanded =isDropDownExpanded,
+                onDismissRequest = onDismissRequest,
+                content = exposedMenuContent)
         }
     }
 }

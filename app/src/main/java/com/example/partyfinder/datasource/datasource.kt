@@ -41,5 +41,5 @@ object datasource {
     )
 
     val FindPartyGamesMenuItems = listOf("Valorant", "CS : GO", "Overwatch","Team Fortress2")
-    val FindPartyNoOfPlayerMenuItems = listOf("1","2","3","4","5","more than 6")
+    val FindPartyNoOfPlayerMenuItems = listOf("1","2","3","4","5","6+")
 }

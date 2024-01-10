@@ -296,12 +296,13 @@ fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boole
         },
         enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG),
-            disabledContainerColor = colorResource(id = R.color.on_background)),
+            disabledContainerColor = colorResource(id = R.color.CallWidgetBorder),
+            disabledContentColor = colorResource(id = R.color.SubliminalText)),
         border = BorderStroke(1.dp, colorResource(id = R.color.CallWidgetBorder)),
     ) {
         Text(
             text = value,
-            color = colorResource(id = R.color.primary)
+            color = if (isEnabled) colorResource(id = R.color.primary) else colorResource(id = R.color.SubliminalText)
         )
     }
 }

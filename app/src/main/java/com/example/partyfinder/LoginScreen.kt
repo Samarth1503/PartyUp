@@ -1,9 +1,10 @@
 package com.example.partyfinder
 
-import android.annotation.SuppressLint
-import com.example.partyfinder.Data.Register.RegistrationViewModel
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,18 +28,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.partyfinder.Data.Register.RegisterUIEvent
+import com.example.partyfinder.Data.Login.LoginUIEvent
+import com.example.partyfinder.Data.Login.LoginViewModel
 import com.example.partyfinder.Navigation.PartyUpRouterSam
 import com.example.partyfinder.Navigation.Screens
 import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
+fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {
     Box(
         modifier = Modifier
             .height(808.dp)
@@ -49,7 +52,6 @@ fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
             modifier = Modifier
                 .padding(horizontal = 36.dp)
                 .fillMaxSize(),
-//            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -66,15 +68,22 @@ fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
                     color = colorResource(id = R.color.primary)
                 )
                 Image(
-                    painter = painterResource(id = R.drawable.partyup_logo),
+                    painter = painterResource(id = R.drawable.register_logo),
                     contentDescription = "Register Logo",
                     modifier = Modifier
-                        .size(120.dp)
+                        .padding(top = 8.dp)
+                        .size(128.dp)
                 )
             }
 
             Text(
-                text = "Create An Account",
+                text = "Login",
+                style = MaterialTheme.typography.titleSmall,
+                color = colorResource(id = R.color.SubliminalText)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Welcome Back",
                 style = MaterialTheme.typography.titleMedium,
                 color = colorResource(id = R.color.primary)
             )
@@ -84,7 +93,7 @@ fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
             CustomOutlinedTextField(labelValue = "Email",
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email Icon") },
                 onTextSelected = {
-                    registrationViewModel.onEvent(RegisterUIEvent.EmailChanged(it))
+                    loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
                 }
             )
 
@@ -93,34 +102,30 @@ fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
             PasswordTextFieldComponent(labelValue = "Password",
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
                 onTextSelected = {
-                    registrationViewModel.onEvent(RegisterUIEvent.PasswordChanged(it))
+                    loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
                 }
             )
 
-            CustomCheckboxComponent(value = stringResource(id = R.string.terms_and_conditions),
-                onTextSelected = {
-                    PartyUpRouterSam.navigateTo(Screens.TermsAndConditionsScreen)
-                },
-                onCheckedChange = {
-                    registrationViewModel.onEvent(RegisterUIEvent.PrivacyPolicyCheckBoxClicked(it))
-                }
-            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+            ForgotPasswordComponent(value = "Forgot Password?",
+                onTextSelected = {loginViewModel.onEvent(LoginUIEvent.ForgotPasswordClicked)})
 
-            ButtonComponent(value = "Register",
-                onButtonClicked = { registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked) },
-                isEnabled = registrationViewModel.registrationUIState.value.policyStatus)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            ButtonComponent(value = "Login",
+                onButtonClicked = { loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked) },
+                isEnabled = true)
 
             DividerTextComponent()
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            ClickableLoginTextComponent(tryingToLogin = true, onTextSelected = {
-                PartyUpRouterSam.navigateTo(Screens.LoginScreen)
+            ClickableLoginTextComponent(tryingToLogin = false, onTextSelected = {
+                PartyUpRouterSam.navigateTo(Screens.RegisterScreen)
             })
         }
-        if(registrationViewModel.registrationInProgress.value) {
+        if(loginViewModel.loginInProgress.value) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
                 color = colorResource(id = R.color.primary) )
@@ -132,10 +137,8 @@ fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
 
 @Preview
 @Composable
-fun PreviewRegisterPage(){
+fun Preview(){
     PartyFinderTheme {
-        RegisterPage()
+        LogInPage()
     }
 }
-
-

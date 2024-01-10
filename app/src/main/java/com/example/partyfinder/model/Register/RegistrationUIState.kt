@@ -1,4 +1,4 @@
-package com.example.partyfinder.Data.Register
+package com.example.partyfinder.model.Register
 
 data class RegistrationUIState(
     var name : String = "",

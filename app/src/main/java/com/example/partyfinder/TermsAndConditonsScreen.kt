@@ -45,7 +45,7 @@ fun TermsAndConditons() {
         ),
         Pair(
             "What Information Do We Collect?",
-            "We only collect information that you provide to us.\n\nWe collect personal information that you voluntarily provide to us when you register on the PartyUp platform, express an interest in obtaining information about us or our products and services, when you participate in activities on the PartyUp platform or otherwise when you contact us.\nThe personal information we collect can include the following: Name, Email Address, Contact Data, and Gaming Preferences. All personal information that you provide to us must be true, complete and accurate, and you must notify us of any changes to such personal information."
+            "We only collect information that you provide to us.\n\nWe collect personal information that you voluntarily provide to us when you register on the PartyUp platform, express an interest in obtaining information about us or our products and services, when you participate in activities on the PartyUp platform or otherwise when you contact us.\nThe personal information we collect can include the following: Name, Email Address, Contact model, and Gaming Preferences. All personal information that you provide to us must be true, complete and accurate, and you must notify us of any changes to such personal information."
         ),
         Pair(
             "Will Your Information be Shared with Anyone?",

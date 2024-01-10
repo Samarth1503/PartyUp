@@ -1,4 +1,4 @@
-package com.example.partyfinder.Data.Register
+package com.example.partyfinder.model.Register
 
 sealed class RegisterUIEvent(){
     data class EmailChanged(val email: String) : RegisterUIEvent()

@@ -1,10 +1,7 @@
 package com.example.partyfinder
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,17 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.partyfinder.Data.Login.LoginUIEvent
-import com.example.partyfinder.Data.Login.LoginViewModel
+import com.example.partyfinder.model.Login.LoginUIEvent
+import com.example.partyfinder.model.Login.LoginViewModel
 import com.example.partyfinder.Navigation.PartyUpRouterSam
 import com.example.partyfinder.Navigation.Screens
 import com.example.partyfinder.ui.theme.PartyFinderTheme
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 
 @Composable
 fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {

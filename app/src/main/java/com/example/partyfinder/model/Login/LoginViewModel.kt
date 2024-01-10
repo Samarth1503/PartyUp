@@ -1,6 +1,5 @@
-package com.example.partyfinder.Data.Login
+package com.example.partyfinder.model.Login
 
-import android.content.ContentValues
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

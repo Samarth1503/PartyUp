@@ -3,11 +3,10 @@ package com.example.partyfinder
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.widget.Toast
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
-import com.example.partyfinder.Data.Register.RegistrationViewModel
+import com.example.partyfinder.model.Register.RegistrationViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.partyfinder.Data.Register.RegisterUIEvent
+import com.example.partyfinder.model.Register.RegisterUIEvent
 import com.example.partyfinder.Navigation.PartyUpRouterSam
 import com.example.partyfinder.Navigation.Screens
 import com.example.partyfinder.ui.theme.PartyFinderTheme

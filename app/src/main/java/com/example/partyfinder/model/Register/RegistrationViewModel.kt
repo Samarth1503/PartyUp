@@ -1,4 +1,4 @@
-package com.example.partyfinder.Data.Register
+package com.example.partyfinder.model.Register
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf

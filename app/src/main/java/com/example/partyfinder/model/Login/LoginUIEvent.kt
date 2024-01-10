@@ -1,4 +1,4 @@
-package com.example.partyfinder.Data.Login
+package com.example.partyfinder.model.Login
 
 sealed class LoginUIEvent{
 

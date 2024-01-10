@@ -66,8 +66,8 @@ fun FontTrials(modifier:Modifier=Modifier){
                 style = MaterialTheme.typography.bodyMedium)
             Text(
                 text = "Hello",
-                style = MaterialTheme.typography.bodySmall
-            )
+                style = MaterialTheme.typography.bodySmall)
+
             Text(
                 text = "Hello",
                 style= MaterialTheme.typography.labelLarge)

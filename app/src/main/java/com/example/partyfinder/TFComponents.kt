@@ -81,7 +81,9 @@ fun CustomOutlinedTextField(labelValue: String, leadingIcon: @Composable (() -> 
             unfocusedTextColor = colorResource(id = R.color.primary),
             focusedBorderColor = colorResource(id = R.color.primary),
             unfocusedBorderColor = colorResource(id = R.color.primary),
-            focusedLeadingIconColor = colorResource(id = R.color.primary)
+            focusedLeadingIconColor = colorResource(id = R.color.primary),
+            unfocusedLeadingIconColor = colorResource(id = R.color.primary),
+            cursorColor = colorResource(id = R.color.primary)
         )
     )
 }
@@ -144,7 +146,9 @@ fun PasswordTextFieldComponent(labelValue: String, leadingIcon: @Composable (() 
             unfocusedTextColor = colorResource(id = R.color.primary),
             focusedBorderColor = colorResource(id = R.color.primary),
             unfocusedBorderColor = colorResource(id = R.color.primary),
-            focusedLeadingIconColor = colorResource(id = R.color.primary)
+            focusedLeadingIconColor = colorResource(id = R.color.primary),
+            unfocusedLeadingIconColor = colorResource(id = R.color.primary),
+            cursorColor = colorResource(id = R.color.primary)
         )
     )
 }

@@ -80,7 +80,8 @@ fun CustomOutlinedTextField(labelValue: String, leadingIcon: @Composable (() -> 
             focusedTextColor = colorResource(id = R.color.primary),
             unfocusedTextColor = colorResource(id = R.color.primary),
             focusedBorderColor = colorResource(id = R.color.primary),
-            unfocusedBorderColor = colorResource(id = R.color.primary)
+            unfocusedBorderColor = colorResource(id = R.color.primary),
+            focusedLeadingIconColor = colorResource(id = R.color.primary)
         )
     )
 }
@@ -142,7 +143,8 @@ fun PasswordTextFieldComponent(labelValue: String, leadingIcon: @Composable (() 
             focusedTextColor = colorResource(id = R.color.primary),
             unfocusedTextColor = colorResource(id = R.color.primary),
             focusedBorderColor = colorResource(id = R.color.primary),
-            unfocusedBorderColor = colorResource(id = R.color.primary)
+            unfocusedBorderColor = colorResource(id = R.color.primary),
+            focusedLeadingIconColor = colorResource(id = R.color.primary)
         )
     )
 }
@@ -270,6 +272,7 @@ fun ForgotPasswordComponent(value: String, onTextSelected: (Int) -> Unit) {
     ClickableText(text = annotatedString,
         onClick = onTextSelected,
         modifier = Modifier
+            .padding(end = 4.dp)
             .fillMaxWidth(),
         style = MaterialTheme.typography.bodySmall.copy(
             color = colorResource(id = R.color.SubliminalText),
@@ -289,7 +292,7 @@ fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boole
         },
         enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG),
-            disabledContainerColor = colorResource(id = R.color.SubliminalText)),
+            disabledContainerColor = colorResource(id = R.color.on_background)),
         border = BorderStroke(1.dp, colorResource(id = R.color.CallWidgetBorder)),
     ) {
         Text(

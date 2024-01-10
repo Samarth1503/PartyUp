@@ -18,15 +18,19 @@ public class RegistrationViewModel : ViewModel() {
 
     var registrationInProgress = mutableStateOf(false)
 
+    var registrationSuccessful = mutableStateOf(false)
+
+    var policyStatusChecked = mutableStateOf(false)
+
+    var confirmPasswordValidationStarted = mutableStateOf(false)
+
+    var confirmPasswordValidation = mutableStateOf(false)
+
+
     private var TAG = RegistrationViewModel::class.simpleName
 
     fun onEvent(event : RegisterUIEvent){
         when(event){
-            is RegisterUIEvent.NameChanged -> {
-                _registrationUIState.update{ currentState -> currentState.copy(
-                    userName = event.userName )}
-                printState()
-            }
             is RegisterUIEvent.EmailChanged -> {
                 _registrationUIState.update{ currentState -> currentState.copy(
                     email = event.email )}
@@ -37,21 +41,33 @@ public class RegistrationViewModel : ViewModel() {
                     password = event.password )}
                 printState()
             }
+            is RegisterUIEvent.ConfirmPasswordChanged -> {
+                _registrationUIState.update { currentState -> currentState.copy(
+                    confirmPassword = event.confirmPassword
+                ) }
 
+                if (_registrationUIState.value.password.equals(_registrationUIState.value.confirmPassword)){
+                    confirmPasswordValidation.value = true
+                    confirmPasswordValidationStarted.value = false
+                }
+                else{
+                    confirmPasswordValidationStarted.value = true
+                }
+            }
             is RegisterUIEvent.PrivacyPolicyCheckBoxClicked -> {
-                _registrationUIState.update{ currentState -> currentState.copy(
-                    policyStatus = event.status) }
+                policyStatusChecked.value = !policyStatusChecked.value
             }
 
             is RegisterUIEvent.RegisterButtonClicked ->{
-                if (_registrationUIState.value.policyStatus) {
-                    Log.d(TAG, "**Register**")
 
-                    Log.d(TAG, "InsideStack")
+                if (confirmPasswordValidation.value && policyStatusChecked.value) {
+                    Log.d(TAG, "Inside **Register** Stack")
                     Log.d(TAG, registrationUIState.value.toString())
                     registerToFireBase()
-                } else {
+                } else if (!policyStatusChecked.value){
                     Log.d(TAG, "Privacy policy not accepted")
+                } else {
+                    Log.d(TAG, "Passwords do not match")
                 }
             }
         }
@@ -80,7 +96,7 @@ public class RegistrationViewModel : ViewModel() {
             .addOnCompleteListener { Log.d(TAG, "isSuccessful = ${it.isSuccessful}")
                 registrationInProgress.value = false
                 if (it.isSuccessful) {
-                    PartyUpRouterSam.navigateTo(Screens.LoginScreen)
+                    registrationSuccessful.value = true
                 }
             }
 

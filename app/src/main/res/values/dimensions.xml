@@ -11,14 +11,6 @@
     <dimen name="small_profile_pic_dim">40dp</dimen>
     <dimen name="top_bar_back_icon_size">26dp</dimen>
     <dimen name="profile_add_gamercall_icon_size">32dp</dimen>
-<<<<<<< HEAD
-    <dimen name="Profile_Banner_Box_Height">179dp</dimen>
-    <dimen name="Profile_banner_height">136dp</dimen>
-    <dimen name="profile_picture_height">86dp</dimen>
     <dimen name="top_bar_right_widget_height">20dp</dimen>
 </resources>
-=======
 
-
-</resources>
->>>>>>> parent of 19c5816 (Merge branch 'master' into pushkar)

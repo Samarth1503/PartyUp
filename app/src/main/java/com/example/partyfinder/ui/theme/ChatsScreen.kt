@@ -1,33 +1,56 @@
-package com.example.partyfinder
+package com.example.partyfinder.ui.theme
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.*
-import androidx.compose.ui.platform.InspectableModifier
-import androidx.compose.ui.res.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import androidx.navigation.NavHostController
+import com.example.partyfinder.R
+import com.example.partyfinder.data.ChatChannel
+import com.example.partyfinder.data.UserAccount
+import com.example.partyfinder.datasource.datasource
 
 
 //creating other screens
 @Composable
-fun ChatsScreen(){
+fun ChatsScreen(
+    isMenuClicked:Boolean,
+    chatTopBar:@Composable () -> Unit,
+    chatMenu:@Composable () ->Unit,
+    chats:@Composable () -> Unit){
 
 //        Variable declaration for menu
-    var isMenuVisible by remember { mutableStateOf(false) }
+
 
     Surface(color= colorResource(id = R.color.black)){
         Column(modifier = Modifier
@@ -37,11 +60,11 @@ fun ChatsScreen(){
         {
             Box(modifier = Modifier){
                 Column{
-                    isMenuVisible = ChatTopBar()
-                    Chats()
+                    chatTopBar()
+                    chats()
                 }
-                if (isMenuVisible){
-                    ChatMenu()
+                if (isMenuClicked){
+                    chatMenu()
                 }
             }
         }
@@ -52,13 +75,24 @@ fun ChatsScreen(){
 @Composable
 fun PreviewChatsScreen(){
     PartyFinderTheme {
-        ChatsScreen()
+        ChatsScreen(
+            chatTopBar ={ChatTopBar(isMenuClicked = false, onMenuClick = {}, navigateBack = {})},
+            chatMenu = { ChatMenu(isMenuClicked = true, onMenuClicked = {}, onMenuItemClicked = {})},
+            isMenuClicked = false,
+            chats = { Chat(
+                chatChannel = datasource.ChatChannels.get(0),
+                userAccount = datasource.UserAccounts.get(0))
+            }
+
+        )
     }
 }
 
 @Composable
-fun ChatTopBar(modifier: Modifier = Modifier): Boolean {
-    var isMenuClicked by remember { mutableStateOf(false) }
+fun ChatTopBar(modifier: Modifier = Modifier,
+               isMenuClicked:Boolean,
+               navigateBack:()->Unit,
+               onMenuClick:()->Unit){
 
     Box(
         modifier = modifier
@@ -73,6 +107,7 @@ fun ChatTopBar(modifier: Modifier = Modifier): Boolean {
                 .padding(25.dp, 5.dp, 0.dp, 0.dp)
                 .size(25.dp)
                 .align(Alignment.CenterStart)
+                .clickable { navigateBack() }
         )
         Text(
             text = "Chat",
@@ -88,7 +123,7 @@ fun ChatTopBar(modifier: Modifier = Modifier): Boolean {
                     .padding(0.dp, 5.dp, 15.dp, 0.dp)
                     .size(20.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable { isMenuClicked = !isMenuClicked }
+                    .clickable { onMenuClick() }
             )
         }
         if (isMenuClicked) {
@@ -99,11 +134,11 @@ fun ChatTopBar(modifier: Modifier = Modifier): Boolean {
                     .padding(0.dp, 5.dp, 15.dp, 0.dp)
                     .size(20.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable { isMenuClicked = !isMenuClicked }
+                    .clickable { onMenuClick() }
             )
         }
     }
-    return isMenuClicked
+
 }
 
 
@@ -144,63 +179,40 @@ fun ChatTopBar(modifier: Modifier = Modifier): Boolean {
 
 
 @Composable
-fun ChatMenu(modifier: Modifier = Modifier) {
+fun ChatMenu(
+    modifier: Modifier = Modifier,
+    isMenuClicked:Boolean,
+    onMenuItemClicked:(item:Pair<String,Int>)->Unit,
+    onMenuClicked:()->Unit,) {
     Box(modifier = modifier
         .fillMaxWidth()
     ) {
-        Surface(color = colorResource(id = R.color.black),
-            modifier = modifier
-                .padding(
-                    0.dp,
-                    (dimensionResource(id = R.dimen.top_bar_height) - 24.dp),
-                    36.dp,
-                    0.dp
-                )
-                .border(
-                    width = 1.dp,
-                    color = colorResource(id = R.color.CallWidgetBorder),
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .align(Alignment.TopEnd)
-        ) {
-            Column ( modifier = modifier
-                .padding(20.dp, 8.dp, 20.dp, 8.dp)
-            ){
-                Row ( verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier
-//                        .fillMaxWidth()
-                        .height(40.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.delete_blue),
-                        contentDescription = "DeleteChats",
-                        modifier = modifier
-                            .padding(0.dp, 5.dp, 15.dp, 4.dp)
-                            .size(18.dp)
-                    )
-                    Text(
-                        text = "Clear Chats",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = colorResource(id = R.color.primary)
-                    )
-                }
-                Row ( verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier
-//                        .fillMaxWidth()
-                        .height(40.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.report_blue),
-                        contentDescription = "DeleteChats",
-                        modifier = modifier
-                            .padding(0.dp, 5.dp, 15.dp, 4.dp)
-                            .size(20.dp)
-                    )
-                    Text(
-                        text = "Report",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = colorResource(id = R.color.primary)
-                    )
+        Card(modifier=Modifier
+            .padding(end = 8.dp,)
+            .align(Alignment.CenterEnd)
+            .shadow(10.dp)
+            ) {
+
+            if (isMenuClicked) {
+                DropdownMenu(
+                    modifier= Modifier
+                        .background(color = colorResource(id = R.color.neutral_10)),
+
+                    expanded = isMenuClicked,
+                    onDismissRequest = { onMenuClicked() }) {
+                    datasource.dmScreenDropDownOptions.forEach{
+                            item ->
+                        DropdownMenuItem(text = { Row(modifier=Modifier.width(110.dp)) {
+                            Image(modifier=Modifier.size(18.dp),painter = painterResource(id = item.second), contentDescription =item.first )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = item.first, color = colorResource(id = R.color.primary))
+                        }},
+                            onClick = {
+                                onMenuItemClicked(item)
+                                onMenuClicked()}
+                        )
+                    }
+
                 }
             }
         }
@@ -209,15 +221,32 @@ fun ChatMenu(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun Chats(modifier: Modifier = Modifier) {
+fun Chats(
+    modifier: Modifier = Modifier,
+    chatChannelList:List<ChatChannel>,
+    userAccountList:List<UserAccount>,
+    navController:NavHostController,
+) {
     Box(
         modifier = modifier.fillMaxHeight()
     ) {
         LazyColumn(
             modifier = modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)
         ) {
-            items(13) { index ->
-                Chat()
+            items(chatChannelList){
+                if(it.isGroupChat){
+
+                    Chat( modifier.clickable { navController.navigate("DMScreen/${it.channelID}") },chatChannel = it, userAccount = datasource.UserAccounts.get(0))
+                }
+                else
+                {
+                    var gamertag = it.gamerTag
+                    var userAccount = userAccountList.find { it.gamerTag == gamertag  }?:userAccountList.get(0)
+                    Chat(modifier.clickable { navController.navigate("DMScreen/${it.channelID}")},chatChannel = it, userAccount = userAccount)
+
+                }
+
+
             }
         }
         NewChat()
@@ -226,7 +255,11 @@ fun Chats(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun Chat(modifier: Modifier = Modifier){
+fun Chat(
+    modifier: Modifier = Modifier,
+    chatChannel:ChatChannel,
+    userAccount: UserAccount,
+){
     Row ( verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .padding(10.dp, 5.dp)
@@ -238,8 +271,16 @@ fun Chat(modifier: Modifier = Modifier){
             .height(75.dp)
     ) {
         Image (
-            painter = painterResource(id = R.drawable.pp),
-            contentDescription = "58008",
+            painter = painterResource(
+                if(chatChannel.isGroupChat){
+                    chatChannel.channelProfile
+                }
+                else
+                {
+                   userAccount.profilePic
+                }
+            ),
+            contentDescription = null,
             modifier = Modifier
                 .padding(20.dp, 0.dp, 10.dp, 0.dp)
                 .size(45.dp)
@@ -252,7 +293,12 @@ fun Chat(modifier: Modifier = Modifier){
             .padding(5.dp,0.dp,0.dp,0.dp)
         ){
             Text(
-                text = "58008",
+                text = if(chatChannel.isGroupChat)
+                {
+                chatChannel.channelName
+                }else{
+                     userAccount.gamerID
+                     },
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.white)
             )
@@ -282,3 +328,5 @@ fun NewChat(modifier: Modifier = Modifier) {
         )
     }
 }
+
+

@@ -1,41 +1,81 @@
-package com.example.partyfinder
+package com.example.partyfinder.ui.theme
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.*
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import androidx.compose.ui.zIndex
+import com.example.partyfinder.R
+import com.example.partyfinder.data.GamerCalls
+import com.example.partyfinder.datasource.datasource
 
 
 @Composable
-fun GamersCall(){
+fun GamersCall(modifier:Modifier=Modifier){
     Surface(color= colorResource(id = R.color.black)){
-        Column(modifier = Modifier
-            .verticalScroll(rememberScrollState(), true)
-            .height(808.dp)
-            .width(393.dp)
-        ) {
-            GamersCallTopBar()
-            GamersCallContent()
+        Box(modifier=Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState(), true)
+                    .height(808.dp)
+                    .width(393.dp)
+            ) {
+                GamersCallTopBar()
+                GamersCallContent(gamerCalls = datasource.MyGamerCalls)
+            }
+            Button(
+                modifier = Modifier
+                    .padding(bottom = 32.dp)
+                    .height(40.dp)
+                    .align(Alignment.BottomCenter),
+                shape = RoundedCornerShape(5.dp),
+                onClick = { },
+                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
+            ) {
+                Text(text = "Create",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.primary),
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                )
+            }
         }
     }
 }
@@ -67,7 +107,7 @@ fun GamersCallTopBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GamersCallContent(modifier: Modifier = Modifier) {
+fun GamersCallContent(modifier: Modifier = Modifier,gamerCalls:List<GamerCalls>) {
     Box(modifier = modifier){
         LazyColumn(
             modifier = modifier
@@ -81,8 +121,15 @@ fun GamersCallContent(modifier: Modifier = Modifier) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(3) {
-                G_Calls()
+            items(gamerCalls) {
+                G_Calls(
+                    gameName =it.gameName,
+                    callDes = it.callDes,
+                    partySize = it.partySize,
+                    profilePic = it.ProfilePic,
+                    gamerID = it.gamerID,
+                    gamerTag = it.gamerTag
+                    )
             }
         }
 
@@ -102,7 +149,14 @@ fun GamersCallContent(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun G_Calls(modifier: Modifier = Modifier) {
+fun G_Calls(
+    modifier: Modifier = Modifier,
+    profilePic:Int,
+    gamerID:String,
+    gamerTag:String,
+    gameName:String,
+    partySize:Int,
+    callDes:String) {
 
 //        Variable declaration for menu
     var isMenuVisible by remember { mutableStateOf(false) }
@@ -137,7 +191,7 @@ fun G_Calls(modifier: Modifier = Modifier) {
                     .padding(16.dp, 8.dp, 16.dp, 0.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.pp),
+                    painter = painterResource(id = profilePic),
                     contentDescription = "GamerIcon",
                     modifier = modifier
                         .padding(top = 4.dp)
@@ -159,7 +213,7 @@ fun G_Calls(modifier: Modifier = Modifier) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Valorant",
+                            text = gameName,
                             style = MaterialTheme.typography.titleSmall,
                             color = colorResource(id = R.color.white),
                             modifier = modifier
@@ -199,11 +253,19 @@ fun G_Calls(modifier: Modifier = Modifier) {
 //                    horizontalArrangement = Arrangement.End
                     ) {
                         Text(
-                            text = "#58008",
+                            text = gamerID,
                             style = MaterialTheme.typography.labelSmall,
                             color = colorResource(id = R.color.SubliminalText),
                             modifier = modifier
                                 .padding(start = 4.dp)
+                        )
+
+                        Text(
+                            text = gamerTag,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = colorResource(id = R.color.SubliminalText),
+                            modifier = modifier
+                                .padding(start = 2.dp)
                         )
 
                         Spacer(modifier = modifier.weight(1f))
@@ -221,7 +283,7 @@ fun G_Calls(modifier: Modifier = Modifier) {
                             )
                             Spacer(modifier = modifier.width(4.dp))
                             Text(
-                                text = "5",
+                                text =partySize.toString(),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = colorResource(id = R.color.white),
                                 modifier = modifier
@@ -266,7 +328,7 @@ fun G_Calls(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = "Need a 4 stack of cracked Valorant gamers for comp grind, And I mean Cracked(CRAZY) ",
+                    text = callDes,
                     style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.white),
                     modifier = modifier

@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Party Finder</string>
+    <string name="ONLINE">Online</string>
+    <string name="DND">Do Not Disturb</string>
+    <string name="AFK">AFK</string>
     <string name="title_activity_sing_up">SingUp</string>
     <string name="title_activity_sign_up">SignUp</string>
     <string name="title_activity_tf">TF</string>

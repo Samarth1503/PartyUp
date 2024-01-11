@@ -1,9 +1,9 @@
-package com.example.partyfinder
+package com.example.partyfinder.ui.theme
 
-import android.annotation.SuppressLint
+
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,38 +19,25 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -58,25 +45,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.partyfinder.ui.theme.PartyFinderTheme
 import androidx.compose.ui.zIndex
+import com.example.partyfinder.Navigation.PartyUpRouterSam
+import com.example.partyfinder.Navigation.Screens
+import com.example.partyfinder.R
 
 
-data class BottomNavigationItem(
-    val title: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-    val hasNews: Boolean,
-    val badgeCount: Int? = null
-)
-
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+//Merger Comment
 @Composable
-public fun HomeScreen(modifier: Modifier = Modifier) {
+ fun HomeScreen(
+    modifier: Modifier = Modifier,
+    navigateToProfileScreen:()->Unit,
+    navigateToChats :()->Unit,
+    navigateToPartyFinder:()->Unit,
+    navigateToGamerCalls:()->Unit,
+    navigateToCommunities:()->Unit
+    ) {
     Box(modifier = modifier) {
 
         HomepageContent()
+
 
 //        NavigationBar
         Row(modifier = modifier
@@ -90,7 +78,8 @@ public fun HomeScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable { navigateToCommunities() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -124,7 +113,8 @@ public fun HomeScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable { navigateToGamerCalls() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -158,7 +148,8 @@ public fun HomeScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable {navigateToPartyFinder() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -191,7 +182,8 @@ public fun HomeScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable { navigateToChats() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -226,7 +218,8 @@ public fun HomeScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.weight(1f))
 
             Column(modifier = modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .clickable { navigateToProfileScreen() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
@@ -332,7 +325,7 @@ fun HomepageContent(modifier: Modifier = Modifier) {
 
 //            PlayerStatus
             Row(modifier = modifier
-                .padding(16.dp, 0.dp),
+                    .padding(16.dp, 0.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Canvas(modifier = Modifier
@@ -460,7 +453,6 @@ fun HomepageContent(modifier: Modifier = Modifier) {
     }
 }
 
-
 @Composable
 fun CommunityCard_Mini(modifier: Modifier = Modifier, gameName: String) {
     val gameDrawable = when(gameName) {
@@ -475,7 +467,7 @@ fun CommunityCard_Mini(modifier: Modifier = Modifier, gameName: String) {
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(Color.Transparent, Color.Transparent),
@@ -531,7 +523,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
         .zIndex(1f)
     ){
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .background(
                     color = colorResource(id = R.color.DarkBG),
                     shape = RoundedCornerShape(15.dp)
@@ -549,7 +541,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
                 text = "Valorant",
                 style = MaterialTheme.typography.titleSmall,
                 color = colorResource(id = R.color.white),
-                modifier = modifier
+                modifier = Modifier
                     .padding(top = 12.dp)
             )
 
@@ -557,7 +549,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
                 text = "#58008",
                 style = MaterialTheme.typography.labelSmall,
                 color = colorResource(id = R.color.SubliminalText),
-                modifier = modifier
+                modifier = Modifier
                     .padding(bottom = 12.dp)
             )
 
@@ -567,7 +559,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
             if (!isMenuVisible) {
 //                Bottom Row
                 Row(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(4.dp, 12.dp)
                         .background(
                             color = colorResource(id = R.color.DarkBG),
@@ -580,26 +572,26 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
                     horizontalArrangement = Arrangement.Center
                 ){
 
-                    Spacer(modifier = modifier.weight(2.5f))
+                    Spacer(modifier = Modifier.weight(2.5f))
 
 
 //                    Icons
-                    Row(modifier = modifier.padding(end = 8.dp),
+                    Row(modifier = Modifier.padding(end = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.playericon_white),
                             contentDescription = "NoOfPlayersIcon",
-                            modifier = modifier
+                            modifier = Modifier
                                 .padding(bottom = 1.dp)
                                 .size(16.dp)
                         )
-                        Spacer(modifier = modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "5",
                             style = MaterialTheme.typography.bodySmall,
                             color = colorResource(id = R.color.white),
-                            modifier = modifier
+                            modifier = Modifier
                                 .padding(bottom = 2.dp)
                         )
                     }
@@ -607,11 +599,11 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
                         text = "2hrs ago",
                         style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.white),
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(12.dp, 0.dp)
                     )
 
-                    Spacer(modifier = modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f))
 
                 }
             }
@@ -620,7 +612,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
 
 //                Bottom Row 2
                 Row(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(4.dp, 12.dp)
                         .background(
                             color = colorResource(id = R.color.DarkBG),
@@ -636,7 +628,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
                         text = "Join",
                         style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.white),
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(12.dp, 0.dp)
                     )
                 }
@@ -662,7 +654,7 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
             shape = RoundedCornerShape(10.dp)
         )
     ){
-        Row(modifier = modifier
+        Row(modifier = Modifier
             .padding(4.dp, 2.dp)
             .height(28.dp)
             .fillMaxWidth(),
@@ -673,46 +665,46 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.titleSmall,
                 fontSize = 12.sp,
                 color = colorResource(id = R.color.white),
-                modifier = modifier
+                modifier = Modifier
                     .padding(start = 12.dp)
             )
 
-            Spacer(modifier = modifier.weight(2.5f))
+            Spacer(modifier = Modifier.weight(2.5f))
 
 
 //            Icons
-            Row(modifier = modifier.padding(end = 8.dp),
+            Row(modifier = Modifier.padding(end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.playericon_white),
                     contentDescription = "NoOfPlayersIcon",
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(bottom = 1.dp)
                         .size(12.dp)
                 )
-                Spacer(modifier = modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "5",
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.white),
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(bottom = 1.dp)
                 )
             }
             Image(
                 painter = painterResource(id = R.drawable.delete_blue),
                 contentDescription = "NoOfPlayersIcon",
-                modifier = modifier
+                modifier = Modifier
                     .padding(4.dp, 0.dp, 8.dp, 1.dp)
                     .size(12.dp)
             )
-            Spacer(modifier = modifier.weight(0.00001f))
+            Spacer(modifier = Modifier.weight(0.00001f))
         }
-        Box(modifier = modifier.padding(bottom =  8.dp)){
+        Box(modifier = Modifier.padding(bottom =  8.dp)){
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .padding(16.dp, 0.dp)
                     .background(
                         color = colorResource(id = R.color.SubliminalText),
@@ -728,7 +720,7 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ){}
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .padding(16.dp, 0.dp)
                     .background(
                         color = colorResource(id = R.color.progressBarGreen),
@@ -748,7 +740,7 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.titleSmall,
                 color = colorResource(id = R.color.SubliminalText),
                 fontSize = 10.sp,
-                modifier = modifier
+                modifier = Modifier
                     .padding(start = 12.dp, top = 2.dp, end = 16.dp)
                     .align(Alignment.BottomEnd)
             )
@@ -757,12 +749,20 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
 }
 
 
+
 @Preview
 @Composable
-fun PreviewHomeScreen(){
+fun PreviewTF(){
     PartyFinderTheme {
-        HomeScreen()
+        HomeScreen(
+            navigateToProfileScreen={},
+            navigateToChats = {},
+            navigateToPartyFinder = {},
+            navigateToGamerCalls = {},
+            navigateToCommunities = {}
+        )
     }
 }
+
 
 

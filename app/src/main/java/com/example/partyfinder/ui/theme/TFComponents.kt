@@ -1,4 +1,4 @@
-package com.example.partyfinder
+package com.example.partyfinder.ui.theme
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -7,7 +7,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Button
@@ -42,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.example.partyfinder.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,7 +162,7 @@ fun CustomCheckboxComponent(value: String, onTextSelected: (String) -> Unit,
                 checkedState.value = isChecked
                 onCheckedChange.invoke(isChecked)
             },
-            colors = colors(checkedColor = colorResource(id = R.color.primary), 
+            colors = colors(checkedColor = colorResource(id = R.color.primary),
                 checkmarkColor = colorResource(id = R.color.black))
         )
 

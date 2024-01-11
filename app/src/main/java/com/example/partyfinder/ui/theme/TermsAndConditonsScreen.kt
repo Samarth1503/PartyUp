@@ -1,4 +1,4 @@
-package com.example.partyfinder
+package com.example.partyfinder.ui.theme
 
 
 import androidx.compose.foundation.*
@@ -11,7 +11,7 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.R
 
 
 @Composable

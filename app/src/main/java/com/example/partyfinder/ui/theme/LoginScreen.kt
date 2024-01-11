@@ -1,4 +1,4 @@
-package com.example.partyfinder
+package com.example.partyfinder.ui.theme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import com.example.partyfinder.model.Login.LoginUIEvent
 import com.example.partyfinder.model.Login.LoginViewModel
 import com.example.partyfinder.Navigation.PartyUpRouterSam
 import com.example.partyfinder.Navigation.Screens
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.R
 
 @Composable
 fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {

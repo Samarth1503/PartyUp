@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -29,10 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -46,11 +49,37 @@ import com.example.partyfinder.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun CustomTextField(labelValue: String, onTextSelected: (String) -> Unit ) {
+    val labelValue = remember { mutableStateOf("") }
+    val primary = colorResource(id = R.color.primary)
+    val mainPadding = dimensionResource(id = R.dimen.main_padding)
+
+    TextField(
+        value = labelValue.value,
+        onValueChange = { labelValue.value = it },
+        label = { Text(modifier = Modifier
+            .padding(bottom = 4.dp),
+            text = "Enter Message",
+            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Light)
+        ) },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            cursorColor = primary,
+            containerColor = colorResource(id = R.color.DarkBG),
+            focusedBorderColor = primary,
+            unfocusedBorderColor = primary,
+            unfocusedLabelColor = colorResource(id = R.color.white),
+            focusedTextColor = colorResource(id = R.color.white)
+        ),
+        modifier = Modifier
+            .padding(mainPadding, 40.dp, mainPadding, 28.dp)
+            .fillMaxWidth()
+    )
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun CustomOutlinedTextField(labelValue: String, leadingIcon: @Composable (() -> Unit)? = null,
                             onTextSelected: (String) -> Unit) {
-    val textValue = remember {
-        mutableStateOf("")
-    }
+    val textValue = remember { mutableStateOf("") }
 
     OutlinedTextField(
         label = { Text(labelValue) },
@@ -85,13 +114,9 @@ fun PasswordTextFieldComponent(labelValue: String, leadingIcon: @Composable (() 
 
     val localFocusManager = LocalFocusManager.current
 
-    val password = remember {
-        mutableStateOf("")
-    }
+    val password = remember { mutableStateOf("") }
 
-    val passwordVisible = remember {
-        mutableStateOf(false)
-    }
+    val passwordVisible = remember { mutableStateOf(false) }
 
     OutlinedTextField(
         modifier = Modifier

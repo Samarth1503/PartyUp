@@ -1,4 +1,4 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.ProfileScreens
 
 
 
@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
+import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 @Preview(showBackground = true)

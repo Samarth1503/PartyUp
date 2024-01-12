@@ -6,6 +6,6 @@ sealed class RegisterUIEvent(){
     data class ConfirmPasswordChanged(val confirmPassword: String) : RegisterUIEvent()
     data class PrivacyPolicyCheckBoxClicked(val status:Boolean) : RegisterUIEvent()
 
-    object RegisterButtonClicked : RegisterUIEvent()
+
 
 }

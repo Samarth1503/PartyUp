@@ -1,4 +1,4 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.PartyFinderScreens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -47,6 +47,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.ui.theme.CustomExposedDropDownMenu
+import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 @Composable
 fun FindPartyScreen(
@@ -74,7 +76,7 @@ fun PrevivewFindPartyScreen(){
     var requiredvalue by remember{ mutableStateOf("") }
     PartyFinderTheme {
         FindPartyScreen(
-            findPartyScreenTopBar = {FindPartyScreenTopBar()},
+            findPartyScreenTopBar = { FindPartyScreenTopBar() },
             partyFinderContent = { PartyFinderContent(
                 gameNameExposedDD = { CustomExposedDropDownMenu(
                     placeholder = "Select the Game",
@@ -87,7 +89,8 @@ fun PrevivewFindPartyScreen(){
                         datasource.FindPartyGamesMenuItems.forEach{item ->
                             DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { gamevalue = item})
                         }
-                    })},
+                    })
+                },
                 noOfPlayerInParty = { CustomExposedDropDownMenu(
                     placeholder = "Count",
                     isDropDownExpanded = partyExpanded,
@@ -99,7 +102,8 @@ fun PrevivewFindPartyScreen(){
                         DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { partyValue = item})
                     }
 
-                }},
+                }
+                },
                 noOfPlayersRequired = { CustomExposedDropDownMenu(
                     placeholder = "Count",
                     isDropDownExpanded = requiredExpanded,
@@ -110,8 +114,10 @@ fun PrevivewFindPartyScreen(){
                     datasource.FindPartyNoOfPlayerMenuItems.forEach { item ->
                         DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { requiredvalue=item})
                     }
-                }}
-            )}
+                }
+                }
+            )
+            }
         )
     }
 }

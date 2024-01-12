@@ -1,4 +1,4 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.ChatScreens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -42,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
+import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 @Composable

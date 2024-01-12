@@ -1,12 +1,11 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.LoginAndRegisterScreens
 
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
-import android.widget.Toast
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
-import com.example.partyfinder.model.Register.RegistrationViewModel
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,15 +40,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.partyfinder.model.Register.RegisterUIEvent
 import com.example.partyfinder.Navigation.PartyUpRouterSam
 import com.example.partyfinder.Navigation.Screens
 import com.example.partyfinder.R
+import com.example.partyfinder.model.Register.RegisterUIEvent
+import com.example.partyfinder.ui.theme.ButtonComponent
+import com.example.partyfinder.ui.theme.ClickableLoginTextComponent
+import com.example.partyfinder.ui.theme.CustomCheckboxComponent
+import com.example.partyfinder.ui.theme.CustomOutlinedTextField
+import com.example.partyfinder.ui.theme.DividerTextComponent
+import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
+import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 
 
 @SuppressLint("StateFlowValueCalledInComposition", "SetTextI18n", "InflateParams")
 @Composable
-fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
+fun RegisterPage(
+    registrationViewModel : RegistrationViewModel,
+    navigateToTermsAndConditions:() -> Unit,
+    navigateToLoginScreen:()->Unit,
+    onRegisterButtonClicked: ()->Unit,) {
     val context = LocalContext.current
 
     Box(
@@ -132,7 +143,7 @@ fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
 
             CustomCheckboxComponent(value = stringResource(id = R.string.terms_and_conditions),
                 onTextSelected = {
-                    PartyUpRouterSam.navigateTo(Screens.TermsAndConditionsScreen)
+                    navigateToTermsAndConditions()
                 },
                 onCheckedChange = {
                     registrationViewModel.onEvent(RegisterUIEvent.PrivacyPolicyCheckBoxClicked(it))
@@ -142,7 +153,7 @@ fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(16.dp))
 
             ButtonComponent(value = "Register",
-                onButtonClicked = { registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked) },
+                onButtonClicked = { onRegisterButtonClicked() },
                 isEnabled = registrationViewModel.policyStatusChecked.value)
 
             DividerTextComponent()
@@ -150,7 +161,7 @@ fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(8.dp))
 
             ClickableLoginTextComponent(tryingToLogin = true, onTextSelected = {
-                PartyUpRouterSam.navigateTo(Screens.LoginScreen)
+                navigateToLoginScreen()
             })
         }
 
@@ -205,7 +216,11 @@ fun RegisterPage(registrationViewModel : RegistrationViewModel = viewModel()) {
 @Composable
 fun PreviewRegisterPage(){
     PartyFinderTheme {
-        RegisterPage()
+        RegisterPage(
+            registrationViewModel = viewModel(),
+            navigateToTermsAndConditions = {},
+            navigateToLoginScreen = {},
+            onRegisterButtonClicked = {})
     }
 }
 

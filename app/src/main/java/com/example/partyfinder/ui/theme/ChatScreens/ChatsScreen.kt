@@ -1,4 +1,4 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.ChatScreens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -39,6 +39,7 @@ import com.example.partyfinder.R
 import com.example.partyfinder.data.ChatChannel
 import com.example.partyfinder.data.UserAccount
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 //creating other screens
@@ -76,8 +77,8 @@ fun ChatsScreen(
 fun PreviewChatsScreen(){
     PartyFinderTheme {
         ChatsScreen(
-            chatTopBar ={ChatTopBar(isMenuClicked = false, onMenuClick = {}, navigateBack = {})},
-            chatMenu = { ChatMenu(isMenuClicked = true, onMenuClicked = {}, onMenuItemClicked = {})},
+            chatTopBar ={ ChatTopBar(isMenuClicked = false, onMenuClick = {}, navigateBack = {}) },
+            chatMenu = { ChatMenu(isMenuClicked = true, onMenuClicked = {}, onMenuItemClicked = {}) },
             isMenuClicked = false,
             chats = { Chat(
                 chatChannel = datasource.ChatChannels.get(0),

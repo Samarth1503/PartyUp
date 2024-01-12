@@ -1,4 +1,4 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.ChatScreens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -51,6 +51,7 @@ import com.example.partyfinder.R
 import com.example.partyfinder.data.ChatChannel
 import com.example.partyfinder.data.UserAccount
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 @Composable
@@ -432,7 +433,8 @@ fun PreviewDmScreen(){
             onMenuClicked = { /*TODO*/ },
             retreivedGamerAccount = datasource.UserAccounts.get(0),
 
-        )})
+        )
+            })
     }
 }
 

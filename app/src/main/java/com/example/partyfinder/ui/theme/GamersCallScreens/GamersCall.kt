@@ -1,4 +1,4 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.GamersCallScreens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -44,6 +44,7 @@ import androidx.compose.ui.zIndex
 import com.example.partyfinder.R
 import com.example.partyfinder.data.GamerCalls
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 @Composable

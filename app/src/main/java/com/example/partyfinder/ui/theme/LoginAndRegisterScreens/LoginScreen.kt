@@ -1,4 +1,4 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.LoginAndRegisterScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,14 +28,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.partyfinder.model.Login.LoginUIEvent
-import com.example.partyfinder.model.Login.LoginViewModel
-import com.example.partyfinder.Navigation.PartyUpRouterSam
-import com.example.partyfinder.Navigation.Screens
 import com.example.partyfinder.R
+import com.example.partyfinder.model.Login.LoginUIEvent
+import com.example.partyfinder.ui.theme.ButtonComponent
+import com.example.partyfinder.ui.theme.ClickableLoginTextComponent
+import com.example.partyfinder.ui.theme.CustomOutlinedTextField
+import com.example.partyfinder.ui.theme.DividerTextComponent
+import com.example.partyfinder.ui.theme.ForgotPasswordComponent
+import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
+import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
 
 @Composable
-fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {
+fun LogInPage(
+    loginViewModel: LoginViewModel,
+    navigateToRegisterScreen:() ->Unit,
+    onLogInClicked:() ->Unit,
+) {
     Box(
         modifier = Modifier
             .height(808.dp)
@@ -108,7 +117,7 @@ fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(12.dp))
 
             ButtonComponent(value = "Login",
-                onButtonClicked = { loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked) },
+                onButtonClicked = { onLogInClicked() },
                 isEnabled = true)
 
             DividerTextComponent()
@@ -116,7 +125,7 @@ fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(8.dp))
 
             ClickableLoginTextComponent(tryingToLogin = false, onTextSelected = {
-                PartyUpRouterSam.navigateTo(Screens.RegisterScreen)
+                navigateToRegisterScreen()
             })
         }
         if(loginViewModel.loginInProgress.value) {
@@ -133,6 +142,10 @@ fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {
 @Composable
 fun Preview(){
     PartyFinderTheme {
-        LogInPage()
+        LogInPage(
+            loginViewModel = viewModel(),
+            navigateToRegisterScreen = {},
+            onLogInClicked = {}
+        )
     }
 }

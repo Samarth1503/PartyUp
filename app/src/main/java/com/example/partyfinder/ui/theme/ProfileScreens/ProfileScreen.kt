@@ -1,4 +1,4 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.ProfileScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -39,9 +39,8 @@ import androidx.compose.ui.unit.sp
 import com.example.partyfinder.R
 import com.example.partyfinder.data.GamerCalls
 import com.example.partyfinder.datasource.datasource
-
-
-
+import com.example.partyfinder.ui.theme.GamersCallScreens.G_Calls
+import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 //creating other screens
@@ -66,7 +65,7 @@ fun ProfileScreen(
 fun PreviewProfileScreen(){
     PartyFinderTheme{
         ProfileScreen(
-            profileBannerWidget = { ProfileBannerWidget(onEditProfileClick = {})},
+            profileBannerWidget = { ProfileBannerWidget(onEditProfileClick = {}) },
             profileScreenContent = { ProfileScreenContent(
                 profileDataWidget = { ProfileDataWidget(
                     gamerID ="Kaizoku",
@@ -80,8 +79,9 @@ fun PreviewProfileScreen(){
                             options = datasource.userStatusOption
                         )
                     },
-                    userStatus =datasource.userStatusOption.get(0) )},
-                profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = "Hello I like to play games")},
+                    userStatus =datasource.userStatusOption.get(0) )
+                },
+                profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = "Hello I like to play games") },
                 profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { /*TODO*/ }) },
                 profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = datasource.MyGamerCalls) }) }
             )

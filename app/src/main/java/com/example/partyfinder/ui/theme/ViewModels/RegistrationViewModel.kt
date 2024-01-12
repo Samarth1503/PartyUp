@@ -1,8 +1,10 @@
-package com.example.partyfinder.model.Register
+package com.example.partyfinder.ui.theme.ViewModels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.partyfinder.model.Register.RegisterUIEvent
+import com.example.partyfinder.model.Register.RegistrationUIState
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,27 +58,31 @@ public class RegistrationViewModel : ViewModel() {
                 policyStatusChecked.value = !policyStatusChecked.value
             }
 
-            is RegisterUIEvent.RegisterButtonClicked ->{
 
-                if (confirmPasswordValidation.value && policyStatusChecked.value) {
-                    Log.d(TAG, "Inside **Register** Stack")
-                    Log.d(TAG, registrationUIState.value.toString())
-                    registerToFireBase()
-                } else if (!policyStatusChecked.value){
-                    Log.d(TAG, "Privacy policy not accepted")
-                } else {
-                    Log.d(TAG, "Passwords do not match")
-                }
-            }
         }
     }
 
-    private fun registerToFireBase(){
+    fun OnRegisterButtonClicked(navigateToHomeScreen: () -> Unit){
+        if (confirmPasswordValidation.value && policyStatusChecked.value) {
+            Log.d(TAG, "Inside **Register** Stack")
+            Log.d(TAG, registrationUIState.value.toString())
+            registerToFireBase(navigateToHomeScreen=navigateToHomeScreen)
+        } else if (!policyStatusChecked.value){
+            Log.d(TAG, "Privacy policy not accepted")
+        } else {
+            Log.d(TAG, "Passwords do not match")
+        }
+    }
+
+    private fun registerToFireBase(
+        navigateToHomeScreen: () -> Unit
+    ){
         Log.d(TAG, "InsideRegister")
 
         createUserInFireBase(
             email = registrationUIState.value.email,
-            password = registrationUIState.value.password
+            password = registrationUIState.value.password,
+            navigateToHomeScreen = navigateToHomeScreen
         )
     }
 
@@ -85,7 +91,10 @@ public class RegistrationViewModel : ViewModel() {
         Log.d(TAG, registrationUIState.value.toString())
     }
 
-    private fun createUserInFireBase(email: String, password: String) {
+    private fun createUserInFireBase(
+        email: String,
+        password: String,
+        navigateToHomeScreen:() -> Unit) {
 
         registrationInProgress.value = true
 
@@ -95,6 +104,7 @@ public class RegistrationViewModel : ViewModel() {
                 registrationInProgress.value = false
                 if (it.isSuccessful) {
                     registrationSuccessful.value = true
+                    navigateToHomeScreen()
                 }
             }
 

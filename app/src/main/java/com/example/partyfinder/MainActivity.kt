@@ -9,7 +9,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.partyfinder.ui.theme.PartyFinderApp
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.google.firebase.FirebaseApp
 
@@ -31,7 +30,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//merged master into pushkar
+
 
 @Preview(showBackground = true)
 @Composable

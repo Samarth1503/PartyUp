@@ -1,4 +1,4 @@
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.GamersCallScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
+import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 @Composable
 fun CreateGamerCallScreen(modifier: Modifier=Modifier){

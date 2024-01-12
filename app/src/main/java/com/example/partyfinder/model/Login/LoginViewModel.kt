@@ -5,15 +5,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.partyfinder.Navigation.PartyUpRouterSam
 import com.example.partyfinder.Navigation.Screens
+import com.example.partyfinder.model.Register.RegistrationUIState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class LoginViewModel : ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
 
-    var loginUIState = mutableStateOf(LoginUIState())
+
+    private val _loginUIState = MutableStateFlow(LoginUIState())
+    val loginUIState: StateFlow<LoginUIState> = _loginUIState.asStateFlow()
 
     var loginInProgress = mutableStateOf(false)
 
@@ -21,19 +28,20 @@ class LoginViewModel : ViewModel() {
     fun onEvent(event: LoginUIEvent) {
         when (event) {
             is LoginUIEvent.EmailChanged -> {
-                loginUIState.value = loginUIState.value.copy(
-                    email = event.email
-                )
+                _loginUIState.update{ currentState -> currentState.copy(
+                    email = event.email)}
+                printState()
             }
 
             is LoginUIEvent.PasswordChanged -> {
-                loginUIState.value = loginUIState.value.copy(
-                    password = event.password
-                )
+                _loginUIState.update{ currentState -> currentState.copy(
+                    password = event.password)}
+                printState()
             }
 
             is LoginUIEvent.LoginButtonClicked -> {
                 login()
+                printState()
             }
 
             is LoginUIEvent.ForgotPasswordClicked -> {
@@ -46,8 +54,8 @@ class LoginViewModel : ViewModel() {
     private fun login() {
 
         loginInProgress.value = true
-        val email = loginUIState.value.email
-        val password = loginUIState.value.password
+        val email = _loginUIState.value.email
+        val password = _loginUIState.value.password
 
         FirebaseAuth.getInstance()
             .signInWithEmailAndPassword(email, password)
@@ -71,7 +79,7 @@ class LoginViewModel : ViewModel() {
     }
 
     private fun sendPasswordReset() {
-        val email = loginUIState.value.email
+        val email = _loginUIState.value.email
 
         Firebase.auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
@@ -82,5 +90,10 @@ class LoginViewModel : ViewModel() {
                     Log.d(TAG, "Unable to send Email")
                 }
             }
+    }
+
+    private fun printState(){
+        Log.d(TAG, "InsideStack")
+        Log.d(TAG, _loginUIState.value.toString())
     }
 }

@@ -156,7 +156,8 @@ fun G_Calls(
     gamerTag:String,
     gameName:String,
     partySize:Int,
-    callDes:String) {
+    callDes:String
+) {
 
 //        Variable declaration for menu
     var isMenuVisible by remember { mutableStateOf(false) }
@@ -306,10 +307,8 @@ fun G_Calls(
                             style = MaterialTheme.typography.bodySmall,
                             color = colorResource(id = R.color.white),
                             modifier = modifier
-                                .padding(bottom = 2.dp)
+                                .padding(end = 16.dp, bottom = 2.dp)
                         )
-                        Spacer(modifier = modifier.width(12.dp))
-
                     }
                 }
             }

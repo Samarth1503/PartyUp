@@ -75,14 +75,14 @@ public class RegistrationViewModel : ViewModel() {
         Log.d(TAG, "InsideRegister")
 
         createUserInFireBase(
-            email = registrationUIState.value.email,
-            password = registrationUIState.value.password
+            email = _registrationUIState.value.email,
+            password = _registrationUIState.value.password
         )
     }
 
     private fun printState(){
         Log.d(TAG, "InsideStack")
-        Log.d(TAG, registrationUIState.value.toString())
+        Log.d(TAG, _registrationUIState.value.toString())
     }
 
     private fun createUserInFireBase(email: String, password: String) {

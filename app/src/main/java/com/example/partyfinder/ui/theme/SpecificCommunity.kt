@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,22 +19,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,22 +39,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.partyfinder.R
-import com.example.partyfinder.model.Community.*
+import com.example.partyfinder.model.Community.CommunityUIEvent
+import com.example.partyfinder.model.Community.CommunityViewModel
+import com.example.partyfinder.model.Community.PostUIEvent
+import com.example.partyfinder.model.Community.PostViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpecificCommunityScreen(){
+fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()){
     Surface(color= colorResource(id = R.color.black)){
         Box(modifier = Modifier
         ) {
-            val newPostOverlay by remember {mutableStateOf(false)}
+            var newPostOverlay by remember {mutableStateOf(false)}
             Column {
                 SpecificCommunityTopBar()
                 SpecificCommunityContent()
@@ -73,7 +66,7 @@ fun SpecificCommunityScreen(){
                     .padding(bottom = 24.dp)
                     .align(Alignment.BottomCenter),
                 shape = RoundedCornerShape(16.dp),
-                onClick = { /* Add navigation */ },
+                onClick = { newPostOverlay = !newPostOverlay },
                 border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
                 colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG))
             ) {
@@ -84,30 +77,54 @@ fun SpecificCommunityScreen(){
             }
 
 
-            Column( modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.transparentBackdrop))
-                ,
-                verticalArrangement = Arrangement.Bottom
-            ) {
-//                Surface( modifier = Modifier
-//                    .fillMaxWidth()
-//                    .weight(1f),
-//                    color = colorResource(id = R.color.transparentBackdrop)) { }
-
+            if(newPostOverlay){
                 Column( modifier = Modifier
-                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                    .fillMaxWidth()
-                    .background(colorResource(id = R.color.black))
+                    .fillMaxSize()
+                    .background(colorResource(id = R.color.transparentMenuBG))
+                    .clickable { newPostOverlay = !newPostOverlay },
+                    verticalArrangement = Arrangement.Bottom
                 ) {
-                    CustomTextField(labelValue = "Enter Message",
-                        onTextSelected = {} )
-                }
+                    Column( modifier = Modifier
+                        .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                        .fillMaxWidth()
+                        .background(colorResource(id = R.color.black)),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
 
+                        Image(painter = painterResource(id = R.drawable.expanddownarrow_blue),
+                            contentDescription = "close menu img",
+                            modifier = Modifier.height(24.dp).width(80.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        CustomTextField(labelValue = "Enter Message",
+                            onTextSelected = { communityViewModel.onEvent(CommunityUIEvent.ContentChanged(it))} )
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Button(
+                            modifier = Modifier
+                                .padding(bottom = 24.dp),
+                            shape = RoundedCornerShape(4.dp),
+                            onClick = { communityViewModel.onEvent(CommunityUIEvent.NewPostAdded) },
+                            border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG))
+                        ) {
+                            Text(modifier = Modifier
+                                .padding(bottom = 4.dp),
+                                text = "Post",
+                                color = colorResource(id = R.color.primary) )
+                        }
+                    }
+
+                }
             }
         }
     }
 }
+
+
 
 @Composable
 fun SpecificCommunityTopBar(modifier: Modifier = Modifier) {
@@ -321,7 +338,7 @@ fun CommunityComments(modifier: Modifier = Modifier,
                         color = colorResource(id = R.color.white)
                     )
                 }
-//                Like Post funcitonality
+//                Like Post functionality
                 if (likeIsClicked){
                     if (isLiked){
                         postViewModel.onEvent(PostUIEvent.PostLiked)

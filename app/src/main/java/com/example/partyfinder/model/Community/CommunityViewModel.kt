@@ -18,11 +18,15 @@ class CommunityViewModel: ViewModel() {
 
     fun onEvent(event: CommunityUIEvent){
         when (event){
-            is CommunityUIEvent.NewPostAdded -> {
+            is CommunityUIEvent.ContentChanged -> {
                 _communityUIState.update { currentState -> currentState.copy(
-                    communityPostsNumber = _communityUIState.value.communityPostsNumber+1
-                ) }
+                    newPostContent = event.content ) }
                 printState()
+            }
+            is CommunityUIEvent.NewPostAdded -> {
+////                Add this as value for the database of new post
+//                _communityUIState.value.newPostContent
+                Log.d(TAG, "New Post with Content as" + _communityUIState.value.toString())
             }
         }
     }

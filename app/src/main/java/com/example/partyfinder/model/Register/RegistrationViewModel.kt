@@ -44,7 +44,7 @@ public class RegistrationViewModel : ViewModel() {
                     confirmPassword = event.confirmPassword
                 ) }
 
-                if (_registrationUIState.value.password.equals(_registrationUIState.value.confirmPassword)){
+                if (_registrationUIState.value.password == _registrationUIState.value.confirmPassword){
                     confirmPasswordValidation.value = true
                     confirmPasswordValidationStarted.value = false
                 }

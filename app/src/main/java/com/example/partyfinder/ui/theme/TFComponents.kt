@@ -2,26 +2,29 @@ package com.example.partyfinder.ui.theme
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults.colors
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,35 +50,39 @@ import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTextField(labelValue: String, onTextSelected: (String) -> Unit ) {
-    val labelValue = remember { mutableStateOf("") }
+fun CustomTextField(labelValue: String, onTextSelected: (String) -> Unit) {
+    val textValue = remember { mutableStateOf("") }
     val primary = colorResource(id = R.color.primary)
     val mainPadding = dimensionResource(id = R.dimen.main_padding)
 
+    val containerColor = colorResource(id = R.color.DarkBG)
     TextField(
-        value = labelValue.value,
-        onValueChange = { labelValue.value = it },
+        value = textValue.value,
+        onValueChange = { textValue.value = it
+            onTextSelected(it) },
         label = { Text(modifier = Modifier
             .padding(bottom = 4.dp),
-            text = "Enter Message",
+            text = labelValue,
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Light)
         ) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = colorResource(id = R.color.white),
+            focusedContainerColor = containerColor,
+            unfocusedContainerColor = containerColor,
+            disabledContainerColor = containerColor,
             cursorColor = primary,
-            containerColor = colorResource(id = R.color.DarkBG),
             focusedBorderColor = primary,
             unfocusedBorderColor = primary,
             unfocusedLabelColor = colorResource(id = R.color.white),
-            focusedTextColor = colorResource(id = R.color.white)
         ),
         modifier = Modifier
-            .padding(mainPadding, 40.dp, mainPadding, 28.dp)
+            .padding(mainPadding, 0.dp)
             .fillMaxWidth()
     )
 }
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun CustomOutlinedTextField(labelValue: String, leadingIcon: @Composable (() -> Unit)? = null,
                             onTextSelected: (String) -> Unit) {
@@ -92,22 +99,21 @@ fun CustomOutlinedTextField(labelValue: String, leadingIcon: @Composable (() -> 
         maxLines = 1,
         modifier = Modifier.fillMaxWidth(),
         leadingIcon = leadingIcon,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedLabelColor = colorResource(id = R.color.SubliminalText),
-            unfocusedLabelColor = colorResource(id = R.color.SubliminalText),
+        colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = colorResource(id = R.color.primary),
             unfocusedTextColor = colorResource(id = R.color.primary),
+            cursorColor = colorResource(id = R.color.primary),
             focusedBorderColor = colorResource(id = R.color.primary),
             unfocusedBorderColor = colorResource(id = R.color.primary),
             focusedLeadingIconColor = colorResource(id = R.color.primary),
             unfocusedLeadingIconColor = colorResource(id = R.color.primary),
-            cursorColor = colorResource(id = R.color.primary)
+            focusedLabelColor = colorResource(id = R.color.SubliminalText),
+            unfocusedLabelColor = colorResource(id = R.color.SubliminalText),
         )
     )
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordTextFieldComponent(labelValue: String, leadingIcon: @Composable (() -> Unit)? = null,
                                onTextSelected: (String) -> Unit) {
@@ -153,16 +159,16 @@ fun PasswordTextFieldComponent(labelValue: String, leadingIcon: @Composable (() 
         visualTransformation = if (passwordVisible.value) VisualTransformation.None
         else PasswordVisualTransformation(),
         leadingIcon = leadingIcon,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedLabelColor = colorResource(id = R.color.SubliminalText),
-            unfocusedLabelColor = colorResource(id = R.color.SubliminalText),
+        colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = colorResource(id = R.color.primary),
             unfocusedTextColor = colorResource(id = R.color.primary),
+            cursorColor = colorResource(id = R.color.primary),
             focusedBorderColor = colorResource(id = R.color.primary),
             unfocusedBorderColor = colorResource(id = R.color.primary),
             focusedLeadingIconColor = colorResource(id = R.color.primary),
             unfocusedLeadingIconColor = colorResource(id = R.color.primary),
-            cursorColor = colorResource(id = R.color.primary)
+            focusedLabelColor = colorResource(id = R.color.SubliminalText),
+            unfocusedLabelColor = colorResource(id = R.color.SubliminalText),
         )
     )
 }

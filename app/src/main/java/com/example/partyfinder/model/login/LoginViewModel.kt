@@ -1,11 +1,10 @@
-package com.example.partyfinder.model.Login
+package com.example.partyfinder.model.login
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.Navigation.PartyUpRouterSam
-import com.example.partyfinder.Navigation.Screens
-import com.example.partyfinder.model.Register.RegistrationUIState
+import com.example.partyfinder.navigation.PartyUpRouterSam
+import com.example.partyfinder.navigation.Screens
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth

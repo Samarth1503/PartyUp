@@ -1,9 +1,12 @@
-package com.example.partyfinder.model.Register
+package com.example.partyfinder.model.register
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.partyfinder.data.UserAccount
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +27,9 @@ public class RegistrationViewModel : ViewModel() {
 
     var confirmPasswordValidation = mutableStateOf(false)
 
+//    Database Variable
+    private lateinit var mDbRef: DatabaseReference
+    private lateinit var mAuth: FirebaseAuth
 
     private var TAG = RegistrationViewModel::class.simpleName
 
@@ -95,9 +101,18 @@ public class RegistrationViewModel : ViewModel() {
                 registrationInProgress.value = false
                 if (it.isSuccessful) {
                     registrationSuccessful.value = true
+                    mAuth.uid?.let { it1 -> addUserToDatabase(email, it1) }
                 }
             }
 
             .addOnFailureListener{ Log.d(TAG, "Failure") }
+    }
+
+    private fun addUserToDatabase(email: String, uid: String){
+        val userAccount = UserAccount("1", "Unknown")
+
+        mDbRef = FirebaseDatabase.getInstance().reference
+        mDbRef.child("user").child(uid).setValue(UserAccount(email,uid))
+        userAccount.printData()
     }
 }

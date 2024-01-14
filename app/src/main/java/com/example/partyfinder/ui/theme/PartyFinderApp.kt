@@ -1,7 +1,6 @@
 package com.example.partyfinder.ui.theme
 
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.community.CommunityViewModel
 
 
 enum class PartyFinderScreen(){
@@ -36,12 +36,12 @@ private fun
             navController.navigateUp()
         }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PartyFinderApp(
     profileViewModel: ProfileViewModel= viewModel(),
     chatScreenViewModel: chatScreenViewModel = viewModel(),
-    partyFinderScreenViewModel:PartyFinderViewModel = viewModel()
+    partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
+    communityViewModel: CommunityViewModel = viewModel()
 ){
 
     val profileUiState by profileViewModel.profileState.collectAsState()
@@ -64,7 +64,7 @@ fun PartyFinderApp(
         }
 
         composable(route = PartyFinderScreen.SpecificCommunityScreen.name){
-            SpecificCommunityScreen()
+            SpecificCommunityScreen(communityViewModel)
         }
 
         composable(route = PartyFinderScreen.GamerCallsScreen.name){

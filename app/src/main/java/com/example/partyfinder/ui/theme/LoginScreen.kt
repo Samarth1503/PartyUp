@@ -28,10 +28,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.partyfinder.model.Login.LoginUIEvent
-import com.example.partyfinder.model.Login.LoginViewModel
-import com.example.partyfinder.Navigation.PartyUpRouterSam
-import com.example.partyfinder.Navigation.Screens
+import com.example.partyfinder.model.login.LoginUIEvent
+import com.example.partyfinder.model.login.LoginViewModel
+import com.example.partyfinder.navigation.PartyUpRouterSam
+import com.example.partyfinder.navigation.Screens
 import com.example.partyfinder.R
 
 @Composable

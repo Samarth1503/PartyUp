@@ -1,4 +1,4 @@
-package com.example.partyfinder.model.Community
+package com.example.partyfinder.model.community
 
 sealed class CommunityUIEvent{
     data class ContentChanged(val content:String): CommunityUIEvent()

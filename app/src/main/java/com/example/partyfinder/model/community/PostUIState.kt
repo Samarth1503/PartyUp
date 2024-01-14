@@ -1,6 +1,5 @@
-package com.example.partyfinder.model.Community
+package com.example.partyfinder.model.community
 
-import java.sql.Time
 import java.sql.Types.NULL
 
 

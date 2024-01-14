@@ -24,12 +24,12 @@ object datasource {
     )
 
     val UserAccounts:List<UserAccount> = listOf(
-        UserAccount(gamerTag = "1", gamerID = "Unknown", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
-        UserAccount(gamerTag = "2", gamerID ="Sam", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
-        UserAccount(gamerTag="3", gamerID = "Ichigo", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
-        UserAccount(gamerTag="4", gamerID = "Kurama", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
-        UserAccount(gamerTag="5", gamerID = "GRoman", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
-        UserAccount(gamerTag="6", gamerID = "Kaizoku", bio = "My Bio", profilePic = R.drawable.luffy, status = datasource.userStatusOption.get(0)),
+        UserAccount(gamerID = "Unknown", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
+        UserAccount(gamerID ="Sam", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
+        UserAccount(gamerID = "Ichigo", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
+        UserAccount(gamerID = "Kurama", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
+        UserAccount(gamerID = "GRoman", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
+        UserAccount(gamerID = "Kaizoku", bio = "My Bio", profilePic = R.drawable.luffy, status = datasource.userStatusOption.get(0)),
     )
 
     val ChatChannels:List<ChatChannel> = listOf(

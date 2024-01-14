@@ -43,10 +43,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.partyfinder.R
-import com.example.partyfinder.model.Community.CommunityUIEvent
-import com.example.partyfinder.model.Community.CommunityViewModel
-import com.example.partyfinder.model.Community.PostUIEvent
-import com.example.partyfinder.model.Community.PostViewModel
+import com.example.partyfinder.model.community.CommunityUIEvent
+import com.example.partyfinder.model.community.CommunityViewModel
+import com.example.partyfinder.model.community.PostUIEvent
+import com.example.partyfinder.model.community.PostViewModel
 
 
 @Composable

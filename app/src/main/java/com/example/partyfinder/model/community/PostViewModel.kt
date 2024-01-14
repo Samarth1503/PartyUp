@@ -1,4 +1,4 @@
-package com.example.partyfinder.model.Community
+package com.example.partyfinder.model.community
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

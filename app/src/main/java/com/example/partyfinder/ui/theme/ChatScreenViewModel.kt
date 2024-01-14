@@ -51,7 +51,7 @@ class chatScreenViewModel:ViewModel(){
         }
         else
         {
-            return UserAccount(gamerID = "null", gamerTag = "null", profilePic = 0, status = datasource.userStatusOption.get(0), bio = "null")
+            return UserAccount()
         }
 
     }

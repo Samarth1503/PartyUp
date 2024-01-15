@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -81,7 +82,7 @@ fun PreviewProfileScreen(){
                     },
                     userStatus =datasource.userStatusOption.get(0) )
                 },
-                profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = "Hello I like to play games") },
+                profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = "") },
                 profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { /*TODO*/ }) },
                 profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = datasource.MyGamerCalls) }) }
             )
@@ -216,12 +217,16 @@ fun ProfileScreenBioWidget(
     modifier: Modifier = Modifier.padding(16.dp),
     gamerBio:String,
 ){
-    Card(modifier=modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))) {
+    Card(
+        modifier=modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 100.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))) {
         Column(modifier= Modifier.padding(16.dp)) {
             Text(text = "Bio", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
             Text(color = colorResource(id = R.color.white),
                 style = MaterialTheme.typography.bodyLarge,
-                text = gamerBio)
+                text = if(gamerBio=="")"    // Edit Profile to enter your Bio" else gamerBio)
         }
     }
 }

@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -42,20 +43,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.partyfinder.R
+import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.ui.theme.CustomExposedDropDownMenu
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 @Composable
-fun FilteredGamersCallScreen() {
+fun FilteredGamersCallScreen(
+    filteredGamersCallsTopBar:@Composable ()->Unit,
+    filteredGamersCallsContent:@Composable ()->Unit,
+) {
     Surface(modifier = Modifier) {
-        FilteredGamersCallTopBar()
-        FilteredGamersCallContent()
+        filteredGamersCallsTopBar()
+        filteredGamersCallsContent()
     }
 }
 
 
 @Composable
-fun FilteredGamersCallTopBar(modifier: Modifier = Modifier) {
+fun FilteredGamersCallTopBar(
+    modifier: Modifier = Modifier,
+    onBackClick:()->Unit) {
     Box(
         modifier = modifier
             .height(dimensionResource(id = (R.dimen.top_bar_height)))
@@ -70,6 +78,7 @@ fun FilteredGamersCallTopBar(modifier: Modifier = Modifier) {
                 .padding(25.dp, 5.dp, 0.dp, 0.dp)
                 .size(26.dp)
                 .align(Alignment.CenterStart)
+                .clickable { onBackClick() }
         )
         Text(
             text = "Filtered Calls",
@@ -82,7 +91,10 @@ fun FilteredGamersCallTopBar(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun FilteredGamersCallContent(modifier: Modifier = Modifier) {
+fun FilteredGamersCallContent(
+    modifier: Modifier = Modifier,
+    FilterGamerCallGameMenu:@Composable ()->Unit,
+    FilterNoOfGamerMenu:@Composable ()->Unit) {
     Column(modifier = Modifier
         .padding(top = dimensionResource(id = R.dimen.top_bar_height))
         .fillMaxWidth()
@@ -109,10 +121,13 @@ fun FilteredGamersCallContent(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .zIndex(2f)
             ){
-                GameFilterDropdown()
-                Spacer(modifier = Modifier.weight(0.5f))
-                PlayerFilterDropdown()
+                Row(modifier = Modifier.weight(2f)) {
+                    FilterGamerCallGameMenu()
+                }
                 Spacer(modifier = Modifier.weight(0.1f))
+                Row(modifier = Modifier.weight(1f)) {
+                    FilterNoOfGamerMenu()
+                }
             }
 
             Column {
@@ -270,8 +285,49 @@ fun PlayerFilterDropdown() {
 @Preview
 @Composable
 fun PreviewFilteredGamersCallScreen(){
+    var isGameNameExpanded by remember { mutableStateOf(false) }
+    var gameNameValue by remember { mutableStateOf("") }
+    var isNoOfPlayersExpanded by remember { mutableStateOf(false) }
+    var NoofGamersValue by remember { mutableStateOf("") }
     PartyFinderTheme {
-        FilteredGamersCallScreen()
+        FilteredGamersCallScreen(
+            filteredGamersCallsTopBar = {
+                FilteredGamersCallTopBar(onBackClick = {})
+
+            },
+            filteredGamersCallsContent = {
+                FilteredGamersCallContent(
+                    FilterGamerCallGameMenu = { CustomExposedDropDownMenu(
+                        placeholder = "Select the Game ",
+                        isDropDownExpanded = isGameNameExpanded ,
+                        onExpandChange ={newValue -> isGameNameExpanded= newValue } ,
+                        onValueChange = {newValue ->gameNameValue = newValue  },
+                        DropDownSelectedValue =gameNameValue ,
+                        onDismissRequest = { isGameNameExpanded=false }) {
+                        datasource.FindPartyGamesMenuItems.forEach { item ->
+                            DropdownMenuItem(
+                                text = { Text(text = item, color = colorResource(id = R.color.primary)) },
+                                onClick = { gameNameValue =item })
+                        }
+                    }},
+                    FilterNoOfGamerMenu = {
+                        CustomExposedDropDownMenu(
+                            placeholder = "Count",
+                            isDropDownExpanded = isNoOfPlayersExpanded,
+                            onExpandChange = {newValue -> isNoOfPlayersExpanded = false },
+                            onValueChange = {newValue ->  NoofGamersValue = newValue},
+                            DropDownSelectedValue = NoofGamersValue,
+                            onDismissRequest = { isNoOfPlayersExpanded = false }) {
+                            datasource.FindPartyNoOfPlayerMenuItems.forEach { item ->
+                                DropdownMenuItem(
+                                    text = { Text(text = item, color = colorResource(id = R.color.primary)) },
+                                    onClick = { gameNameValue =item })
+                            }
+                            
+                        }
+                    })
+            }
+        )
     }
 }
 

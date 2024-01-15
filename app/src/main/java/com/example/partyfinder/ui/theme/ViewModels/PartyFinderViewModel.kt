@@ -1,8 +1,5 @@
 package com.example.partyfinder.ui.theme.ViewModels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.partyfinder.model.PartyFinderUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,9 +11,23 @@ class PartyFinderViewModel :ViewModel(){
     private val _partyFinderScreenUiState = MutableStateFlow(PartyFinderUiState())
     val partyFinderUiState:StateFlow<PartyFinderUiState> = _partyFinderScreenUiState.asStateFlow()
 
-    var isGameDDExpanded by mutableStateOf(false)
-    var gameNameSelectedValue by mutableStateOf("")
-    var selecteditem by mutableStateOf("")
+
+    fun onHideDetailsClicked(currentValue:Boolean){
+        var updateTo =  !currentValue
+        _partyFinderScreenUiState.update {currentState -> currentState.copy(
+            hideDetails = updateTo
+        )
+        }
+    }
+
+    fun onClickClearDetails () {
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            gameNameSelectedValue = "",
+            noOfPlayerRequired =  "",
+            noOfPlayersInParty = "",
+        ) }
+        onStopCallClick()
+    }
     fun onGameNameExpandedChanged(newValue:Boolean){
         _partyFinderScreenUiState.update { currentState -> currentState.copy(
             isGameNameDDExtended = newValue
@@ -86,6 +97,18 @@ class PartyFinderViewModel :ViewModel(){
         _partyFinderScreenUiState.update { currentState -> currentState.copy(
             noOfPlayerRequired = item,
             isNoOfPlayerRequiredDDExtended = false
+        ) }
+    }
+
+    fun onSearchClick(){
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            isGamerCallLive = true
+        ) }
+    }
+
+    fun onStopCallClick(){
+        _partyFinderScreenUiState.update { currentState ->currentState.copy(
+            isGamerCallLive = false
         ) }
     }
 }

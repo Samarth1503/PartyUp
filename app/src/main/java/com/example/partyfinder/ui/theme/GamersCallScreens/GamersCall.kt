@@ -48,7 +48,11 @@ import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 @Composable
-fun GamersCall(modifier:Modifier=Modifier){
+fun GamersCall(
+    modifier:Modifier=Modifier,
+    onCreateClick:()->Unit,
+    gamersCallsTopBar:@Composable () ->Unit,
+    gamersCallContent:@Composable () ->Unit){
     Surface(color= colorResource(id = R.color.black)){
         Box(modifier=Modifier.fillMaxSize()) {
             Column(
@@ -57,8 +61,8 @@ fun GamersCall(modifier:Modifier=Modifier){
                     .height(808.dp)
                     .width(393.dp)
             ) {
-                GamersCallTopBar()
-                GamersCallContent(gamerCalls = datasource.MyGamerCalls)
+                gamersCallsTopBar()
+                gamersCallContent()
             }
             Button(
                 modifier = Modifier
@@ -66,7 +70,7 @@ fun GamersCall(modifier:Modifier=Modifier){
                     .height(40.dp)
                     .align(Alignment.BottomCenter),
                 shape = RoundedCornerShape(5.dp),
-                onClick = { },
+                onClick = onCreateClick,
                 border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
             ) {
@@ -83,7 +87,10 @@ fun GamersCall(modifier:Modifier=Modifier){
 
 
 @Composable
-fun GamersCallTopBar(modifier: Modifier = Modifier) {
+fun GamersCallTopBar(
+    modifier: Modifier = Modifier,
+    onBackClick: () ->Unit,
+    ) {
     Box(
         modifier = modifier
             .height(dimensionResource(id = (R.dimen.top_bar_height)))
@@ -98,6 +105,7 @@ fun GamersCallTopBar(modifier: Modifier = Modifier) {
                 .padding(25.dp, 5.dp, 0.dp, 0.dp)
                 .size(26.dp)
                 .align(Alignment.CenterStart)
+                .clickable { onBackClick() }
         )
         Text(
             text = "Gamers Call",
@@ -108,7 +116,9 @@ fun GamersCallTopBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GamersCallContent(modifier: Modifier = Modifier,gamerCalls:List<GamerCalls>) {
+fun GamersCallContent(
+    modifier: Modifier = Modifier,
+    listOfGamerCalls:List<GamerCalls>) {
     Box(modifier = modifier){
         LazyColumn(
             modifier = modifier
@@ -122,7 +132,7 @@ fun GamersCallContent(modifier: Modifier = Modifier,gamerCalls:List<GamerCalls>)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(gamerCalls) {
+            items(listOfGamerCalls) {
                 G_Calls(
                     gameName =it.gameName,
                     callDes = it.callDes,
@@ -407,7 +417,11 @@ fun G_Calls(
 @Composable
 fun PreviewGamersCall(){
     PartyFinderTheme {
-        GamersCall()
+        GamersCall(
+            gamersCallsTopBar = { GamersCallTopBar(onBackClick = {})},
+            onCreateClick = {},
+            gamersCallContent = { GamersCallContent(listOfGamerCalls = datasource.GamerCalls)}
+        )
     }
 }
 

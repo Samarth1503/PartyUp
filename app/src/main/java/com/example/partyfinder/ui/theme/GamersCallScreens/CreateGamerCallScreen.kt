@@ -2,6 +2,7 @@ package com.example.partyfinder.ui.theme.GamersCallScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,13 +38,16 @@ import com.example.partyfinder.R
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 @Composable
-fun CreateGamerCallScreen(modifier: Modifier=Modifier){
+fun CreateGamerCallScreen(
+    modifier: Modifier=Modifier,
+    createGamerCallContent:@Composable ()->Unit,
+    createGamerCallScreenTopBar:@Composable ()->Unit,){
         Surface(
             modifier=modifier.fillMaxSize(),
             color = colorResource(id = R.color.black)) {
             Column(modifier=Modifier) {
-                        CreateGamerCallScreenTopBar()
-                        CreateGamerCallContent()
+                        createGamerCallScreenTopBar()
+                        createGamerCallContent()
             }
         }
 }
@@ -51,8 +55,25 @@ fun CreateGamerCallScreen(modifier: Modifier=Modifier){
 @Preview
 @Composable
 fun PreviewCreateGamerCallScreen(){
+    var GameName by remember { mutableStateOf("") }
+    var NoOfGamers by remember { mutableStateOf("") }
+    var CallDescription by remember { mutableStateOf("") }
+    var CallDuration by remember { mutableStateOf("") }
     PartyFinderTheme {
-        CreateGamerCallScreen()
+        CreateGamerCallScreen(
+            createGamerCallContent = { CreateGamerCallContent(
+                GameName = GameName,
+                NoOfGamers =NoOfGamers ,
+                CallDescription = CallDescription,
+                CallDuration = CallDuration,
+                onGameNameValueChange = {it -> GameName=it},
+                onNoOfGamersValueChange ={it -> NoOfGamers=it} ,
+                onCallDescriptionValueChange = {it -> CallDescription=it},
+                onCallDurationValueChange ={it -> CallDuration=it},
+                onPostButtonClick = {}
+            ) },
+            createGamerCallScreenTopBar = { CreateGamerCallScreenTopBar(onCloseButtonClick = { /*TODO*/ })}
+        )
 
     }
 }
@@ -60,8 +81,10 @@ fun PreviewCreateGamerCallScreen(){
 
 
 @Composable
-fun CreateGamerCallScreenTopBar(modifier:Modifier=Modifier
-    .height(dimensionResource(id = R.dimen.top_bar_height))){
+fun CreateGamerCallScreenTopBar(
+    onCloseButtonClick:()->Unit,
+    modifier:Modifier=Modifier
+        .height(dimensionResource(id = R.dimen.top_bar_height))){
     Row (modifier= modifier
         .background(color = colorResource(id = R.color.DarkBG))
         .fillMaxWidth()
@@ -83,25 +106,26 @@ fun CreateGamerCallScreenTopBar(modifier:Modifier=Modifier
             modifier= Modifier
                 .height(dimensionResource(id = R.dimen.top_bar_back_icon_size))
                 .width(dimensionResource(id = R.dimen.top_bar_back_icon_size))
+                .clickable { onCloseButtonClick() }
             )
     }
 }
 
 
 @Composable
-fun CreateGamerCallContent(modifier:Modifier=Modifier){
-    var GameName by remember {
-        mutableStateOf("")
-    }
-    var NoOfGamers by remember {
-        mutableStateOf("")
-    }
-    var CallDescription by remember {
-        mutableStateOf("")
-    }
-    var CallDuration by remember {
-        mutableStateOf("")
-    }
+fun CreateGamerCallContent(
+    modifier:Modifier=Modifier,
+    GameName:String,
+    NoOfGamers:String,
+    CallDescription:String,
+    CallDuration:String,
+    onGameNameValueChange:(String)->Unit,
+    onNoOfGamersValueChange:(String)->Unit,
+    onCallDescriptionValueChange:(String)->Unit,
+    onCallDurationValueChange:(String)->Unit,
+    onPostButtonClick:()->Unit,
+    ){
+
     Column(modifier = modifier.padding(dimensionResource(id = R.dimen.main_padding))) {
             Row(modifier= Modifier
                 .fillMaxWidth()
@@ -111,10 +135,10 @@ fun CreateGamerCallContent(modifier:Modifier=Modifier){
                     color = colorResource(id = R.color.primary),
                     style = MaterialTheme.typography.titleLarge)
             }
-        CreateCallTextField(value = GameName, onValueChanged = { GameName = it}, label ="Game Name" , isLastField =false )
-        CreateCallTextField(value =NoOfGamers , onValueChanged = { NoOfGamers = it}, label ="No of Gamers" , isLastField =false )
-        CreateCallTextField(value = CallDescription, onValueChanged = {CallDescription = it}, label ="Call of Description" , isLastField =false )
-        CreateCallTextField(value = CallDuration, onValueChanged = { CallDuration = it}, label ="Call Duration" , isLastField =true)
+        CreateCallTextField(value = GameName, onValueChanged = onGameNameValueChange, label ="Game Name" , isLastField =false )
+        CreateCallTextField(value =NoOfGamers , onValueChanged = onNoOfGamersValueChange, label ="No of Gamers" , isLastField =false )
+        CreateCallTextField(value = CallDescription, onValueChanged = onCallDescriptionValueChange, label ="Call of Description" , isLastField =false )
+        CreateCallTextField(value = CallDuration, onValueChanged = onCallDurationValueChange, label ="Call Duration" , isLastField =true)
 
         Row(modifier= Modifier
             .fillMaxWidth()
@@ -122,9 +146,11 @@ fun CreateGamerCallContent(modifier:Modifier=Modifier){
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = onPostButtonClick,
                 shape = RoundedCornerShape(20.dp),
-                modifier=Modifier.height(dimensionResource(id = R.dimen.generic_button_height)).width(124.dp),
+                modifier= Modifier
+                    .height(dimensionResource(id = R.dimen.generic_button_height))
+                    .width(124.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.on_tertiary))
             ) {
                     Text(text = "Post", style = MaterialTheme.typography.titleSmall)

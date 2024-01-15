@@ -23,6 +23,14 @@ object datasource {
 
     )
 
+    val GamerCalls:List<GamerCalls> = listOf(
+        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
+        GamerCalls("Sam","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
+        GamerCalls("Ichigo","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
+
+        )
+
+
     val UserAccounts:List<UserAccount> = listOf(
         UserAccount(gamerTag = "1", gamerID = "Unknown", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),
         UserAccount(gamerTag = "2", gamerID ="Sam", bio = "My Bio", profilePic = R.drawable.pp, status = datasource.userStatusOption.get(0)),

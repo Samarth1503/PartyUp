@@ -23,7 +23,15 @@ import com.example.partyfinder.ui.theme.ChatScreens.ChatsScreen
 import com.example.partyfinder.ui.theme.ChatScreens.DmScreen
 import com.example.partyfinder.ui.theme.ChatScreens.DmTopBar
 import com.example.partyfinder.ui.theme.CustomExposedDropDownMenu
+import com.example.partyfinder.ui.theme.GamersCallScreens.CreateGamerCallContent
+import com.example.partyfinder.ui.theme.GamersCallScreens.CreateGamerCallScreen
+import com.example.partyfinder.ui.theme.GamersCallScreens.CreateGamerCallScreenTopBar
+import com.example.partyfinder.ui.theme.GamersCallScreens.FilteredGamersCallContent
+import com.example.partyfinder.ui.theme.GamersCallScreens.FilteredGamersCallScreen
+import com.example.partyfinder.ui.theme.GamersCallScreens.FilteredGamersCallTopBar
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCall
+import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallContent
+import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallTopBar
 import com.example.partyfinder.ui.theme.HomeScreen
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.LogInPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.RegisterPage
@@ -42,6 +50,9 @@ import com.example.partyfinder.ui.theme.ProfileScreens.ProfileScreenContent
 import com.example.partyfinder.ui.theme.ProfileScreens.ProfileUpdateStatus
 import com.example.partyfinder.ui.theme.ProfileScreens.UpdateRanksScreen
 import com.example.partyfinder.ui.theme.SpecificCommunityScreen
+import com.example.partyfinder.ui.theme.ViewModels.CreateGamerCallsViewModel
+import com.example.partyfinder.ui.theme.ViewModels.FilteredGamerCallsViewModel
+import com.example.partyfinder.ui.theme.ViewModels.GamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
 import com.example.partyfinder.ui.theme.ViewModels.PartyFinderViewModel
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
@@ -57,6 +68,8 @@ enum class PartyFinderScreen(){
     UpdateRanksScreen,
     SpecificCommunityScreen,
     GamerCallsScreen,
+    CreateGamerCallsScreen,
+    FilteredGamerCallsScreen,
     ChatsScreen,
     LoginScreen,
     RegisterScreen,
@@ -77,16 +90,22 @@ fun PartyFinderApp(
     partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
     registerViewModel:RegistrationViewModel = viewModel(),
+    gamersCallViewModel:GamerCallsViewModel = viewModel(),
+    createGamerCallViewModel: CreateGamerCallsViewModel = viewModel(),
+    filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel()
 ){
 
     val profileUiState by profileViewModel.profileState.collectAsState()
     val chatScreenUiState by chatScreenViewModel.chatsScreenUiState.collectAsState()
     val partyFinderScreenUiState by partyFinderScreenViewModel.partyFinderUiState.collectAsState()
+    val gamerCallsUiState by gamersCallViewModel.GamerCallsUiState.collectAsState()
+    val createGamerCallsUiState by createGamerCallViewModel.CreateGamerCallUiState.collectAsState()
+    val filteredGamerCallsUiState by filterGamerCallsViewModel.FilteredGamerCallUiState.collectAsState()
     val navController : NavHostController= rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = PartyFinderScreen.LoginScreen.name){
+        startDestination = PartyFinderScreen.FilteredGamerCallsScreen.name){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
                 navigateToProfileScreen={navController.navigate(PartyFinderScreen.ProfileScreen.name)},
@@ -124,7 +143,68 @@ fun PartyFinderApp(
         }
 
         composable(route = PartyFinderScreen.GamerCallsScreen.name){
-            GamersCall()
+            GamersCall(
+                gamersCallsTopBar = { GamersCallTopBar {
+                    navController.navigateUp()
+                }},
+                gamersCallContent = { GamersCallContent(listOfGamerCalls = gamerCallsUiState.listOfGamersCall )},
+                onCreateClick = {navController.navigate(PartyFinderScreen.CreateGamerCallsScreen.name)}
+            )
+        }
+        composable(route= PartyFinderScreen.CreateGamerCallsScreen.name){
+            CreateGamerCallScreen(
+                createGamerCallScreenTopBar = { CreateGamerCallScreenTopBar(onCloseButtonClick = { navController.navigateUp() })},
+                createGamerCallContent = {
+                    CreateGamerCallContent(
+                        GameName = createGamerCallsUiState.gameName ,
+                        NoOfGamers = createGamerCallsUiState.noOfGamers,
+                        CallDescription = createGamerCallsUiState.DescriptionOfCall,
+                        CallDuration = createGamerCallsUiState.CallDuration,
+                        onGameNameValueChange = {createGamerCallViewModel.onGameNameValueChange(it)},
+                        onNoOfGamersValueChange ={createGamerCallViewModel.onNoOfGamersValueChange(it)} ,
+                        onCallDescriptionValueChange ={createGamerCallViewModel.onCallDescriptionValueChange(it)} ,
+                        onCallDurationValueChange ={createGamerCallViewModel.onCallDurationValueChange(it)},
+                        onPostButtonClick = {}
+                    )
+                }
+            )
+        }
+
+        composable( route= PartyFinderScreen.FilteredGamerCallsScreen.name){
+            FilteredGamersCallScreen(
+                filteredGamersCallsTopBar = { FilteredGamersCallTopBar(onBackClick = {})},
+                filteredGamersCallsContent = {
+                    FilteredGamersCallContent(
+                        FilterGamerCallGameMenu = { CustomExposedDropDownMenu(
+                            placeholder = "Select the Game",
+                            isDropDownExpanded =filteredGamerCallsUiState.isFGameNameDropDownExpanded ,
+                            onExpandChange = {newValue -> filterGamerCallsViewModel.onGameNameExapandedChange(newValue)  },
+                            DropDownSelectedValue =filteredGamerCallsUiState.FGameNameDropDownValue,
+                            onValueChange = {newValue -> filterGamerCallsViewModel.onGameNameValueChange(newValue)  },
+                            onDismissRequest = { filterGamerCallsViewModel.onGameNameDismiss()},
+                            exposedMenuContent = {
+                                filteredGamerCallsUiState.listOfGameNameItems.forEach{item ->
+                                    DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { filterGamerCallsViewModel.onFGameNameItemClick(item)})
+                                }
+                            })
+                        },
+                        FilterNoOfGamerMenu = {
+                            CustomExposedDropDownMenu(
+                                placeholder = "Count" ,
+                                isDropDownExpanded =filteredGamerCallsUiState.isFNoOfGamersDropDownExpanded ,
+                                onExpandChange ={newValue -> filterGamerCallsViewModel.onNoOfGamersExapandedChange(newValue)} ,
+                                onValueChange = {newValue ->  filterGamerCallsViewModel.onNoOfPlayersvalueChange(newValue)},
+                                DropDownSelectedValue = filteredGamerCallsUiState.FNoOfGamersDropDownvalue,
+                                onDismissRequest = {filterGamerCallsViewModel.onNoOfGamersDismiss()}) {
+                                    filteredGamerCallsUiState.listofNoOfGamersItems.forEach { item ->
+                                        DropdownMenuItem(
+                                            text = { Text(text = item, color = colorResource(id = R.color.primary)) },
+                                            onClick = {filterGamerCallsViewModel.onFNoOfGamersItemClick(item)})
+                                    }
+                            }
+                        })
+                }
+                 )
         }
 
         composable(route = PartyFinderScreen.ChatsScreen.name){
@@ -206,7 +286,13 @@ fun PartyFinderApp(
                             DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { partyFinderScreenViewModel.onNoOfRequiredItemClicked(item) })
                         }
                     }
-                    }
+                    },
+                    hideDetails = partyFinderScreenUiState.hideDetails,
+                    onClickHideDetails = {partyFinderScreenViewModel.onHideDetailsClicked(partyFinderScreenUiState.hideDetails)},
+                    onClickClearDetails = {partyFinderScreenViewModel.onClickClearDetails()},
+                    isGamerCallLive = partyFinderScreenUiState.isGamerCallLive,
+                    onClickSearch = {partyFinderScreenViewModel.onSearchClick()},
+                    onClickStopCall = {partyFinderScreenViewModel.onStopCallClick()}
                 )
                 }
             )

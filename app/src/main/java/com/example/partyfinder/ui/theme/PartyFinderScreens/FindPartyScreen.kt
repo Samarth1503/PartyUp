@@ -17,11 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -74,6 +76,8 @@ fun PrevivewFindPartyScreen(){
     var partyValue by remember{ mutableStateOf("") }
     var requiredExpanded by remember { mutableStateOf(false) }
     var requiredvalue by remember{ mutableStateOf("") }
+    var hideDetails by remember{ mutableStateOf(false) }
+    var isCallLive by remember{ mutableStateOf(false) }
     PartyFinderTheme {
         FindPartyScreen(
             findPartyScreenTopBar = { FindPartyScreenTopBar() },
@@ -115,7 +119,16 @@ fun PrevivewFindPartyScreen(){
                         DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { requiredvalue=item})
                     }
                 }
-                }
+                },
+                hideDetails = hideDetails,
+                onClickHideDetails = {hideDetails = !hideDetails},
+                onClickClearDetails = {
+                    gamevalue =""
+                    partyValue=""
+                    requiredvalue=""},
+                isGamerCallLive = isCallLive,
+                onClickSearch = {isCallLive = true},
+                onClickStopCall = {isCallLive =false}
             )
             }
         )
@@ -124,11 +137,11 @@ fun PrevivewFindPartyScreen(){
 
 @Composable
 fun FindPartyScreenTopBar(
-    modifer: Modifier = Modifier
+    modifier: Modifier = Modifier
         .height(dimensionResource(id = R.dimen.top_bar_height))
         .background(colorResource(id = R.color.DarkBG)),
 ){
-    Box(modifier = modifer.fillMaxSize())
+    Box(modifier = modifier.fillMaxSize())
     {
 
         Text(
@@ -140,17 +153,20 @@ fun FindPartyScreenTopBar(
             style=MaterialTheme.typography.titleMedium
             )
 
-        Image(
-            painter = painterResource(id = R.drawable.remove_icon),
-            contentDescription =null,
-            modifier=
-            Modifier
-                .padding(end = dimensionResource(id = R.dimen.main_padding))
-                .height(dimensionResource(id = R.dimen.top_bar_back_icon_size))
-                .width(dimensionResource(id = R.dimen.top_bar_back_icon_size))
+        Box(
+            modifier=Modifier
                 .align(Alignment.CenterEnd)
-
-        )
+                .wrapContentSize()
+                .padding(end = 20.dp)
+                .clickable {  },
+        ) {
+            Icon(
+                modifier = Modifier.size(36.dp),
+                tint = colorResource(id = R.color.primary),
+                imageVector = Icons.Outlined.Notifications,
+                contentDescription = "notification",
+            )
+        }
 
     }
 }
@@ -159,11 +175,17 @@ fun FindPartyScreenTopBar(
 @Composable
 fun PartyFinderContent(
     modifier:Modifier=Modifier,
+    hideDetails:Boolean,
+    onClickHideDetails:()->Unit,
+    onClickClearDetails:()->Unit,
+    isGamerCallLive:Boolean,
+    onClickSearch:()->Unit,
+    onClickStopCall:()->Unit,
     gameNameExposedDD:@Composable ()-> Unit,
     noOfPlayerInParty:@Composable ()->Unit,
     noOfPlayersRequired:@Composable ()->Unit,
 ){
-    var isLoading by remember{ mutableStateOf(false) }
+
 
     Card(modifier= modifier
         .padding(dimensionResource(id = R.dimen.main_padding))
@@ -172,10 +194,10 @@ fun PartyFinderContent(
         colors =CardDefaults.cardColors(containerColor = colorResource(id = R.color.on_tertiary))
 
     ) {
-        var hideDetails by remember{ mutableStateOf(false) }
+
         Row(modifier= Modifier
             .padding(10.dp)
-            .clickable { hideDetails = !hideDetails }){
+            .clickable { onClickHideDetails()}){
             Text(
                 modifier=Modifier.padding(start=10.dp),
                 text = "Party Up!" ,
@@ -207,9 +229,7 @@ fun PartyFinderContent(
 
                 Button(
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.neutral_10)),
-                    onClick = {
-
-                    }) {
+                    onClick =onClickClearDetails) {
                     Text(
                         text = "Clear Details",
                         style = MaterialTheme.typography.titleSmall,
@@ -252,7 +272,7 @@ fun PartyFinderContent(
         }
 
         Row(modifier=Modifier.padding(start = 20.dp, top = 10.dp, bottom = 10.dp, end = 20.dp)){
-            if (!isLoading){
+            if (!isGamerCallLive){
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(id = R.drawable.edit_blue),
@@ -267,7 +287,7 @@ fun PartyFinderContent(
                     Spacer(modifier = Modifier.weight(1f))
                     Button(
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.neutral_10)),
-                        onClick = {isLoading=true }) {
+                        onClick = onClickSearch) {
                             Text(
                                 text = "Search",
                                 color = colorResource(id = R.color.primary))
@@ -289,7 +309,7 @@ fun PartyFinderContent(
                     Spacer(modifier = Modifier.weight(1f))
                     Button(
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.neutral_10)),
-                        onClick = { isLoading=false }) {
+                        onClick = onClickStopCall) {
                         Text(
                             text = "Stop Call",
                             color = colorResource(id = R.color.primary))
@@ -316,6 +336,7 @@ fun PartyFinderContent(
 
 @Composable
 fun PartyFinderLiveCallsResult(
+    gamerID:String= "Sarang",
     modifier:Modifier=Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp)
 ){
     var requestSent by remember { mutableStateOf(false) }
@@ -342,7 +363,7 @@ fun PartyFinderLiveCallsResult(
                 painter = painterResource(id = R.drawable.pp),
                 contentDescription ="pp" )
             Text(
-                text = "Kaizoku",
+                text = gamerID,
                 color = colorResource(id = R.color.primary),
                 style = MaterialTheme.typography.titleSmall
             )

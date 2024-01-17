@@ -23,6 +23,8 @@ class LoginViewModel : ViewModel() {
 
     var loginInProgress = mutableStateOf(false)
 
+    var loginIsSuccessful = mutableStateOf(false)
+
 
     fun onEvent(event: LoginUIEvent) {
         when (event) {
@@ -64,6 +66,7 @@ class LoginViewModel : ViewModel() {
 
                 if(it.isSuccessful){
                     loginInProgress.value = false
+                    loginIsSuccessful.value = true
                     PartyUpRouterSam.navigateTo(Screens.HomeScreen)
                 }
             }

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-public class RegistrationViewModel : ViewModel() {
+class RegistrationViewModel : ViewModel() {
 
     private val _registrationUIState = MutableStateFlow(RegistrationUIState())
     val registrationUIState: StateFlow<RegistrationUIState> = _registrationUIState.asStateFlow()
@@ -29,7 +29,6 @@ public class RegistrationViewModel : ViewModel() {
 
 //    Database Variable
     private lateinit var mDbRef: DatabaseReference
-    private lateinit var mAuth: FirebaseAuth
 
     private var TAG = RegistrationViewModel::class.simpleName
 
@@ -66,7 +65,7 @@ public class RegistrationViewModel : ViewModel() {
 
                 if (confirmPasswordValidation.value && policyStatusChecked.value) {
                     Log.d(TAG, "Inside **Register** Stack")
-                    Log.d(TAG, registrationUIState.value.toString())
+                    Log.d(TAG, _registrationUIState.value.toString())
                     registerToFireBase()
                 } else if (!policyStatusChecked.value){
                     Log.d(TAG, "Privacy policy not accepted")
@@ -93,6 +92,7 @@ public class RegistrationViewModel : ViewModel() {
 
     private fun createUserInFireBase(email: String, password: String) {
 
+        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
         registrationInProgress.value = true
 
         FirebaseAuth.getInstance()
@@ -109,7 +109,7 @@ public class RegistrationViewModel : ViewModel() {
     }
 
     private fun addUserToDatabase(email: String, uid: String){
-        val userAccount = UserAccount("1", "Unknown")
+        val userAccount = UserAccount()
 
         mDbRef = FirebaseDatabase.getInstance().reference
         mDbRef.child("user").child(uid).setValue(UserAccount(email,uid))

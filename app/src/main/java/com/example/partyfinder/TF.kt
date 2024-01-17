@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-//import com.example.partyfinder.navigation.PartyUpRouterSam
-//import com.example.partyfinder.navigation.Screens
+import com.example.partyfinder.navigation.PartyUpRouterSam
+import com.example.partyfinder.navigation.Screens
 import com.example.partyfinder.ui.theme.HomepageContent
 import com.example.partyfinder.ui.theme.LogInPage
 import com.example.partyfinder.ui.theme.PartyFinderTheme
@@ -29,23 +29,22 @@ fun TF(modifier: Modifier = Modifier) {
             .background(color = colorResource(id = R.color.black)),
         contentAlignment = Alignment.Center
     ) {
-        RegisterPage()
-//        Crossfade(targetState = PartyUpRouterSam.currentScreen, label = "Navigation") { currentState ->
-//            when(currentState.value){
-//                is Screens.HomeScreen -> {
-//                    HomepageContent()
-//                }
-//                is Screens.RegisterScreen -> {
-//                    RegisterPage()
-//                }
-//                is Screens.LoginScreen -> {
-//                    LogInPage()
-//                }
-//                is Screens.TermsAndConditionsScreen -> {
-//                    TermsAndConditons()
-//                }
-//            }
-//        }
+        Crossfade(targetState = PartyUpRouterSam.currentScreen, label = "Navigation") { currentState ->
+            when(currentState.value){
+                is Screens.HomeScreen -> {
+                    HomepageContent()
+                }
+                is Screens.RegisterScreen -> {
+                    RegisterPage()
+                }
+                is Screens.LoginScreen -> {
+                    LogInPage()
+                }
+                is Screens.TermsAndConditionsScreen -> {
+                    TermsAndConditons()
+                }
+            }
+        }
     }
 }
 

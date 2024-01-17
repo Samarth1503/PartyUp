@@ -1,5 +1,11 @@
 package com.example.partyfinder.ui.theme
 
+import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.util.Log
+import android.view.LayoutInflater
+import android.widget.TextView
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +27,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,8 +42,11 @@ import com.example.partyfinder.navigation.PartyUpRouterSam
 import com.example.partyfinder.navigation.Screens
 import com.example.partyfinder.R
 
+@SuppressLint("SetTextI18n", "InflateParams")
 @Composable
 fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier
             .height(808.dp)
@@ -123,6 +134,31 @@ fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
                 color = colorResource(id = R.color.primary) )
+        }
+
+//        for prompting acc creation
+        LaunchedEffect(key1 = loginViewModel.loginIsSuccessful.value) {
+            if (loginViewModel.loginIsSuccessful.value) {
+                Log.d(ContentValues.TAG,"Toast Prompted")
+
+                // Create a LayoutInflater instance
+                val inflater = LayoutInflater.from(context)
+
+                // Inflate the custom layout
+                val layout = inflater.inflate(R.layout.custom_toast, null)
+
+                // Find the TextView in the custom layout and set the text
+                val textView = layout.findViewById<TextView>(R.id.text)
+                textView.text = "Signed In!"
+
+                // Create a new Toast
+                val toast = Toast(context)
+
+                // Set the custom view, duration, and show the Toast
+                toast.view = layout
+                toast.duration = Toast.LENGTH_SHORT
+                toast.show()
+            }
         }
     }
 }

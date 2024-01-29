@@ -339,12 +339,11 @@ fun G_Calls(
 
 //        Menu
         if (isMenuVisible) {
-            Surface(color = colorResource(id = R.color.black),
-                modifier = modifier
+            Box( modifier = Modifier
                     .padding(
-                        208.dp,
+                        0.dp,
                         (dimensionResource(id = R.dimen.top_bar_height) - 24.dp),
-                        28.dp,
+                        32.dp,
                         0.dp
                     )
                     .border(
@@ -353,6 +352,8 @@ fun G_Calls(
                         shape = RoundedCornerShape(4.dp)
                     )
                     .zIndex(2f)
+                    .background(colorResource(id = R.color.black))
+                    .align(Alignment.TopEnd)
             ) {
                 Column ( modifier = modifier
                     .padding(20.dp, 8.dp, 20.dp, 8.dp)

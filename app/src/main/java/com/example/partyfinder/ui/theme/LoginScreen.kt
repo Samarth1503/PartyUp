@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.partyfinder.ui.theme
 
 import android.annotation.SuppressLint
@@ -41,15 +43,21 @@ import com.example.partyfinder.model.login.LoginViewModel
 import com.example.partyfinder.navigation.PartyUpRouterSam
 import com.example.partyfinder.navigation.Screens
 import com.example.partyfinder.R
+import com.example.partyfinder.data.UserAccount
+import com.example.partyfinder.model.register.RegistrationUIState
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @SuppressLint("SetTextI18n", "InflateParams")
 @Composable
 fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {
     val context = LocalContext.current
+    val userAccount = UserAccount()
+
+    val _registrationUIState = RegistrationUIState()
 
     Box(
         modifier = Modifier
-            .height(808.dp)
+            .height(808.dp) 
             .width(393.dp)
             .background(color = colorResource(id = R.color.black))
     ) {
@@ -95,7 +103,8 @@ fun LogInPage(loginViewModel: LoginViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            CustomOutlinedTextField(labelValue = "Email",
+            CustomOutlinedTextField(
+                labelValue = if (userAccount.email.isEmpty()){ "Enter Email" } else { userAccount.email },
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email Icon") },
                 onTextSelected = {
                     loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))

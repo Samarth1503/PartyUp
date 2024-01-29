@@ -13,8 +13,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.navigation.PartyUpRouterSam
 import com.example.partyfinder.navigation.Screens
+import com.example.partyfinder.ui.theme.HomeScreen
 import com.example.partyfinder.ui.theme.HomepageContent
 import com.example.partyfinder.ui.theme.LogInPage
+import com.example.partyfinder.ui.theme.PartyFinderApp
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.RegisterPage
 import com.example.partyfinder.ui.theme.TermsAndConditons
@@ -32,7 +34,7 @@ fun TF(modifier: Modifier = Modifier) {
         Crossfade(targetState = PartyUpRouterSam.currentScreen, label = "Navigation") { currentState ->
             when(currentState.value){
                 is Screens.HomeScreen -> {
-                    HomepageContent()
+                    PartyFinderApp()
                 }
                 is Screens.RegisterScreen -> {
                     RegisterPage()

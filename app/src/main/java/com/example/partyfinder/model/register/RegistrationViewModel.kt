@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.partyfinder.data.UserAccount
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -18,42 +19,40 @@ class RegistrationViewModel : ViewModel() {
     val registrationUIState: StateFlow<RegistrationUIState> = _registrationUIState.asStateFlow()
 
     var registrationInProgress = mutableStateOf(false)
-
     var registrationSuccessful = mutableStateOf(false)
-
     var policyStatusChecked = mutableStateOf(false)
-
     var confirmPasswordValidationStarted = mutableStateOf(false)
+    private var confirmPasswordValidation = mutableStateOf(false)
 
-    var confirmPasswordValidation = mutableStateOf(false)
-
-//    Database Variable
+    // Database Variable
+    val database: FirebaseDatabase = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app")
     private lateinit var mDbRef: DatabaseReference
 
     private var TAG = RegistrationViewModel::class.simpleName
 
-    fun onEvent(event : RegisterUIEvent){
-        when(event){
+    fun onEvent(event: RegisterUIEvent) {
+        when (event) {
             is RegisterUIEvent.EmailChanged -> {
-                _registrationUIState.update{ currentState -> currentState.copy(
-                    email = event.email )}
+                _registrationUIState.update { currentState -> currentState.copy(
+                    email = event.email)
+                }
                 printState()
             }
             is RegisterUIEvent.PasswordChanged -> {
-                _registrationUIState.update{ currentState -> currentState.copy(
-                    password = event.password )}
+                _registrationUIState.update { currentState -> currentState.copy(
+                    password = event.password)
+                }
                 printState()
             }
             is RegisterUIEvent.ConfirmPasswordChanged -> {
                 _registrationUIState.update { currentState -> currentState.copy(
                     confirmPassword = event.confirmPassword
-                ) }
+                )}
 
-                if (_registrationUIState.value.password == _registrationUIState.value.confirmPassword){
+                if (_registrationUIState.value.password == _registrationUIState.value.confirmPassword) {
                     confirmPasswordValidation.value = true
                     confirmPasswordValidationStarted.value = false
-                }
-                else{
+                } else {
                     confirmPasswordValidationStarted.value = true
                 }
             }
@@ -61,13 +60,13 @@ class RegistrationViewModel : ViewModel() {
                 policyStatusChecked.value = !policyStatusChecked.value
             }
 
-            is RegisterUIEvent.RegisterButtonClicked ->{
+            is RegisterUIEvent.RegisterButtonClicked -> {
 
                 if (confirmPasswordValidation.value && policyStatusChecked.value) {
-                    Log.d(TAG, "Inside **Register** Stack")
+                    Log.d(TAG, "Inside Register Stack")
                     Log.d(TAG, _registrationUIState.value.toString())
                     registerToFireBase()
-                } else if (!policyStatusChecked.value){
+                } else if (!policyStatusChecked.value) {
                     Log.d(TAG, "Privacy policy not accepted")
                 } else {
                     Log.d(TAG, "Passwords do not match")
@@ -76,8 +75,8 @@ class RegistrationViewModel : ViewModel() {
         }
     }
 
-    private fun registerToFireBase(){
-        Log.d(TAG, "InsideRegister")
+    private fun registerToFireBase() {
+        Log.d(TAG, "Inside Register")
 
         createUserInFireBase(
             email = _registrationUIState.value.email,
@@ -85,13 +84,14 @@ class RegistrationViewModel : ViewModel() {
         )
     }
 
-    private fun printState(){
-        Log.d(TAG, "InsideStack")
+    private fun printState() {
+        Log.d(TAG, "Inside Stack")
         Log.d(TAG, _registrationUIState.value.toString())
     }
 
     private fun createUserInFireBase(email: String, password: String) {
 
+        val database: FirebaseDatabase = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app")
         val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
         registrationInProgress.value = true
 
@@ -105,14 +105,14 @@ class RegistrationViewModel : ViewModel() {
                 }
             }
 
-            .addOnFailureListener{ Log.d(TAG, "Failure") }
+            .addOnFailureListener { Log.d(TAG, "Failure") }
     }
 
-    private fun addUserToDatabase(email: String, uid: String){
+    private fun addUserToDatabase(email: String, uid: String) {
         val userAccount = UserAccount()
 
         mDbRef = FirebaseDatabase.getInstance().reference
-        mDbRef.child("user").child(uid).setValue(UserAccount(email,uid))
+        mDbRef.child("users").child(uid).setValue(UserAccount(email, uid))
         userAccount.printData()
     }
 }

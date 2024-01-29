@@ -8,6 +8,8 @@ import com.example.partyfinder.navigation.Screens
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +26,6 @@ class LoginViewModel : ViewModel() {
     var loginInProgress = mutableStateOf(false)
 
     var loginIsSuccessful = mutableStateOf(false)
-
 
     fun onEvent(event: LoginUIEvent) {
         when (event) {

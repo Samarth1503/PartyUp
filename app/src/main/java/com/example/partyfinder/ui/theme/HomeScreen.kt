@@ -255,11 +255,6 @@ import com.example.partyfinder.R
 
 
 @Composable
-fun PartyUpNavigationBar(modifier: Modifier = Modifier) {
-
-}
-
-@Composable
 fun HomepageContent(modifier: Modifier = Modifier) {
     Column(modifier = Modifier
         .verticalScroll(rememberScrollState(), true)

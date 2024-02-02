@@ -16,6 +16,7 @@ class LoginViewModel : ViewModel() {
     var loginUIState = mutableStateOf(LoginUIState())
 
     var loginInProgress = mutableStateOf(false)
+    var loginIsSuccessful = mutableStateOf(false)
 
 
     fun onEvent(event: LoginUIEvent) {
@@ -54,6 +55,7 @@ class LoginViewModel : ViewModel() {
 
                 if(it.isSuccessful){
                     loginInProgress.value = false
+                    loginIsSuccessful.value = true
                     navigateToHomeScreen()
                 }
             }
@@ -62,6 +64,7 @@ class LoginViewModel : ViewModel() {
                 it.localizedMessage?.let { it1 -> Log.d(TAG, it1) }
 
                 loginInProgress.value = false
+
 
             }
 

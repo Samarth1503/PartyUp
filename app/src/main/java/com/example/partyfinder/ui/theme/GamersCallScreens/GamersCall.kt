@@ -35,12 +35,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.partyfinder.R
 import com.example.partyfinder.data.GamerCalls
 import com.example.partyfinder.datasource.datasource
@@ -162,7 +166,7 @@ fun GamersCallContent(
 @Composable
 fun G_Calls(
     modifier: Modifier = Modifier,
-    profilePic:Int,
+    profilePic:String,
     gamerID:String,
     gamerTag:String,
     gameName:String,
@@ -201,12 +205,21 @@ fun G_Calls(
                     .fillMaxWidth()
                     .padding(16.dp, 8.dp, 16.dp, 0.dp)
             ) {
-                Image(
-                    painter = painterResource(id = profilePic),
-                    contentDescription = "GamerIcon",
+
+                AsyncImage(
+                    model =ImageRequest.Builder(context = LocalContext.current)
+                        .data(profilePic)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
                     modifier = modifier
-                        .padding(top = 4.dp)
-                        .size(76.dp)
+                        .padding(top = 12.dp, end = 8.dp)
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(50)),
+                    error= painterResource(id = R.drawable.close_blue),
+                    placeholder = painterResource(id = R.drawable.usericon_white)
+
+
                 )
 
                 Column {

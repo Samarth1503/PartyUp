@@ -17,16 +17,16 @@ object datasource {
     )
 
     val MyGamerCalls:List<GamerCalls> = listOf(
-        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
-        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
-        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
+        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
+        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
+        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
 
     )
 
     val GamerCalls:List<GamerCalls> = listOf(
-        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
-        GamerCalls("Sam","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
-        GamerCalls("Ichigo","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
+        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
+        GamerCalls("Sam","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
+        GamerCalls("Ichigo","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
 
         )
 

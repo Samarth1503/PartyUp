@@ -105,7 +105,8 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-        startDestination = PartyFinderScreen.FilteredGamerCallsScreen.name){
+        startDestination = PartyFinderScreen.HomeScreen.name
+    ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
                 navigateToProfileScreen={navController.navigate(PartyFinderScreen.ProfileScreen.name)},

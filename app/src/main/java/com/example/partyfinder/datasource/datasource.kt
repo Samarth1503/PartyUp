@@ -2,9 +2,9 @@
 
 package com.example.partyfinder.datasource
 import com.example.partyfinder.R
-import com.example.partyfinder.data.ChatChannel
-import com.example.partyfinder.data.GamerCalls
-import com.example.partyfinder.data.UserAccount
+import com.example.partyfinder.model.ChatChannel
+import com.example.partyfinder.model.GamerCalls
+import com.example.partyfinder.model.UserAccount
 import java.util.UUID
 
 object datasource {

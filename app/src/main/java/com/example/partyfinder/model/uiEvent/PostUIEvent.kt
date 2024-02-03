@@ -1,4 +1,4 @@
-package com.example.partyfinder.model.community
+package com.example.partyfinder.model.uiEvent
 
 sealed class PostUIEvent{
     data object PostLiked: PostUIEvent()

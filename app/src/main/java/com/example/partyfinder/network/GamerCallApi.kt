@@ -1,6 +1,6 @@
 package com.example.partyfinder.network
 
-import com.example.partyfinder.data.GamerCalls
+import com.example.partyfinder.model.GamerCalls
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

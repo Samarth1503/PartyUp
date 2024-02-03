@@ -1,4 +1,4 @@
-package com.example.partyfinder.data
+package com.example.partyfinder.model
 
 import java.sql.Time
 

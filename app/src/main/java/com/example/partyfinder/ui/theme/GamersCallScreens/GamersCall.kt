@@ -46,7 +46,7 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.partyfinder.R
-import com.example.partyfinder.data.GamerCalls
+import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 

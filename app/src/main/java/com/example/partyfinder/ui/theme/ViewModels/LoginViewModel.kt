@@ -1,15 +1,13 @@
-package com.example.partyfinder.model.login
+package com.example.partyfinder.ui.theme.ViewModels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.navigation.PartyUpRouterSam
-import com.example.partyfinder.navigation.Screens
+import com.example.partyfinder.model.uiEvent.LoginUIEvent
+import com.example.partyfinder.model.uiState.LoginUIState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,10 +39,6 @@ class LoginViewModel : ViewModel() {
                 printState()
             }
 
-            is LoginUIEvent.LoginButtonClicked -> {
-                login()
-                printState()
-            }
 
             is LoginUIEvent.ForgotPasswordClicked -> {
                 sendPasswordReset()
@@ -53,7 +47,7 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    private fun login() {
+    fun login(navigateToHomeScreen:()->Unit) {
 
         loginInProgress.value = true
         val email = _loginUIState.value.email
@@ -68,7 +62,7 @@ class LoginViewModel : ViewModel() {
                 if(it.isSuccessful){
                     loginInProgress.value = false
                     loginIsSuccessful.value = true
-                    PartyUpRouterSam.navigateTo(Screens.HomeScreen)
+                    navigateToHomeScreen()
                 }
             }
             .addOnFailureListener {

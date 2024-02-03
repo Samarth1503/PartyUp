@@ -1,7 +1,7 @@
 package com.example.partyfinder.ui.theme.ViewModels
 
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.model.GamersCallUiState
+import com.example.partyfinder.model.uiState.GamersCallUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

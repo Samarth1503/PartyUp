@@ -1,4 +1,4 @@
-package com.example.partyfinder.model
+package com.example.partyfinder.model.uiState
 
 import com.example.partyfinder.datasource.datasource
 

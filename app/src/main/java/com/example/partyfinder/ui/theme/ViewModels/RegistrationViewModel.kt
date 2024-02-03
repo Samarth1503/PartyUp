@@ -1,10 +1,11 @@
-package com.example.partyfinder.model.register
+package com.example.partyfinder.ui.theme.ViewModels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.data.UserAccount
-import com.google.firebase.Firebase
+import com.example.partyfinder.model.UserAccount
+import com.example.partyfinder.model.uiEvent.RegisterUIEvent
+import com.example.partyfinder.model.uiState.RegistrationUIState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -115,4 +116,8 @@ class RegistrationViewModel : ViewModel() {
         mDbRef.child("users").child(uid).setValue(UserAccount(email, uid))
         userAccount.printData()
     }
+
+
+
+
 }

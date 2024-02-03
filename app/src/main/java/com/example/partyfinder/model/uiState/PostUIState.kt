@@ -1,4 +1,4 @@
-package com.example.partyfinder.model.community
+package com.example.partyfinder.model.uiState
 
 import java.sql.Types.NULL
 

@@ -46,7 +46,7 @@
 //    }
 //}
 
-package com.example.partyfinder.data
+package com.example.partyfinder.model
 
 import android.util.Log
 import java.sql.Types.NULL

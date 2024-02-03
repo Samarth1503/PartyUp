@@ -1,4 +1,4 @@
-package com.example.partyfinder.data
+package com.example.partyfinder.model
 
 data class Community(
     val communityID: Int,

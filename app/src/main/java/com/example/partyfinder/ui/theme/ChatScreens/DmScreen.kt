@@ -48,8 +48,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
-import com.example.partyfinder.data.ChatChannel
-import com.example.partyfinder.data.UserAccount
+import com.example.partyfinder.model.ChatChannel
+import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
@@ -59,7 +59,8 @@ fun DmScreen(
     modifier:Modifier=Modifier,
 
     dmTopBar:@Composable ()->Unit,
-    currentChatChannel: ChatChannel){
+    currentChatChannel: ChatChannel
+){
     Box(modifier=Modifier.fillMaxSize()){
 
         dmTopBar()
@@ -108,7 +109,8 @@ fun DmTopBar(
     currentChatChannel: ChatChannel,
     navigateBack:() -> Unit,
     onMenuClicked:()->Unit,
-    retreivedGamerAccount:UserAccount) {
+    retreivedGamerAccount: UserAccount
+) {
 
     Box(modifier = modifier
         .fillMaxWidth()

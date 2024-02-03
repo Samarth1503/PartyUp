@@ -3,6 +3,7 @@
 
 package com.example.partyfinder.ui.theme
 
+
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.util.Log
@@ -39,25 +40,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-
 import com.example.partyfinder.R
-import com.example.partyfinder.model.Login.LoginUIEvent
-import com.example.partyfinder.ui.theme.ButtonComponent
-import com.example.partyfinder.ui.theme.ClickableLoginTextComponent
-import com.example.partyfinder.ui.theme.CustomOutlinedTextField
-import com.example.partyfinder.ui.theme.DividerTextComponent
-import com.example.partyfinder.ui.theme.ForgotPasswordComponent
-import com.example.partyfinder.ui.theme.PartyFinderTheme
-import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
-
-import com.example.partyfinder.model.login.LoginUIEvent
-import com.example.partyfinder.model.login.LoginViewModel
-import com.example.partyfinder.navigation.PartyUpRouterSam
-import com.example.partyfinder.navigation.Screens
-import com.example.partyfinder.R
-import com.example.partyfinder.data.UserAccount
-import com.example.partyfinder.model.register.RegistrationUIState
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.partyfinder.model.UserAccount
+import com.example.partyfinder.model.uiEvent.LoginUIEvent
+import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
+import com.example.partyfinder.model.uiState.RegistrationUIState
 
 
 @SuppressLint("SetTextI18n", "InflateParams")

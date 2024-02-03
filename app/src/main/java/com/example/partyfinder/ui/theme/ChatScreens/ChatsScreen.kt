@@ -36,8 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.partyfinder.R
-import com.example.partyfinder.data.ChatChannel
-import com.example.partyfinder.data.UserAccount
+import com.example.partyfinder.model.ChatChannel
+import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
@@ -258,7 +258,7 @@ fun Chats(
 @Composable
 fun Chat(
     modifier: Modifier = Modifier,
-    chatChannel:ChatChannel,
+    chatChannel: ChatChannel,
     userAccount: UserAccount,
 ){
     Row ( verticalAlignment = Alignment.CenterVertically,

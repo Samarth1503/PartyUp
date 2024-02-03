@@ -1,7 +1,7 @@
-package com.example.partyfinder.model
+package com.example.partyfinder.model.uiState
 
-import com.example.partyfinder.data.GamerCalls
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.GamerCalls
 
 data class ProfileUiState(
     val gamerID:String="GamerID",

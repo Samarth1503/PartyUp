@@ -2,15 +2,14 @@ package com.example.partyfinder.ui.theme.ViewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.partyfinder.data.GamerCalls
+import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
-import com.example.partyfinder.model.CreateGamerCallsUiState
+import com.example.partyfinder.model.uiState.CreateGamerCallsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class CreateGamerCallsViewModel :ViewModel() {
     private val _CreateGamerCallsUiState = MutableStateFlow(CreateGamerCallsUiState())

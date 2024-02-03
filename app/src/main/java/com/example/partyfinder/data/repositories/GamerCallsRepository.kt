@@ -1,6 +1,6 @@
 package com.example.partyfinder.data.repositories
 
-import com.example.partyfinder.data.GamerCalls
+import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.network.GamerCallApi
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit

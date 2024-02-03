@@ -1,4 +1,4 @@
-package com.example.partyfinder.model
+package com.example.partyfinder.model.uiState
 
 data class CreateGamerCallsUiState(
     val gameName :String= "",

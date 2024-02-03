@@ -37,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -45,10 +44,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.partyfinder.R
-import com.example.partyfinder.model.community.CommunityUIEvent
-import com.example.partyfinder.model.community.CommunityViewModel
-import com.example.partyfinder.model.community.PostUIEvent
-import com.example.partyfinder.model.community.PostViewModel
+import com.example.partyfinder.model.uiEvent.CommunityUIEvent
+import com.example.partyfinder.model.uiEvent.PostUIEvent
+import com.example.partyfinder.ui.theme.ViewModels.CommunityViewModel
+import com.example.partyfinder.ui.theme.ViewModels.PostViewModel
 
 
 @Composable
@@ -56,7 +55,7 @@ fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()
     Surface(color= colorResource(id = R.color.black)){
         Box(modifier = Modifier
         ) {
-            var newPostOverlay by remember {mutableStateOf(false)}
+            var newPostOverlay by remember {mutableStateOf(true)}
             Column {
                 SpecificCommunityTopBar()
                 SpecificCommunityContent()

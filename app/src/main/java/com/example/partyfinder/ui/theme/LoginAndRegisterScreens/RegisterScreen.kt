@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
-import com.example.partyfinder.model.register.RegistrationViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,13 +40,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.partyfinder.Navigation.PartyUpRouterSam
-import com.example.partyfinder.Navigation.Screens
-import com.example.partyfinder.model.register.RegisterUIEvent
-import com.example.partyfinder.navigation.PartyUpRouterSam
-import com.example.partyfinder.navigation.Screens
 import com.example.partyfinder.R
-import com.example.partyfinder.model.Register.RegisterUIEvent
+import com.example.partyfinder.model.uiEvent.RegisterUIEvent
 import com.example.partyfinder.ui.theme.ButtonComponent
 import com.example.partyfinder.ui.theme.ClickableLoginTextComponent
 import com.example.partyfinder.ui.theme.CustomCheckboxComponent
@@ -55,6 +49,7 @@ import com.example.partyfinder.ui.theme.CustomOutlinedTextField
 import com.example.partyfinder.ui.theme.DividerTextComponent
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
+import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 
 
 @SuppressLint("StateFlowValueCalledInComposition", "SetTextI18n", "InflateParams")
@@ -208,7 +203,7 @@ fun RegisterPage(
 //        }
 //        redirecting aft prompt
         if (registrationViewModel.registrationSuccessful.value) {
-            PartyUpRouterSam.navigateTo(Screens.LoginScreen)
+            navigateToLoginScreen()
         }
     }
 }

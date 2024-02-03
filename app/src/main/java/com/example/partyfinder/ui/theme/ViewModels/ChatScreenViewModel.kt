@@ -4,10 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.data.ChatChannel
-import com.example.partyfinder.data.UserAccount
+import com.example.partyfinder.model.ChatChannel
+import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.datasource.datasource
-import com.example.partyfinder.model.ChatScreenUiState
+import com.example.partyfinder.model.uiState.ChatScreenUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,7 +30,7 @@ class chatScreenViewModel:ViewModel(){
     }
 
     fun retreiveCurrentChannel(currentChannelId:String?): ChatChannel {
-      var channel:ChatChannel ?= datasource.ChatChannels.find {
+      var channel: ChatChannel?= datasource.ChatChannels.find {
           it.channelID == (currentChannelId?.toInt() ?: 0)
       }
         if(channel==null){
@@ -43,7 +43,7 @@ class chatScreenViewModel:ViewModel(){
     }
 
     fun retreiveGamerAccount(
-        currentChannel:ChatChannel,
+        currentChannel: ChatChannel,
         userAccocuntList:List<UserAccount>): UserAccount {
         var userAccount = userAccocuntList.find {it.gamerTag==currentChannel.gamerTag }
         if (userAccount!=null){

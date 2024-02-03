@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.uiEvent.RegisterUIEvent
 import com.example.partyfinder.ui.theme.ChatScreens.ChatMenu
 import com.example.partyfinder.ui.theme.ChatScreens.ChatTopBar
 import com.example.partyfinder.ui.theme.ChatScreens.Chats
@@ -33,7 +34,7 @@ import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCall
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallContent
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallTopBar
 import com.example.partyfinder.ui.theme.HomeScreen
-import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.LogInPage
+import com.example.partyfinder.ui.theme.LogInPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.RegisterPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.TermsAndConditons
 import com.example.partyfinder.ui.theme.PartyFinderScreens.FindPartyScreen
@@ -53,8 +54,10 @@ import com.example.partyfinder.ui.theme.SpecificCommunityScreen
 import com.example.partyfinder.ui.theme.ViewModels.CreateGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.FilteredGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.GamerCallsViewModel
+import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
 import com.example.partyfinder.ui.theme.ViewModels.PartyFinderViewModel
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
+import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 
 
@@ -72,7 +75,7 @@ enum class PartyFinderScreen(){
     LoginScreen,
     RegisterScreen,
     TermsAndConditionsScreen,
-    DMScreen
+
 }
 
 private fun
@@ -87,7 +90,7 @@ fun PartyFinderApp(
     chatScreenViewModel: chatScreenViewModel = viewModel(),
     partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
-    registerViewModel:RegistrationViewModel = viewModel(),
+    registerViewModel: RegistrationViewModel = viewModel(),
     gamersCallViewModel:GamerCallsViewModel = viewModel(),
     createGamerCallViewModel: CreateGamerCallsViewModel = viewModel(),
     filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel()
@@ -103,7 +106,7 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-        startDestination = PartyFinderScreen.HomeScreen.name
+        startDestination = PartyFinderScreen.LoginScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -134,7 +137,7 @@ fun PartyFinderApp(
                 registrationViewModel = registerViewModel,
                 navigateToTermsAndConditions = {navController.navigate(PartyFinderScreen.TermsAndConditionsScreen.name)},
                 navigateToLoginScreen = {navController.navigate(PartyFinderScreen.LoginScreen.name)},
-                onRegisterButtonClicked = {registerViewModel.OnRegisterButtonClicked { navController.navigate(PartyFinderScreen.HomeScreen.name) }})
+                onRegisterButtonClicked = {registerViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked) })
         }
 
         composable(route = PartyFinderScreen.SpecificCommunityScreen.name){

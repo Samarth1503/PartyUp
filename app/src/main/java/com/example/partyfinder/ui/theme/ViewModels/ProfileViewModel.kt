@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.data.GamerCalls
-import com.example.partyfinder.model.ProfileUiState
+import com.example.partyfinder.model.GamerCalls
+import com.example.partyfinder.model.uiState.ProfileUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

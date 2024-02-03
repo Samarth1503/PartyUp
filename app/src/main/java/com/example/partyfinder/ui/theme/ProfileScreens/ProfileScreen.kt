@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.partyfinder.R
-import com.example.partyfinder.data.GamerCalls
+import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.ui.theme.GamersCallScreens.G_Calls
 import com.example.partyfinder.ui.theme.PartyFinderTheme

@@ -1,7 +1,9 @@
-package com.example.partyfinder.model.community
+package com.example.partyfinder.ui.theme.ViewModels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.partyfinder.model.uiEvent.PostUIEvent
+import com.example.partyfinder.model.uiState.PostUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

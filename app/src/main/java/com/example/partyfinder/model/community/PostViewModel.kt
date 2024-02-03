@@ -14,6 +14,8 @@ class PostViewModel: ViewModel(){
     private val _postUIState = MutableStateFlow(PostUIState())
     val postUIState: StateFlow<PostUIState> = _postUIState.asStateFlow()
 
+    var likes = _postUIState.value.likes
+
     fun onEvent(event: PostUIEvent){
         when (event) {
             is PostUIEvent.PostLiked -> {

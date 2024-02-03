@@ -1,5 +1,6 @@
 package com.example.partyfinder.ui.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -77,7 +79,7 @@ fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()
             }
 
 
-            if(newPostOverlay){
+            if(!newPostOverlay){
                 Column( modifier = Modifier
                     .fillMaxSize()
                     .background(colorResource(id = R.color.transparentMenuBG))
@@ -94,7 +96,9 @@ fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()
 
                         Image(painter = painterResource(id = R.drawable.expanddownarrow_blue),
                             contentDescription = "close menu img",
-                            modifier = Modifier.height(24.dp).width(80.dp)
+                            modifier = Modifier
+                                .height(24.dp)
+                                .width(80.dp)
                         )
                         Spacer(modifier = Modifier.height(12.dp))
 
@@ -103,18 +107,39 @@ fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()
 
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        Button(
+                        Row (
                             modifier = Modifier
-                                .padding(bottom = 24.dp),
-                            shape = RoundedCornerShape(4.dp),
-                            onClick = { communityViewModel.onEvent(CommunityUIEvent.NewPostAdded) },
-                            border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
-                            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG))
-                        ) {
-                            Text(modifier = Modifier
-                                .padding(bottom = 4.dp),
-                                text = "Post",
-                                color = colorResource(id = R.color.primary) )
+                                .padding(dimensionResource(id = R.dimen.main_padding),
+                                    0.dp,
+                                    dimensionResource(id = R.dimen.main_padding),
+                                    12.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly) {
+                            Button(
+                                shape = RoundedCornerShape(4.dp),
+                                onClick = { communityViewModel.onEvent(CommunityUIEvent.NewPostAdded) },
+                                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG))
+                            ) {
+                                Text(modifier = Modifier
+                                    .padding(bottom = 4.dp),
+                                    text = "Add Image",
+                                    color = colorResource(id = R.color.primary) )
+                            }
+
+                            Button(
+                                modifier = Modifier
+                                    .padding(bottom = 24.dp),
+                                shape = RoundedCornerShape(4.dp),
+                                onClick = { communityViewModel.onEvent(CommunityUIEvent.NewPostAdded) },
+                                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG))
+                            ) {
+                                Text(modifier = Modifier
+                                    .padding(bottom = 4.dp),
+                                    text = "Post",
+                                    color = colorResource(id = R.color.primary) )
+                            }
                         }
                     }
 
@@ -210,11 +235,17 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier) {
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CommunityComments(modifier: Modifier = Modifier,
                       postViewModel: PostViewModel = viewModel()) {
 
 //        Variable declaration for like
+    var likes = "1k"
+    // need to update the value of likes on the post from db
+
+    var postImage: Int? = null
+    // need to update the link of image on the post from db if any
     var isLiked by remember { mutableStateOf(false) }
     var likeIsClicked by remember { mutableStateOf(false) }
 
@@ -286,6 +317,9 @@ fun CommunityComments(modifier: Modifier = Modifier,
                     }
                 }
                 Row {
+                    if (postImage != null){
+                        Image(painter = painterResource(id = postImage), contentDescription = "Post's Image")
+                    }
                     Text(
                         text = "Need a 4 stack of cracked Valorant gamers for comp grind, And I mean Cracked(CRAZY) ",
                         style = MaterialTheme.typography.bodySmall,
@@ -316,6 +350,12 @@ fun CommunityComments(modifier: Modifier = Modifier,
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ){
+                    Text(modifier = modifier
+                            .padding(end = 4.dp),
+                        text = likes,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = colorResource(id = R.color.white)
+                    )
                     if (!isLiked) {
                         Image(
                             painter = painterResource(id = R.drawable.empty_heart_blue),

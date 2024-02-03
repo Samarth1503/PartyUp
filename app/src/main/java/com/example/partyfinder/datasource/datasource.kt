@@ -2,9 +2,10 @@
 
 package com.example.partyfinder.datasource
 import com.example.partyfinder.R
-import com.example.partyfinder.data.ChatChannel
-import com.example.partyfinder.data.GamerCalls
-import com.example.partyfinder.data.UserAccount
+import com.example.partyfinder.model.ChatChannel
+import com.example.partyfinder.model.GamerCalls
+import com.example.partyfinder.model.UserAccount
+import java.util.UUID
 
 object datasource {
     val userStatusOption= listOf(
@@ -19,11 +20,19 @@ object datasource {
     )
 
     val MyGamerCalls:List<GamerCalls> = listOf(
-        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
-        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
-        GamerCalls("Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant",R.drawable.pp),
+        GamerCalls(gamerCallID = UUID.randomUUID().toString(),"Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
+        GamerCalls(gamerCallID = UUID.randomUUID().toString(),"Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
+        GamerCalls(gamerCallID = UUID.randomUUID().toString(),"Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
 
     )
+
+    val GamerCalls:List<GamerCalls> = listOf(
+        GamerCalls(gamerCallID = UUID.randomUUID().toString(),"Kaizoku","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
+        GamerCalls(gamerCallID = UUID.randomUUID().toString(),"Sam","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
+        GamerCalls(gamerCallID = UUID.randomUUID().toString(),"Ichigo","#123",4,"Need 2 Gold Rank Valorant Players","Valorant","https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"),
+
+        )
+
 
     val UserAccounts:List<UserAccount> = listOf(
         UserAccount(gamerID = "Unknown", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),

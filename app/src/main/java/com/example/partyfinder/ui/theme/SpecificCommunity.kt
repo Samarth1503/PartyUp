@@ -37,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -45,20 +44,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.partyfinder.R
-import com.example.partyfinder.model.community.CommunityUIEvent
-import com.example.partyfinder.model.community.CommunityViewModel
-import com.example.partyfinder.model.community.PostUIEvent
-import com.example.partyfinder.model.community.PostViewModel
+import com.example.partyfinder.model.uiEvent.CommunityUIEvent
+import com.example.partyfinder.model.uiEvent.PostUIEvent
+import com.example.partyfinder.ui.theme.ViewModels.CommunityViewModel
+import com.example.partyfinder.ui.theme.ViewModels.PostViewModel
 
 
 @Composable
-fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()){
+fun SpecificCommunityScreen(
+    navigateUp:()->Unit,
+    communityViewModel: CommunityViewModel = viewModel()){
     Surface(color= colorResource(id = R.color.black)){
         Box(modifier = Modifier
         ) {
             var newPostOverlay by remember {mutableStateOf(false)}
             Column {
-                SpecificCommunityTopBar()
+                SpecificCommunityTopBar(navigateUp = navigateUp)
                 SpecificCommunityContent()
             }
 
@@ -152,7 +153,9 @@ fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()
 
 
 @Composable
-fun SpecificCommunityTopBar(modifier: Modifier = Modifier) {
+fun SpecificCommunityTopBar(
+    navigateUp:()->Unit,
+    modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .height(dimensionResource(id = (R.dimen.top_bar_height)))
@@ -167,6 +170,7 @@ fun SpecificCommunityTopBar(modifier: Modifier = Modifier) {
                 .padding(25.dp, 5.dp, 0.dp, 0.dp)
                 .size(25.dp)
                 .align(Alignment.CenterStart)
+                .clickable { navigateUp() }
         )
         Text(
             text = "Community",
@@ -436,7 +440,7 @@ fun CommunityComments(modifier: Modifier = Modifier,
 @Composable
 fun PreviewCommunity(){
     PartyFinderTheme {
-        SpecificCommunityScreen()
+        SpecificCommunityScreen(navigateUp = {})
     }
 }
 

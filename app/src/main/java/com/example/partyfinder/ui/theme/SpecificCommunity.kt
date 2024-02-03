@@ -79,7 +79,7 @@ fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()
             }
 
 
-            if(!newPostOverlay){
+            if(newPostOverlay){
                 Column( modifier = Modifier
                     .fillMaxSize()
                     .background(colorResource(id = R.color.transparentMenuBG))

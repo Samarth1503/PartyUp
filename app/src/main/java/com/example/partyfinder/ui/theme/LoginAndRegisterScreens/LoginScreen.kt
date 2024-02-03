@@ -44,7 +44,6 @@ import com.example.partyfinder.ui.theme.DividerTextComponent
 import com.example.partyfinder.ui.theme.ForgotPasswordComponent
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
-import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
 
 @Composable
 fun LogInPage(

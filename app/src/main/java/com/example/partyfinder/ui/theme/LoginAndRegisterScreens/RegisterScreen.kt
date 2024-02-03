@@ -51,7 +51,6 @@ import com.example.partyfinder.ui.theme.CustomOutlinedTextField
 import com.example.partyfinder.ui.theme.DividerTextComponent
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
-import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 
 
 @SuppressLint("StateFlowValueCalledInComposition", "SetTextI18n", "InflateParams")

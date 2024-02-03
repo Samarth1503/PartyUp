@@ -1,21 +1,15 @@
 package com.example.partyfinder.ui.theme.ViewModels
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.data.GamerCalls
-import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.ProfileUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
 
 class ProfileViewModel:ViewModel() {
     private val _profileUiState = MutableStateFlow(ProfileUiState())
@@ -28,22 +22,24 @@ class ProfileViewModel:ViewModel() {
 
     init {
 
-        var GamerCallList : List<GamerCalls>
+        var GamerCallList : List<GamerCalls>?
 
-        viewModelScope.launch {
-            try {
-                GamerCallList = networkGamerCallsRepository.getGamerCalls()
-                _profileUiState.update { currentState -> currentState.copy(
-                    UserGamerCalls = GamerCallList
-                ) }
-            }
-            catch (e : HttpException){
-                Log.d(TAG,"error in fetching data")
-            }
-
-        }
+//        viewModelScope.launch {
+//            try {
+//                GamerCallList = networkGamerCallsRepository.getGamerCalls()
+//                _profileUiState.update { currentState -> currentState.copy(
+//                    UserGamerCalls = GamerCallList
+//                ) }
+//            }
+//            catch (e : HttpException){
+//                Log.d(TAG,"error in fetching data")
+//            }
+//
+//        }
 
     }
+
+
     fun onGamerIDtextFieldChanged(gamerID: String){
         gamerIDtextfieldValue=gamerID
     }

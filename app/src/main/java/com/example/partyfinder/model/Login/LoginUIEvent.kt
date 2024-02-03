@@ -6,5 +6,5 @@ sealed class LoginUIEvent{
     data class PasswordChanged(val password: String) : LoginUIEvent()
 
 
-    object ForgotPasswordClicked : LoginUIEvent()
+
 }

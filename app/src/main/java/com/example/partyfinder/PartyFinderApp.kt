@@ -53,10 +53,8 @@ import com.example.partyfinder.ui.theme.SpecificCommunityScreen
 import com.example.partyfinder.ui.theme.ViewModels.CreateGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.FilteredGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.GamerCallsViewModel
-import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
 import com.example.partyfinder.ui.theme.ViewModels.PartyFinderViewModel
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
-import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 
 
@@ -165,7 +163,7 @@ fun PartyFinderApp(
                         onNoOfGamersValueChange ={createGamerCallViewModel.onNoOfGamersValueChange(it)} ,
                         onCallDescriptionValueChange ={createGamerCallViewModel.onCallDescriptionValueChange(it)} ,
                         onCallDurationValueChange ={createGamerCallViewModel.onCallDurationValueChange(it)},
-                        onPostButtonClick = {}
+                        onPostButtonClick = {createGamerCallViewModel.postGamerCall() }
                     )
                 }
             )

@@ -288,14 +288,14 @@ fun ProfileRankDisplay(modifier: Modifier = Modifier
 
 
 @Composable
-fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userGamerCalls:List<GamerCalls>){
+fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userGamerCalls:List<GamerCalls>?){
     Card(modifier= modifier
         .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
         ) {
         Column(modifier= Modifier.padding(16.dp)) {
             Text(text = "My Gamer Calls", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
-                if (userGamerCalls.isEmpty()){
+                if (userGamerCalls == null){
                     Row(modifier= Modifier
                         .padding(
                             top = dimensionResource(id = R.dimen.main_padding),
@@ -326,15 +326,17 @@ fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userG
             else
                 {
                     Column(modifier=Modifier.padding(top = 16.dp)) {
-                        userGamerCalls.forEach(){
-                            G_Calls(
-                                profilePic = it.ProfilePic,
-                                gamerID = it.gamerID,
-                                gamerTag = it.gamerTag,
-                                gameName = it.gameName,
-                                partySize = it.partySize,
-                                callDes =it.callDes
-                            )
+                        if (userGamerCalls != null) {
+                            userGamerCalls.forEach(){
+                                G_Calls(
+                                    profilePic = it.ProfilePic,
+                                    gamerID = it.gamerID,
+                                    gamerTag = it.gamerTag,
+                                    gameName = it.gameName,
+                                    partySize = it.partySize,
+                                    callDes =it.callDes
+                                )
+                            }
                         }
                     }
                 }

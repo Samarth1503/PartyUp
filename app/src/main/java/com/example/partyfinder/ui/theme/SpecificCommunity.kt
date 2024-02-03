@@ -51,13 +51,15 @@ import com.example.partyfinder.ui.theme.ViewModels.PostViewModel
 
 
 @Composable
-fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()){
+fun SpecificCommunityScreen(
+    navigateUp:()->Unit,
+    communityViewModel: CommunityViewModel = viewModel()){
     Surface(color= colorResource(id = R.color.black)){
         Box(modifier = Modifier
         ) {
-            var newPostOverlay by remember {mutableStateOf(true)}
+            var newPostOverlay by remember {mutableStateOf(false)}
             Column {
-                SpecificCommunityTopBar()
+                SpecificCommunityTopBar(navigateUp = navigateUp)
                 SpecificCommunityContent()
             }
 
@@ -151,7 +153,9 @@ fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()
 
 
 @Composable
-fun SpecificCommunityTopBar(modifier: Modifier = Modifier) {
+fun SpecificCommunityTopBar(
+    navigateUp:()->Unit,
+    modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .height(dimensionResource(id = (R.dimen.top_bar_height)))
@@ -166,6 +170,7 @@ fun SpecificCommunityTopBar(modifier: Modifier = Modifier) {
                 .padding(25.dp, 5.dp, 0.dp, 0.dp)
                 .size(25.dp)
                 .align(Alignment.CenterStart)
+                .clickable { navigateUp() }
         )
         Text(
             text = "Community",
@@ -435,7 +440,7 @@ fun CommunityComments(modifier: Modifier = Modifier,
 @Composable
 fun PreviewCommunity(){
     PartyFinderTheme {
-        SpecificCommunityScreen()
+        SpecificCommunityScreen(navigateUp = {})
     }
 }
 

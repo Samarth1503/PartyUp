@@ -106,7 +106,7 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-        startDestination = PartyFinderScreen.LoginScreen.name
+        startDestination = PartyFinderScreen.HomeScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -141,7 +141,7 @@ fun PartyFinderApp(
         }
 
         composable(route = PartyFinderScreen.SpecificCommunityScreen.name){
-            SpecificCommunityScreen()
+            SpecificCommunityScreen(navigateUp = {navController.navigateUp()})
         }
 
         composable(route = PartyFinderScreen.GamerCallsScreen.name){

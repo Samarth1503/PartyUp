@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface GamerCallApi {
-    @GET("Gamercalls.json")
+    @GET("gamerCalls/.json")
     suspend fun getGamerCalls():List<GamerCalls>?
 
     @POST("gamerCalls/.json")

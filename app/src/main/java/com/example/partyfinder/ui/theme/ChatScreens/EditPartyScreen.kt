@@ -245,7 +245,7 @@ fun EditPartyContent(modifier: Modifier = Modifier) {
                 modifier = modifier
                     .height(40.dp),
                 shape = RoundedCornerShape(5.dp),
-                onClick = { },
+                onClick = { /* Add functionality */ },
                 border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
             ) {

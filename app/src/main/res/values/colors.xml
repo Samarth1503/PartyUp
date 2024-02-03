@@ -22,6 +22,7 @@
 <!--    <color name="receiverDmBackground">#43A047</color>-->
     <color name="chatPreview">#CACACA</color>
     <color name="transparentBackdrop">#1A0059FF</color>
+    <color name="transparentMenuBG">#A6222222</color>
     <color name="transparent">#00FFFFFF</color>
 
 //pushkars frames

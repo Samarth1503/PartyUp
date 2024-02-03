@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
+import com.example.partyfinder.model.register.RegistrationViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.partyfinder.Navigation.PartyUpRouterSam
 import com.example.partyfinder.Navigation.Screens
+import com.example.partyfinder.model.register.RegisterUIEvent
+import com.example.partyfinder.navigation.PartyUpRouterSam
+import com.example.partyfinder.navigation.Screens
 import com.example.partyfinder.R
 import com.example.partyfinder.model.Register.RegisterUIEvent
 import com.example.partyfinder.ui.theme.ButtonComponent

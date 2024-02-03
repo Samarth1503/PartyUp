@@ -1,5 +1,7 @@
 package com.example.partyfinder.ui.theme
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,7 +10,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -16,10 +20,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,27 +37,119 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.partyfinder.R
+import com.example.partyfinder.model.community.CommunityUIEvent
+import com.example.partyfinder.model.community.CommunityViewModel
+import com.example.partyfinder.model.community.PostUIEvent
+import com.example.partyfinder.model.community.PostViewModel
 
 
 @Composable
-fun SpecificCommunityScreen(){
+fun SpecificCommunityScreen(communityViewModel: CommunityViewModel = viewModel()){
     Surface(color= colorResource(id = R.color.black)){
-        Column(modifier = Modifier
-            .verticalScroll(rememberScrollState(), true)
-            .height(808.dp)
-            .width(393.dp)
+        Box(modifier = Modifier
         ) {
-            SpecificCommunityTopBar()
-            SpecificCommunityContent()
+            var newPostOverlay by remember {mutableStateOf(false)}
+            Column {
+                SpecificCommunityTopBar()
+                SpecificCommunityContent()
+            }
+
+//            To add a new post
+            Button(
+                modifier = Modifier
+                    .padding(bottom = 24.dp)
+                    .align(Alignment.BottomCenter),
+                shape = RoundedCornerShape(16.dp),
+                onClick = { newPostOverlay = !newPostOverlay },
+                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG))
+            ) {
+                Text(modifier = Modifier
+                        .padding(bottom = 4.dp),
+                    text = "Add a Post",
+                    color = colorResource(id = R.color.primary) )
+            }
+
+
+            if(newPostOverlay){
+                Column( modifier = Modifier
+                    .fillMaxSize()
+                    .background(colorResource(id = R.color.transparentMenuBG))
+                    .clickable { newPostOverlay = !newPostOverlay },
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Column( modifier = Modifier
+                        .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                        .fillMaxWidth()
+                        .background(colorResource(id = R.color.black)),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Image(painter = painterResource(id = R.drawable.expanddownarrow_blue),
+                            contentDescription = "close menu img",
+                            modifier = Modifier
+                                .height(24.dp)
+                                .width(80.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        CustomTextField(labelValue = "Enter Message",
+                            onTextSelected = { communityViewModel.onEvent(CommunityUIEvent.ContentChanged(it))} )
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Row (
+                            modifier = Modifier
+                                .padding(dimensionResource(id = R.dimen.main_padding),
+                                    0.dp,
+                                    dimensionResource(id = R.dimen.main_padding),
+                                    12.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly) {
+                            Button(
+                                shape = RoundedCornerShape(4.dp),
+                                onClick = { communityViewModel.onEvent(CommunityUIEvent.NewPostAdded) },
+                                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG))
+                            ) {
+                                Text(modifier = Modifier
+                                    .padding(bottom = 4.dp),
+                                    text = "Add Image",
+                                    color = colorResource(id = R.color.primary) )
+                            }
+
+                            Button(
+                                modifier = Modifier
+                                    .padding(bottom = 24.dp),
+                                shape = RoundedCornerShape(4.dp),
+                                onClick = { communityViewModel.onEvent(CommunityUIEvent.NewPostAdded) },
+                                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG))
+                            ) {
+                                Text(modifier = Modifier
+                                    .padding(bottom = 4.dp),
+                                    text = "Post",
+                                    color = colorResource(id = R.color.primary) )
+                            }
+                        }
+                    }
+
+                }
+            }
         }
     }
 }
+
+
 
 @Composable
 fun SpecificCommunityTopBar(modifier: Modifier = Modifier) {
@@ -139,15 +235,23 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier) {
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun CommunityComments(modifier: Modifier = Modifier) {
+fun CommunityComments(modifier: Modifier = Modifier,
+                      postViewModel: PostViewModel = viewModel()) {
 
-//        Variable declaration for menu
+//        Variable declaration for like
+    var likes = "1k"
+    // need to update the value of likes on the post from db
+
+    var postImage: Int? = null
+    // need to update the link of image on the post from db if any
     var isLiked by remember { mutableStateOf(false) }
+    var likeIsClicked by remember { mutableStateOf(false) }
 
     Box ( modifier = modifier) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .padding(0.dp, 12.dp, 0.dp, 0.dp)
                 .background(
                     color = colorResource(id = R.color.DarkBG),
@@ -213,6 +317,9 @@ fun CommunityComments(modifier: Modifier = Modifier) {
                     }
                 }
                 Row {
+                    if (postImage != null){
+                        Image(painter = painterResource(id = postImage), contentDescription = "Post's Image")
+                    }
                     Text(
                         text = "Need a 4 stack of cracked Valorant gamers for comp grind, And I mean Cracked(CRAZY) ",
                         style = MaterialTheme.typography.bodySmall,
@@ -236,19 +343,26 @@ fun CommunityComments(modifier: Modifier = Modifier) {
             ){
                 Row(
                     modifier = modifier
-                        .padding(start = 16.dp),
+                        .padding(start = 16.dp)
+                        .clickable {
+                            isLiked = !isLiked
+                            likeIsClicked = true
+                        },
                     verticalAlignment = Alignment.CenterVertically
                 ){
-
+                    Text(modifier = modifier
+                            .padding(end = 4.dp),
+                        text = likes,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = colorResource(id = R.color.white)
+                    )
                     if (!isLiked) {
                         Image(
                             painter = painterResource(id = R.drawable.empty_heart_blue),
                             contentDescription = "Like",
                             modifier = modifier
                                 .padding(0.dp, 5.dp, 6.dp, 4.dp)
-                                .size(16.dp)
-                                .clickable { isLiked = !isLiked }
-                        )
+                                .size(16.dp) )
                     }
                     if (isLiked) {
                         Image(
@@ -256,9 +370,7 @@ fun CommunityComments(modifier: Modifier = Modifier) {
                             contentDescription = "Like",
                             modifier = modifier
                                 .padding(0.dp, 5.dp, 6.dp, 4.dp)
-                                .size(16.dp)
-                                .clickable { isLiked = !isLiked }
-                        )
+                                .size(16.dp) )
                     }
                     Text(
                         text = "Like",
@@ -266,9 +378,20 @@ fun CommunityComments(modifier: Modifier = Modifier) {
                         color = colorResource(id = R.color.white)
                     )
                 }
+//                Like Post functionality
+                if (likeIsClicked){
+                    if (isLiked){
+                        postViewModel.onEvent(PostUIEvent.PostLiked)
+                    }
+                    if (!isLiked){
+                        postViewModel.onEvent(PostUIEvent.PostUnLiked)
+                    }
+                }
+
                 Row(
                     modifier = modifier
-                        .padding(start = 20.dp),
+                        .padding(start = 20.dp)
+                        .clickable { postViewModel.onEvent(PostUIEvent.PostShared) },
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Image(
@@ -286,7 +409,8 @@ fun CommunityComments(modifier: Modifier = Modifier) {
                 }
                 Row(
                     modifier = modifier
-                        .padding(start = 20.dp),
+                        .padding(start = 20.dp)
+                        .clickable { postViewModel.onEvent(PostUIEvent.PostReported) },
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Image(

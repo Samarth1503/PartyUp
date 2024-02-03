@@ -1,5 +1,9 @@
-package com.example.partyfinder.ui.theme.LoginAndRegisterScreens
 
+@file:Suppress("DEPRECATION")
+
+package com.example.partyfinder.ui.theme
+
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.util.Log
 import android.view.LayoutInflater
@@ -35,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+
 import com.example.partyfinder.R
 import com.example.partyfinder.model.Login.LoginUIEvent
 import com.example.partyfinder.ui.theme.ButtonComponent
@@ -45,16 +50,33 @@ import com.example.partyfinder.ui.theme.ForgotPasswordComponent
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
 
+import com.example.partyfinder.model.login.LoginUIEvent
+import com.example.partyfinder.model.login.LoginViewModel
+import com.example.partyfinder.navigation.PartyUpRouterSam
+import com.example.partyfinder.navigation.Screens
+import com.example.partyfinder.R
+import com.example.partyfinder.data.UserAccount
+import com.example.partyfinder.model.register.RegistrationUIState
+import kotlinx.coroutines.flow.MutableStateFlow
+
+
+@SuppressLint("SetTextI18n", "InflateParams")
 @Composable
+
 fun LogInPage(
     loginViewModel: LoginViewModel,
     navigateToRegisterScreen:() ->Unit,
     onLogInClicked:() ->Unit,
 ) {
+
     val context = LocalContext.current
+    val userAccount = UserAccount()
+
+    val _registrationUIState = RegistrationUIState()
+
     Box(
         modifier = Modifier
-            .height(808.dp)
+            .height(808.dp) 
             .width(393.dp)
             .background(color = colorResource(id = R.color.black))
     ) {
@@ -100,7 +122,8 @@ fun LogInPage(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            CustomOutlinedTextField(labelValue = "Email",
+            CustomOutlinedTextField(
+                labelValue = if (userAccount.email.isEmpty()){ "Enter Email" } else { userAccount.email },
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email Icon") },
                 onTextSelected = {
                     loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
@@ -140,7 +163,9 @@ fun LogInPage(
                 modifier = Modifier.align(Alignment.Center),
                 color = colorResource(id = R.color.primary) )
         }
-        //        for prompting acc creation
+
+//        for prompting acc creation
+
         LaunchedEffect(key1 = loginViewModel.loginIsSuccessful.value) {
             if (loginViewModel.loginIsSuccessful.value) {
                 Log.d(ContentValues.TAG,"Toast Prompted")

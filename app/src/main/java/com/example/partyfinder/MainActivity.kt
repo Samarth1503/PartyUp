@@ -23,7 +23,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PartyFinderApp()
+//                    val communityViewModel: CommunityViewModel = viewModel()
+//                    PartyFinderApp(communityViewModel = communityViewModel)
+                    TF()
                 }
             }
         }

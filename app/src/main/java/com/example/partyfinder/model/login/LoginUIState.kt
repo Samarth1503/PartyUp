@@ -1,4 +1,4 @@
-package com.example.partyfinder.model.Login
+package com.example.partyfinder.model.login
 
 data class LoginUIState(
     var email  :String = "",

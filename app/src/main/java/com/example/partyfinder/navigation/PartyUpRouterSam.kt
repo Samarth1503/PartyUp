@@ -1,13 +1,13 @@
-package com.example.partyfinder.Navigation
+package com.example.partyfinder.navigation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
-sealed class Screens(){
-    object RegisterScreen : Screens()
-    object TermsAndConditionsScreen : Screens()
-    object LoginScreen : Screens()
-    object HomeScreen : Screens()
+sealed class Screens {
+    data object RegisterScreen : Screens()
+    data object TermsAndConditionsScreen : Screens()
+    data object LoginScreen : Screens()
+    data object HomeScreen : Screens()
 }
 
 object PartyUpRouterSam{

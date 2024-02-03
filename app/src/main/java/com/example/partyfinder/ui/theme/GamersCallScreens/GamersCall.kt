@@ -171,7 +171,8 @@ fun G_Calls(
     gamerTag:String,
     gameName:String,
     partySize:Int,
-    callDes:String) {
+    callDes:String
+) {
 
 //        Variable declaration for menu
     var isMenuVisible by remember { mutableStateOf(false) }
@@ -330,10 +331,8 @@ fun G_Calls(
                             style = MaterialTheme.typography.bodySmall,
                             color = colorResource(id = R.color.white),
                             modifier = modifier
-                                .padding(bottom = 2.dp)
+                                .padding(end = 16.dp, bottom = 2.dp)
                         )
-                        Spacer(modifier = modifier.width(12.dp))
-
                     }
                 }
             }
@@ -364,12 +363,11 @@ fun G_Calls(
 
 //        Menu
         if (isMenuVisible) {
-            Surface(color = colorResource(id = R.color.black),
-                modifier = modifier
+            Box( modifier = Modifier
                     .padding(
-                        208.dp,
+                        0.dp,
                         (dimensionResource(id = R.dimen.top_bar_height) - 24.dp),
-                        28.dp,
+                        32.dp,
                         0.dp
                     )
                     .border(
@@ -378,6 +376,8 @@ fun G_Calls(
                         shape = RoundedCornerShape(4.dp)
                     )
                     .zIndex(2f)
+                    .background(colorResource(id = R.color.black))
+                    .align(Alignment.TopEnd)
             ) {
                 Column ( modifier = modifier
                     .padding(20.dp, 8.dp, 20.dp, 8.dp)

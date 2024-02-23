@@ -1,4 +1,4 @@
-package com.example.partyfinder.datasource
+package com.example.partyfinder.model.local
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

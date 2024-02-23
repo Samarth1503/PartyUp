@@ -3,7 +3,7 @@ package com.example.partyfinder.ui.theme.ViewModels
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.datasource.LocalUserRepository
+import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.model.uiEvent.LoginUIEvent
 import com.example.partyfinder.model.uiState.LoginUIState
 import com.google.firebase.Firebase

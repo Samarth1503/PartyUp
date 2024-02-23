@@ -1,4 +1,4 @@
-package com.example.partyfinder.datasource
+package com.example.partyfinder.model.local
 
 enum class SortType{
     FIRST_NAME,

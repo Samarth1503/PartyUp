@@ -5,6 +5,25 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.partyfinder.model.GamerCalls
+import com.example.partyfinder.model.local.Chat
+import com.example.partyfinder.model.local.ChatChannels
+import com.example.partyfinder.model.local.ChatChannelsDao
+import com.example.partyfinder.model.local.ChatDao
+import com.example.partyfinder.model.local.Communities
+import com.example.partyfinder.model.local.CommunitiesDao
+import com.example.partyfinder.model.local.Community
+import com.example.partyfinder.model.local.CommunityDao
+import com.example.partyfinder.model.local.Converters
+import com.example.partyfinder.model.local.GamerCallsDao
+import com.example.partyfinder.model.local.LiveGamerCall
+import com.example.partyfinder.model.local.LiveGamerCallDao
+import com.example.partyfinder.model.local.LocalUser
+import com.example.partyfinder.model.local.LocalUserDao
+import com.example.partyfinder.model.local.UserPost
+import com.example.partyfinder.model.local.UserPostDao
+import com.example.partyfinder.model.local.Users
+import com.example.partyfinder.model.local.UsersDao
 
 @Database(entities = [LocalUser::class, Users::class, GamerCalls::class, ChatChannels::class, Chat::class, UserPost::class, LiveGamerCall::class, Communities::class, Community::class], version = 1)
 

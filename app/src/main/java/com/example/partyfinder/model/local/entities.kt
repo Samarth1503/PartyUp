@@ -1,4 +1,4 @@
-package com.example.partyfinder.datasource
+package com.example.partyfinder.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -27,15 +27,15 @@ data class Users(
     val userGamerCalls: Map<String, Any>
 )
 
-@Entity
-data class GamerCalls(
-    @PrimaryKey val gamerID: String = "null",
-    val profilePic: String,
-    val callDes: String,
-    val gameName: String,
-    val gamerTag: String,
-    val partySize: Long
-)
+//@Entity
+//data class GamerCalls(
+//    @PrimaryKey val gamerID: String = "null",
+//    val profilePic: String,
+//    val callDes: String,
+//    val gameName: String,
+//    val gamerTag: String,
+//    val partySize: Long
+//)
 
 @Entity
 data class ChatChannels(

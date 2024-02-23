@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.datasource.SortType
+import com.example.partyfinder.model.local.SortType
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.UserAccount

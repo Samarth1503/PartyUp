@@ -1,5 +1,23 @@
-package com.example.partyfinder.datasource
+package com.example.partyfinder.data.repositories
 
+import com.example.partyfinder.model.local.Chat
+import com.example.partyfinder.model.local.ChatChannels
+import com.example.partyfinder.model.local.ChatChannelsDao
+import com.example.partyfinder.model.local.ChatDao
+import com.example.partyfinder.model.local.Communities
+import com.example.partyfinder.model.local.CommunitiesDao
+import com.example.partyfinder.model.local.Community
+import com.example.partyfinder.model.local.CommunityDao
+import com.example.partyfinder.model.local.GamerCallsDao
+import com.example.partyfinder.model.local.LiveGamerCall
+import com.example.partyfinder.model.local.LiveGamerCallDao
+import com.example.partyfinder.model.local.LocalUser
+import com.example.partyfinder.model.local.LocalUserDao
+import com.example.partyfinder.model.local.UserPost
+import com.example.partyfinder.model.local.UserPostDao
+import com.example.partyfinder.model.local.Users
+import com.example.partyfinder.model.local.UsersDao
+import com.example.partyfinder.model.GamerCalls
 import kotlinx.coroutines.flow.Flow
 
 class LocalUserRepository(private val localUserDao: LocalUserDao) {
@@ -36,7 +54,7 @@ class UsersRepository(private val usersDao: UsersDao) {
     }
 }
 
-class GamerCallsRepository(private val gamerCallsDao: GamerCallsDao) {
+class GamerCallsLocalRepository(private val gamerCallsDao: GamerCallsDao) {
 
     fun getAll(): Flow<List<GamerCalls>> {
         return gamerCallsDao.getAll()
@@ -47,7 +65,7 @@ class GamerCallsRepository(private val gamerCallsDao: GamerCallsDao) {
     }
 }
 
-class ChatChannelsRepository(private val chatChannelsDao: ChatChannelsDao) {
+class ChatChannelsLocalRepository(private val chatChannelsDao: ChatChannelsDao) {
 
     fun getAll(): Flow<List<ChatChannels>> {
         return chatChannelsDao.getAll()
@@ -58,7 +76,7 @@ class ChatChannelsRepository(private val chatChannelsDao: ChatChannelsDao) {
     }
 }
 
-class ChatRepository(private val chatDao: ChatDao) {
+class ChatLocalRepository(private val chatDao: ChatDao) {
 
     fun getAll(): Flow<List<Chat>> {
         return chatDao.getAll()
@@ -69,7 +87,7 @@ class ChatRepository(private val chatDao: ChatDao) {
     }
 }
 
-class UserPostRepository(private val userPostDao: UserPostDao) {
+class UserPostLocalRepository(private val userPostDao: UserPostDao) {
 
     fun getAll(): Flow<List<UserPost>> {
         return userPostDao.getAll()
@@ -80,7 +98,7 @@ class UserPostRepository(private val userPostDao: UserPostDao) {
     }
 }
 
-class LiveGamerCallRepository(private val liveGamerCallDao: LiveGamerCallDao) {
+class LiveGamerCallLocalRepository(private val liveGamerCallDao: LiveGamerCallDao) {
 
     fun getAll(): Flow<List<LiveGamerCall>> {
         return liveGamerCallDao.getAll()
@@ -91,7 +109,7 @@ class LiveGamerCallRepository(private val liveGamerCallDao: LiveGamerCallDao) {
     }
 }
 
-class CommunitiesRepository(private val communitiesDao: CommunitiesDao) {
+class CommunitiesLocalRepository(private val communitiesDao: CommunitiesDao) {
 
     fun getAll(): Flow<List<Communities>> {
         return communitiesDao.getAll()
@@ -102,7 +120,7 @@ class CommunitiesRepository(private val communitiesDao: CommunitiesDao) {
     }
 }
 
-class CommunityRepository(private val communityDao: CommunityDao) {
+class CommunityLocalRepository(private val communityDao: CommunityDao) {
 
     fun getAll(): Flow<List<Community>> {
         return communityDao.getAll()

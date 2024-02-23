@@ -142,10 +142,10 @@ class MainActivity : ComponentActivity() {
                     val userDao = AppDatabase.getDatabase(this).localUserDao()
                     val userRepository = LocalUserRepository(userDao)
 
+                    val registrationViewModel = RegistrationViewModel(userRepository)
 
-
-                    PartyFinderApp(registrationViewModel = RegistrationViewModel(userRepository),
-                        loginViewModel = LoginViewModel(userRepository)
+                    PartyFinderApp(registrationViewModel = registrationViewModel,
+                        loginViewModel = LoginViewModel(userRepository, localLoginEmail = registrationViewModel.updateLoginEmailField())
                     )
                 }
             }

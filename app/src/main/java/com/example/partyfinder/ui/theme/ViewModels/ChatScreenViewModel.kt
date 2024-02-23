@@ -14,15 +14,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class chatScreenViewModel:ViewModel(){
+
+
+class chatScreenViewModel : ViewModel(){
+
+
+
     private val _chatsScreenUiState = MutableStateFlow(ChatScreenUiState())
     val chatsScreenUiState:StateFlow<ChatScreenUiState> =_chatsScreenUiState.asStateFlow()
-
+    var currentChannel by mutableStateOf(datasource.ChatChannels.get(0))
     var isMenuClicked by mutableStateOf(false)
     var isDmScreenMenuClicked by mutableStateOf(false)
-
+    private val _sortType = MutableStateFlow(SortType.MOST_RECENT)
 //    val _chatChannelList =MutableLiveData<ChatChannelList>()
 //    val chatChannelList : LiveData<ChatChannelList> get () = _chatChannelList
+
+
+
 
     init {
 //       viewModelScope.launch {
@@ -31,7 +39,7 @@ class chatScreenViewModel:ViewModel(){
 //           }
 //       }
     }
-//    fun onNewChatClicked(){
+    //    fun onNewChatClicked(){
 //            val ChatChannel = ChatChannel(
 //                channelID = 2,
 //                channelName = "Trial Chat 3",
@@ -51,15 +59,6 @@ class chatScreenViewModel:ViewModel(){
 //        }
 //        Log.d(TAG,"Chat channel posted")
 //    }
-class chatScreenViewModel : ViewModel(){
-
-    private val _chatsScreenUiState = MutableStateFlow(ChatScreenUiState())
-    val chatsScreenUiState:StateFlow<ChatScreenUiState> =_chatsScreenUiState.asStateFlow()
-    var currentChannel by mutableStateOf(datasource.ChatChannels.get(0))
-    var isMenuClicked by mutableStateOf(false)
-    var isDmScreenMenuClicked by mutableStateOf(false)
-    private val _sortType = MutableStateFlow(SortType.MOST_RECENT)
-
     fun onChatsScreenMenuClick(){
         isMenuClicked=!isMenuClicked
         _chatsScreenUiState.update { currentState -> currentState.copy(

@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class LoginViewModel(private val userRepository: LocalUserRepository) : ViewModel() {
+class LoginViewModel(
+    private val userRepository: LocalUserRepository,
+    val localLoginEmail:String="") : ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
 
@@ -24,6 +26,12 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
     var loginInProgress = mutableStateOf(false)
 
     var loginIsSuccessful = mutableStateOf(false)
+
+    init {
+        _loginUIState.update { currentState -> currentState.copy(
+            email = localLoginEmail
+        ) }
+    }
 
     fun onEvent(event: LoginUIEvent) {
         when (event) {

@@ -62,16 +62,7 @@ fun LogInPage( registrationViewModel : RegistrationViewModel,
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val localUserEmail = remember { mutableStateOf("") }
-    // Use LaunchedEffect to call getUserEmail()
-    LaunchedEffect(key1 = registrationViewModel) {
-        localUserEmail.value = registrationViewModel.getUserEmail()
-        Log.d("App-TestCase", localUserEmail.value)
-    }
-    // Update emailState with userEmail
-    LaunchedEffect(registrationViewModel.userEmail) {
-        emailState.value = TextFieldValue(registrationViewModel.userEmail)
-    }
+
 
     Scaffold(
         snackbarHost = {
@@ -127,11 +118,7 @@ fun LogInPage( registrationViewModel : RegistrationViewModel,
                 Spacer(modifier = Modifier.height(32.dp))
 
                 CustomOutlinedTextField(
-                    labelValue = if (emailState.value.text.isEmpty()) {
-                        "EnterEmail"
-                    } else {
-                        emailState.value.text
-                    },
+                    labelValue = "EnterEmail",
                     leadingIcon = { Icon(Icons.Default.Email, contentDescription = "EmailIcon") },
                     onTextSelected = { emailState.value = TextFieldValue(it) }
                 )

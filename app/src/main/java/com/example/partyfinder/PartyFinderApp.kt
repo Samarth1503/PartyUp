@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +37,6 @@ import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCall
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallContent
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallTopBar
 import com.example.partyfinder.ui.theme.HomeScreen
-import com.example.partyfinder.ui.theme.LogInPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.LogInPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.RegisterPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.TermsAndConditons
@@ -92,8 +92,8 @@ fun PartyFinderApp(
     profileViewModel: ProfileViewModel = viewModel(),
     chatScreenViewModel: chatScreenViewModel = viewModel(),
     partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
-    loginViewModel: LoginViewModel = viewModel(),
-    registrationViewModel: RegistrationViewModel = viewModel(),
+    loginViewModel: LoginViewModel,
+    registrationViewModel: RegistrationViewModel,
     gamersCallViewModel:GamerCallsViewModel = viewModel(),
     createGamerCallViewModel: CreateGamerCallsViewModel = viewModel(),
     filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel()

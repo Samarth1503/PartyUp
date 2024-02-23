@@ -131,5 +131,8 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
         return userEmailLocal
     }
 
+    fun updateLoginEmailField():String{
+        return registrationUIState.value.email
+    }
 
 }

@@ -4,23 +4,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.partyfinder.datasource.SortType
+import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.UserAccount
-import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.uiState.ChatScreenUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class chatScreenViewModel:ViewModel(){
+class chatScreenViewModel : ViewModel(){
+
     private val _chatsScreenUiState = MutableStateFlow(ChatScreenUiState())
     val chatsScreenUiState:StateFlow<ChatScreenUiState> =_chatsScreenUiState.asStateFlow()
     var currentChannel by mutableStateOf(datasource.ChatChannels.get(0))
     var isMenuClicked by mutableStateOf(false)
     var isDmScreenMenuClicked by mutableStateOf(false)
-
-
+    private val _sortType = MutableStateFlow(SortType.MOST_RECENT)
 
     fun onChatsScreenMenuClick(){
         isMenuClicked=!isMenuClicked

@@ -1,11 +1,14 @@
 package com.example.partyfinder
 
+import android.util.Log
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.colorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -34,7 +37,7 @@ import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCall
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallContent
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallTopBar
 import com.example.partyfinder.ui.theme.HomeScreen
-import com.example.partyfinder.ui.theme.LogInPage
+import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.LogInPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.RegisterPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.TermsAndConditons
 import com.example.partyfinder.ui.theme.PartyFinderScreens.FindPartyScreen
@@ -61,7 +64,7 @@ import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 
 
-enum class PartyFinderScreen(){
+enum class PartyFinderScreen {
     HomeScreen,
     ProfileScreen,
     EditProfileScreen,
@@ -75,27 +78,21 @@ enum class PartyFinderScreen(){
     LoginScreen,
     RegisterScreen,
     TermsAndConditionsScreen,
-
 }
 
-private fun
-        navigateBack(navController: NavController){
-            navController.navigateUp()
-        }
+private fun navigateBack(navController: NavController){ navController.navigateUp() }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PartyFinderApp(
     profileViewModel: ProfileViewModel = viewModel(),
     chatScreenViewModel: chatScreenViewModel = viewModel(),
     partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
-    registerViewModel: RegistrationViewModel = viewModel(),
+    registrationViewModel: RegistrationViewModel = viewModel(),
     gamersCallViewModel:GamerCallsViewModel = viewModel(),
     createGamerCallViewModel: CreateGamerCallsViewModel = viewModel(),
     filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel()
 ){
-
     val profileUiState by profileViewModel.profileState.collectAsState()
     val chatScreenUiState by chatScreenViewModel.chatsScreenUiState.collectAsState()
     val partyFinderScreenUiState by partyFinderScreenViewModel.partyFinderUiState.collectAsState()
@@ -104,9 +101,16 @@ fun PartyFinderApp(
     val filteredGamerCallsUiState by filterGamerCallsViewModel.FilteredGamerCallUiState.collectAsState()
     val navController : NavHostController= rememberNavController()
 
+    val localUserEmail = remember { mutableStateOf("") }
+    // Use LaunchedEffect to call getUserEmail()
+    LaunchedEffect(key1 = registrationViewModel) {
+        localUserEmail.value = registrationViewModel.getUserEmail()
+        Log.d("App-TestCase", localUserEmail.value)
+    }
+
     NavHost(
         navController = navController,
-        startDestination = PartyFinderScreen.HomeScreen.name
+        startDestination = PartyFinderScreen.RegisterScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -115,13 +119,13 @@ fun PartyFinderApp(
                 navigateToPartyFinder = {navController.navigate(PartyFinderScreen.FindPartyScreen.name)},
                 navigateToGamerCalls = {navController.navigate(PartyFinderScreen.GamerCallsScreen.name)},
                 navigateToCommunities = {navController.navigate(PartyFinderScreen.SpecificCommunityScreen.name)}
-
             )
         }
 
         composable(route= PartyFinderScreen.LoginScreen.name){
             LogInPage(
-                loginViewModel=loginViewModel,
+                registrationViewModel = registrationViewModel,
+                loginViewModel = loginViewModel,
                 navigateToRegisterScreen = { navController.navigate(PartyFinderScreen.RegisterScreen.name) },
                 onLogInClicked = {loginViewModel.login(navigateToHomeScreen = { navController.navigate(
                     PartyFinderScreen.HomeScreen.name) })}
@@ -134,10 +138,10 @@ fun PartyFinderApp(
 
         composable( route = PartyFinderScreen.RegisterScreen.name){
             RegisterPage(
-                registrationViewModel = registerViewModel,
+                registrationViewModel = registrationViewModel,
                 navigateToTermsAndConditions = {navController.navigate(PartyFinderScreen.TermsAndConditionsScreen.name)},
                 navigateToLoginScreen = {navController.navigate(PartyFinderScreen.LoginScreen.name)},
-                onRegisterButtonClicked = {registerViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked) })
+                onRegisterButtonClicked = {registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked) })
         }
 
         composable(route = PartyFinderScreen.SpecificCommunityScreen.name){

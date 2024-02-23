@@ -49,10 +49,11 @@ import com.example.partyfinder.ui.theme.ForgotPasswordComponent
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
 import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
+import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 
 @SuppressLint("SetTextI18n","InflateParams", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LogInPage(
+fun LogInPage( registrationViewModel : RegistrationViewModel,
     loginViewModel: LoginViewModel,
     navigateToRegisterScreen: () -> Unit,
     onLogInClicked: () -> Unit,
@@ -60,6 +61,17 @@ fun LogInPage(
     val emailState = remember { mutableStateOf(TextFieldValue()) }
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val localUserEmail = remember { mutableStateOf("") }
+    // Use LaunchedEffect to call getUserEmail()
+    LaunchedEffect(key1 = registrationViewModel) {
+        localUserEmail.value = registrationViewModel.getUserEmail()
+        Log.d("App-TestCase", localUserEmail.value)
+    }
+    // Update emailState with userEmail
+    LaunchedEffect(registrationViewModel.userEmail) {
+        emailState.value = TextFieldValue(registrationViewModel.userEmail)
+    }
 
     Scaffold(
         snackbarHost = {
@@ -183,7 +195,8 @@ fun Preview(){
         LogInPage(
             loginViewModel = viewModel(),
             navigateToRegisterScreen = {},
-            onLogInClicked = {}
+            onLogInClicked = {},
+            registrationViewModel = viewModel()
         )
     }
 }

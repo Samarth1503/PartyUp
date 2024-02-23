@@ -48,7 +48,6 @@
 
 package com.example.partyfinder.model
 
-import android.util.Log
 import java.sql.Types.NULL
 
 class UserAccount(
@@ -63,15 +62,15 @@ class UserAccount(
     init {
         if (uid.isNotEmpty()) {
             this.gamerTag = uid.substring(0,4)
-            Log.d("UserAccount", "UID: $uid")
-            Log.d("UserAccount", "Email: $email")
-            Log.d("UserAccount", "GamerTag: $gamerTag")
+//            Log.d("UserAccount", "UID: $uid")
+//            Log.d("UserAccount", "Email: $email")
+//            Log.d("UserAccount", "GamerTag: $gamerTag")
         }
         if (gamerID.isNotEmpty()) {
-            Log.d("UserAccount", "GamerID: $gamerID")
-            Log.d("UserAccount", "ProfilePic: $profilePic")
-            Log.d("UserAccount", "Status: ${status.first}, ${status.second}")
-            Log.d("UserAccount", "Bio: $bio")
+//            Log.d("UserAccount", "GamerID: $gamerID")
+//            Log.d("UserAccount", "ProfilePic: $profilePic")
+//            Log.d("UserAccount", "Status: ${status.first}, ${status.second}")
+//            Log.d("UserAccount", "Bio: $bio")
         }
     }
 
@@ -100,14 +99,14 @@ class UserAccount(
 //        this.status = status
 //    }
 
-    fun printData() {
-        Log.d("UserAccount", "FULL DATA")
-        Log.d("UserAccount", "UID: $uid")
-        Log.d("UserAccount", "Email: $email")
-        Log.d("UserAccount", "GamerTag: $gamerTag")
-        Log.d("UserAccount", "GamerID: $gamerID")
-        Log.d("UserAccount", "ProfilePic: $profilePic")
-        Log.d("UserAccount", "Status: ${status.first}, ${status.second}")
-        Log.d("UserAccount", "Bio: $bio")
-    }
+//    fun printData() {
+//        Log.d("UserAccount", "FULL DATA")
+//        Log.d("UserAccount", "UID: $uid")
+//        Log.d("UserAccount", "Email: $email")
+//        Log.d("UserAccount", "GamerTag: $gamerTag")
+//        Log.d("UserAccount", "GamerID: $gamerID")
+//        Log.d("UserAccount", "ProfilePic: $profilePic")
+//        Log.d("UserAccount", "Status: ${status.first}, ${status.second}")
+//        Log.d("UserAccount", "Bio: $bio")
+//    }
 }

@@ -1,9 +1,13 @@
 package com.example.partyfinder.ui.theme.ViewModels
 
-import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.datasource.LocalUser
+import com.example.partyfinder.datasource.LocalUserRepository
 import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.model.uiEvent.RegisterUIEvent
 import com.example.partyfinder.model.uiState.RegistrationUIState
@@ -19,25 +23,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class RegistrationViewModel(private val context: Context) : ViewModel() {
+class RegistrationViewModel(private val userRepository: LocalUserRepository) : ViewModel() {
 
     private val _registrationUIState = MutableStateFlow(RegistrationUIState())
     val registrationUIState: StateFlow<RegistrationUIState> = _registrationUIState.asStateFlow()
 
-    private val _registrationInProgress = MutableStateFlow(false)
-    val registrationInProgress: StateFlow<Boolean> = _registrationInProgress.asStateFlow()
+    var userEmail by mutableStateOf("null")
 
-    private val _registrationSuccessful = MutableStateFlow(false)
-    val registrationSuccessful: StateFlow<Boolean> = _registrationSuccessful.asStateFlow()
-
-    private val _policyStatusChecked = MutableStateFlow(false)
-    val policyStatusChecked: StateFlow<Boolean> = _policyStatusChecked.asStateFlow()
-
-    private val _confirmPasswordValidationStarted = MutableStateFlow(false)
-    val confirmPasswordValidationStarted: StateFlow<Boolean> = _confirmPasswordValidationStarted.asStateFlow()
-
-    private val _confirmPasswordValidation = MutableStateFlow(false)
-    val confirmPasswordValidation: StateFlow<Boolean> = _confirmPasswordValidation.asStateFlow()
+    var registrationInProgress = mutableStateOf(false)
+    var registrationSuccessful = mutableStateOf(false)
+    var policyStatusChecked = mutableStateOf(false)
+    var confirmPasswordValidationStarted = mutableStateOf(false)
+    private var confirmPasswordValidation = mutableStateOf(false)
 
     // Database Variable
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app")
@@ -57,21 +54,21 @@ class RegistrationViewModel(private val context: Context) : ViewModel() {
                 _registrationUIState.update { currentState -> currentState.copy(confirmPassword = event.confirmPassword) }
 
                 if (_registrationUIState.value.password == _registrationUIState.value.confirmPassword) {
-                    _confirmPasswordValidation.value = true
-                    _confirmPasswordValidationStarted.value = false
+                    confirmPasswordValidation.value = true
+                    confirmPasswordValidationStarted.value = false
                 } else {
-                    _confirmPasswordValidationStarted.value = true
+                    confirmPasswordValidationStarted.value = true
                 }
             }
             is RegisterUIEvent.PrivacyPolicyCheckBoxClicked -> {
-                _policyStatusChecked.value = !_policyStatusChecked.value
+                policyStatusChecked.value = !policyStatusChecked.value
             }
             is RegisterUIEvent.RegisterButtonClicked -> {
-                if (_confirmPasswordValidation.value && _policyStatusChecked.value) {
+                if (confirmPasswordValidation.value && policyStatusChecked.value) {
                     viewModelScope.launch {
                         registerToFireBase()
                     }
-                } else if (!_policyStatusChecked.value) {
+                } else if (!policyStatusChecked.value) {
                     Log.d(TAG, "Privacy policy not accepted")
                 } else {
                     Log.d(TAG, "Passwords do not match")
@@ -89,31 +86,50 @@ class RegistrationViewModel(private val context: Context) : ViewModel() {
 
     private suspend fun createUserInFireBase(email: String, password: String) {
         val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-        _registrationInProgress.value = true
+        registrationInProgress.value = true
         try {
             withContext(Dispatchers.IO) {
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
             }
-            _registrationInProgress.value = false
-            _registrationSuccessful.value = true
+            registrationInProgress.value = false
+            registrationSuccessful.value = true
             mAuth.uid?.let { uid ->
                 addUserToDatabase(email, uid)
-
-                val sharedPreferences = context.getSharedPreferences("PartyUp", Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                editor.putString("userEmail", email)
-                editor.apply()
             }
         } catch (e: Exception) {
             Log.d(TAG, "Failure")
         }
     }
 
-    private fun addUserToDatabase(email: String, uid: String) {
-        val userAccount = UserAccount()
-
+    private suspend fun addUserToDatabase(email: String, uid: String) {
+        userRepository.upsert(LocalUser(id = 0, userEmail = email))
+        Log.d("TestCase-Prompt", "addUserToDatabase() started")
+        val retrievedUserEmail = userRepository.getUser()
+        if (retrievedUserEmail != null) {
+            userEmail = retrievedUserEmail.toString() // Update userEmail
+            Log.d("AddUserUserDataTestCase", retrievedUserEmail.toString())
+        } else {
+            userEmail = "null"
+            Log.d("AddUserUserDataTestCase", "No user email found")
+        }
         mDbRef = FirebaseDatabase.getInstance().reference
         mDbRef.child("users").child(uid).setValue(UserAccount(email, uid))
-        userAccount.printData()
     }
+
+    suspend fun getUserEmail(): String {
+        var userEmailLocal = "null"
+        withContext(Dispatchers.IO) {
+            val retrievedUserEmail = userRepository.getUser()
+            if (retrievedUserEmail != null) {
+                userEmailLocal = retrievedUserEmail.toString()
+            }
+        }
+        // Update userEmail on the main thread
+        withContext(Dispatchers.Main) {
+            userEmail = userEmailLocal
+        }
+        return userEmailLocal
+    }
+
+
 }

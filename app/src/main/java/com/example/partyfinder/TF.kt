@@ -24,6 +24,7 @@ fun TF(
         contentAlignment = Alignment.Center
     ) {
                 Text(text = text)
+
     }
 }
 

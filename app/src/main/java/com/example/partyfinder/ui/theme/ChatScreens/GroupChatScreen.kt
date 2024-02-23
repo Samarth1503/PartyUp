@@ -52,7 +52,7 @@ fun GroupChatScreen(){
             LazyColumn(modifier = Modifier.weight(1f)) {
 
             }
-            DmChatInput()
+//            DmChatInput()
         }
     }
 

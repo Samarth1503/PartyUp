@@ -239,15 +239,15 @@ fun Chats(
         LazyColumn(
             modifier = modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)
         ) {
-            items(chatChannelList!!.chatChannels.values.toList()){
-                if(it.isGroupChat){
+            items(chatChannelList!!.chatChannels.toList()){
+                if(it.second.isGroupChat){
 
                     Chat( onClick =  {
-                        navController.navigate("DMScreen/${it.channelID}") },chatChannel = it, userAccount = datasource.UserAccounts.get(0))
-                        Log.d(TAG,it.channelID.toString())
+                        navController.navigate("DMScreen/${it.first}") },chatChannel = it.second, userAccount = datasource.UserAccounts.get(0))
+                        Log.d(TAG,it.second.channelID.toString())
                 }
                 else{
-                    Chat(onClick = { navController.navigate("DMScreen/${it.channelID}") }, chatChannel =it , userAccount = datasource.UserAccounts.get(1))
+                    Chat(onClick = { navController.navigate("DMScreen/${it.first}") }, chatChannel =it.second , userAccount = datasource.UserAccounts.get(1))
                 }
 
 

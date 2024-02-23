@@ -24,6 +24,7 @@ import com.example.partyfinder.ui.theme.ChatScreens.ChatMenu
 import com.example.partyfinder.ui.theme.ChatScreens.ChatTopBar
 import com.example.partyfinder.ui.theme.ChatScreens.Chats
 import com.example.partyfinder.ui.theme.ChatScreens.ChatsScreen
+import com.example.partyfinder.ui.theme.ChatScreens.DmChatInput
 import com.example.partyfinder.ui.theme.ChatScreens.DmScreen
 import com.example.partyfinder.ui.theme.ChatScreens.DmTopBar
 import com.example.partyfinder.ui.theme.CustomExposedDropDownMenu
@@ -90,7 +91,7 @@ private fun
 @Composable
 fun PartyFinderApp(
     profileViewModel: ProfileViewModel = viewModel(),
-    chatScreenViewModel: chatScreenViewModel = viewModel(),
+    chatScreenViewModel: chatScreenViewModel,
     partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
     loginViewModel: LoginViewModel,
     registrationViewModel: RegistrationViewModel,
@@ -116,7 +117,7 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-        startDestination = PartyFinderScreen.RegisterScreen.name
+        startDestination = PartyFinderScreen.HomeScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -237,8 +238,7 @@ fun PartyFinderApp(
                     chatChannelList = chatScreenUiState.channelList,
                     userAccountList =datasource.UserAccounts,
                     navController = navController,
-                    onNewChatClicked = {}
-//                            chatScreenViewModel.onNewChatClicked()
+                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked()}
                     )
                 },
                 isMenuClicked = chatScreenUiState.isMenuClicked,
@@ -247,19 +247,30 @@ fun PartyFinderApp(
 
         composable("DMScreen/{channelID}", arguments = listOf(navArgument("channelID"){type= NavType.StringType}))
         {backStackEntry ->
+
             DmScreen(
-                currentChatChannel = datasource.ChatChannels.get(0),
-//                chatScreenViewModel.retrieveCurrentChatChannel(backStackEntry.arguments!!.getString("channelID"))
+                currentChatChannel = chatScreenViewModel.setAndRetreiveCurrentChatChannel(backStackEntry.arguments!!.getString("channelID")!!)!!,
                 UserTag = "kaizoku",
                 dmTopBar ={
                     DmTopBar(
                         isMenuClicked = chatScreenViewModel.isDmScreenMenuClicked,
                         onMenuItemClicked = {},
-                        currentChatChannel =chatScreenViewModel.retreiveCurrentChannel(backStackEntry.arguments?.getString("channelID")),
+                        currentChatChannel = chatScreenUiState.currentChannelObject!!,
                         onMenuClicked = {chatScreenViewModel.onDmScreenMenuClicked()},
                         navigateBack = { navigateBack(navController) },
-                        retreivedGamerAccount =chatScreenViewModel.retreiveGamerAccount(chatScreenViewModel.retreiveCurrentChannel(backStackEntry.arguments?.getString("channelID")),datasource.UserAccounts) )
-                })
+                        retreivedGamerAccount =datasource.UserAccounts.get(2))
+                },
+                dmChatInput ={
+                    DmChatInput(onSendButtonClick =   {
+                        chatScreenViewModel.sendChatButtonClick(
+                            fireBaseUniqueID = chatScreenUiState.currentChannel,
+                            message = chatScreenUiState.message)
+                    }
+
+                        , message =chatScreenUiState.message,
+                        onMessageChange = { it -> chatScreenViewModel.onMessageValueChanged(it)})
+                }
+            )
         }
 
         composable(route= PartyFinderScreen.FindPartyScreen.name){

@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.uiState.ProfileUiState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +34,7 @@ class ProfileViewModel:ViewModel() {
         viewModelScope.launch {
                 while(isActive){
                     backGroundGetGamerCall()
+                    delay(5000)
                 }
 
         }

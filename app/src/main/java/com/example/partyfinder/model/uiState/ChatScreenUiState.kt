@@ -5,8 +5,10 @@ import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.ChatChannelList
 
 data class ChatScreenUiState(
-    val channelList:ChatChannelList = datasource.chatChannelList,
+    val channelList:ChatChannelList? = datasource.chatChannelList,
     val isMenuClicked:Boolean=false,
     val isDmTopbarMenuClicked:Boolean=false,
-    val currentChannel:ChatChannel = datasource.ChatChannels.get(0)
+    val currentChannel:String="",
+    val message:String="",
+    val currentChannelObject:ChatChannel? = datasource.ChatChannels.get(0)
     )

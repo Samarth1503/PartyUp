@@ -29,10 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,7 +56,8 @@ fun DmScreen(
     modifier:Modifier=Modifier,
     UserTag:String,
     dmTopBar:@Composable ()->Unit,
-    currentChatChannel: ChatChannel
+    dmChatInput:@Composable ()->Unit,
+    currentChatChannel : ChatChannel
 ){
     Box(modifier=modifier.fillMaxSize()){
 
@@ -82,7 +79,7 @@ fun DmScreen(
                     }
                 }
             }
-            DmChatInput()
+            dmChatInput()
         }
     }
 
@@ -336,7 +333,12 @@ fun SenderDM(
 
 
 @Composable
-fun DmChatInput(modifier: Modifier = Modifier) {
+fun DmChatInput(
+    modifier: Modifier = Modifier,
+    onSendButtonClick:()->Unit,
+    message:String,
+    onMessageChange:(String) ->Unit,
+) {
     Row(
         modifier = modifier
 //            .height(dimensionResource(id = (R.dimen.top_bar_height)))
@@ -344,15 +346,13 @@ fun DmChatInput(modifier: Modifier = Modifier) {
             .background(color = colorResource(id = R.color.black)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        var message by remember { mutableStateOf("") }
 
         TextField(
             value = message,
-            onValueChange = { message = it },
+            onValueChange = onMessageChange,
             placeholder = {
                 Text("Enter Message",
-                    style = MaterialTheme.typography.bodyMedium
-                ) },
+                    style = MaterialTheme.typography.bodyMedium) },
             modifier = Modifier
                 .padding(8.dp, 4.dp, 8.dp, 4.dp)
                 .weight(1f)
@@ -376,7 +376,8 @@ fun DmChatInput(modifier: Modifier = Modifier) {
             contentDescription = "Send",
             modifier = Modifier
                 .padding(4.dp, 2.dp, 12.dp, 0.dp)
-                .size(32.dp),
+                .size(32.dp)
+                .clickable { onSendButtonClick() },
             alignment = Alignment.CenterEnd
         )
     }
@@ -428,9 +429,9 @@ fun PreviewDmScreen(){
             currentChatChannel = datasource.ChatChannels.get(0),
             onMenuClicked = { /*TODO*/ },
             retreivedGamerAccount = datasource.UserAccounts.get(0),
-
         )
-            })
+            },
+            dmChatInput = {DmChatInput(onSendButtonClick = {}, message = "", onMessageChange = {})})
     }
 }
 

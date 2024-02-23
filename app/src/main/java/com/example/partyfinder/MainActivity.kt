@@ -11,11 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.partyfinder.datasource.AppDatabase
 import com.example.partyfinder.data.repositories.LocalUserRepository
+import com.example.partyfinder.datasource.AppDatabase
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
 import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
+import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -143,10 +144,18 @@ class MainActivity : ComponentActivity() {
                     val userRepository = LocalUserRepository(userDao)
 
                     val registrationViewModel = RegistrationViewModel(userRepository)
+                    val ChatScreenViewModel =chatScreenViewModel()
+
 
                     PartyFinderApp(registrationViewModel = registrationViewModel,
-                        loginViewModel = LoginViewModel(userRepository, localLoginEmail = registrationViewModel.updateLoginEmailField())
+                        loginViewModel = LoginViewModel(userRepository,
+                        localLoginEmail = registrationViewModel.updateLoginEmailField()),
+                        chatScreenViewModel = ChatScreenViewModel
                     )
+
+
+//                    val ChatScreenViewModel: chatScreenViewModel = viewModel()
+//                    TF(text = ChatScreenViewModel.setAndRetreiveCurrentChatChannel("-NrKbe5OhWOC9s6IMAvq").toString())
                 }
             }
         }

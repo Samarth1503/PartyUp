@@ -46,8 +46,8 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.partyfinder.R
-import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
@@ -122,7 +122,7 @@ fun GamersCallTopBar(
 @Composable
 fun GamersCallContent(
     modifier: Modifier = Modifier,
-    listOfGamerCalls:List<GamerCalls>) {
+    listOfGamerCalls:GamerCallsList) {
     Box(modifier = modifier){
         LazyColumn(
             modifier = modifier
@@ -136,16 +136,17 @@ fun GamersCallContent(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(listOfGamerCalls) {
+            items(listOfGamerCalls.gamerCalls.values.toList()) { gamerCall ->
                 G_Calls(
-                    gameName =it.gameName,
-                    callDes = it.callDes,
-                    partySize = it.partySize,
-                    profilePic = it.ProfilePic,
-                    gamerID = it.gamerID,
-                    gamerTag = it.gamerTag
-                    )
+                    gameName = gamerCall.gameName,
+                    callDes = gamerCall.callDes,
+                    partySize = gamerCall.partySize,
+                    profilePic = gamerCall.ProfilePic,
+                    gamerID = gamerCall.gamerID,
+                    gamerTag = gamerCall.gamerTag
+                )
             }
+
         }
 
 ////        To toggle Hide Menu screen
@@ -433,7 +434,7 @@ fun PreviewGamersCall(){
         GamersCall(
             gamersCallsTopBar = { GamersCallTopBar(onBackClick = {})},
             onCreateClick = {},
-            gamersCallContent = { GamersCallContent(listOfGamerCalls = datasource.GamerCalls)}
+            gamersCallContent = { GamersCallContent(listOfGamerCalls = datasource.gamerCallsList)}
         )
     }
 }

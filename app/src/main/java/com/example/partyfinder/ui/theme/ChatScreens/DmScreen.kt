@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -48,20 +49,20 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
+import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.UserAccount
-import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 @Composable
 fun DmScreen(
     modifier:Modifier=Modifier,
-
+    UserTag:String,
     dmTopBar:@Composable ()->Unit,
     currentChatChannel: ChatChannel
 ){
-    Box(modifier=Modifier.fillMaxSize()){
+    Box(modifier=modifier.fillMaxSize()){
 
         dmTopBar()
 
@@ -72,27 +73,14 @@ fun DmScreen(
             .background(color = colorResource(id = R.color.black))
         ) {
             LazyColumn(modifier = Modifier.weight(1f)) {
-                item { Spacer(modifier = Modifier.height(16.dp)) }
-                item { SenderDM() }
-                item { ReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { ReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { ReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { ReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { ReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { ReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
+               items(currentChatChannel.content.toList()){
+                    if (it.author == UserTag){
+                        SenderDM(content=it.content)
+                    }
+                    else{
+                        ReceiverDm(content = it.content )
+                    }
+                }
             }
             DmChatInput()
         }
@@ -115,7 +103,7 @@ fun DmTopBar(
     Box(modifier = modifier
         .fillMaxWidth()
     ){
-        Card(modifier=Modifier
+        Card(modifier= Modifier
             .align(Alignment.CenterEnd)
             .shadow(10.dp)
             .padding(end = 8.dp)) {
@@ -240,7 +228,9 @@ val SenderTriangle = object : Shape {
 
 
 @Composable
-fun ReceiverDm(modifier: Modifier = Modifier) {
+fun ReceiverDm(
+    modifier: Modifier = Modifier,
+    content: String) {
 
     val bgcolor_of_dm = colorResource(id = R.color.DarkBG)
 
@@ -261,7 +251,7 @@ fun ReceiverDm(modifier: Modifier = Modifier) {
                 .align(Alignment.BottomStart)
         ) {
             Text(
-                text = "TF",
+                text = content,
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.white),
                 modifier = modifier
@@ -288,7 +278,9 @@ fun ReceiverDm(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun SenderDM(modifier: Modifier = Modifier) {
+fun SenderDM(
+    modifier: Modifier = Modifier,
+    content:String) {
 
     val bgcolor_of_dm = colorResource(id = R.color.receiverDmBackground)
 
@@ -309,7 +301,7 @@ fun SenderDM(modifier: Modifier = Modifier) {
                 .align(Alignment.BottomEnd)
         ) {
             Text(
-                text = "Need a 4 stack of cracked Valorant gamers for comp grind, And I mean Cracked(CRAZY) ",
+                text = content,
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.white),
                 modifier = modifier
@@ -426,7 +418,9 @@ fun DmChatInput(modifier: Modifier = Modifier) {
 fun PreviewDmScreen(){
     PartyFinderTheme {
         DmScreen(
+
             currentChatChannel = datasource.ChatChannels.get(0),
+            UserTag = "Kaizoku",
             dmTopBar = { DmTopBar(
                 navigateBack = {},
                 onMenuItemClicked = {},

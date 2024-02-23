@@ -1,7 +1,6 @@
 package com.example.partyfinder
 
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -61,7 +60,7 @@ import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 
 
-enum class PartyFinderScreen(){
+enum class PartyFinderScreen{
     HomeScreen,
     ProfileScreen,
     EditProfileScreen,
@@ -75,7 +74,7 @@ enum class PartyFinderScreen(){
     LoginScreen,
     RegisterScreen,
     TermsAndConditionsScreen,
-
+//    TF
 }
 
 private fun
@@ -83,11 +82,11 @@ private fun
             navController.navigateUp()
         }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun PartyFinderApp(
     profileViewModel: ProfileViewModel = viewModel(),
-    chatScreenViewModel: chatScreenViewModel = viewModel(),
+    chatScreenViewModel: chatScreenViewModel = viewModel() ,
     partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
     registerViewModel: RegistrationViewModel = viewModel(),
@@ -107,6 +106,7 @@ fun PartyFinderApp(
     NavHost(
         navController = navController,
         startDestination = PartyFinderScreen.HomeScreen.name
+
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -149,7 +149,7 @@ fun PartyFinderApp(
                 gamersCallsTopBar = { GamersCallTopBar {
                     navController.navigateUp()
                 }},
-                gamersCallContent = { GamersCallContent(listOfGamerCalls = gamerCallsUiState.listOfGamersCall )},
+                gamersCallContent = { GamersCallContent(listOfGamerCalls = gamerCallsUiState.listOfGamersCall)},
                 onCreateClick = {navController.navigate(PartyFinderScreen.CreateGamerCallsScreen.name)}
             )
         }
@@ -225,7 +225,9 @@ fun PartyFinderApp(
                 chats = { Chats(
                     chatChannelList = chatScreenUiState.channelList,
                     userAccountList =datasource.UserAccounts,
-                    navController = navController
+                    navController = navController,
+                    onNewChatClicked = {}
+//                            chatScreenViewModel.onNewChatClicked()
                     )
                 },
                 isMenuClicked = chatScreenUiState.isMenuClicked,
@@ -235,7 +237,9 @@ fun PartyFinderApp(
         composable("DMScreen/{channelID}", arguments = listOf(navArgument("channelID"){type= NavType.StringType}))
         {backStackEntry ->
             DmScreen(
-                currentChatChannel = chatScreenViewModel.retreiveCurrentChannel(backStackEntry.arguments?.getString("channelID")),
+                currentChatChannel = datasource.ChatChannels.get(0),
+//                chatScreenViewModel.retrieveCurrentChatChannel(backStackEntry.arguments!!.getString("channelID"))
+                UserTag = "kaizoku",
                 dmTopBar ={
                     DmTopBar(
                         isMenuClicked = chatScreenViewModel.isDmScreenMenuClicked,
@@ -350,6 +354,8 @@ fun PartyFinderApp(
             UpdateRanksScreen(navigateBack = { navigateBack(navController) })
         }
 
-
+//        composable(route=PartyFinderScreen.TF.name){
+//            TF(text = profileViewModel.GamerCallList)
+//        }
     }
 }

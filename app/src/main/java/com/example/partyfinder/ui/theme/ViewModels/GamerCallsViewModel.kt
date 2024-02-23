@@ -9,4 +9,18 @@ import kotlinx.coroutines.flow.asStateFlow
 class GamerCallsViewModel : ViewModel() {
     private val _GamerCallsUiState = MutableStateFlow(GamersCallUiState())
     val GamerCallsUiState:StateFlow<GamersCallUiState> =_GamerCallsUiState.asStateFlow()
+
+//    init{
+//         viewModelScope.launch {
+//             try{
+//                 var list: GamerCallsList
+//                 list= networkGamerCallsRepository.getGamerCalls().value!!
+//                 _GamerCallsUiState.update { currentState -> currentState.copy(
+//                     listOfGamersCall = list
+//                 ) }
+//             }catch (e : HttpException){
+//                 Log.d(ContentValues.TAG,"error in fetching data")
+//             }
+//         }
+//    }
 }

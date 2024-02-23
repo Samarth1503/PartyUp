@@ -3,13 +3,20 @@ package com.example.partyfinder.ui.theme.ViewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.model.GamerCalls
+import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.networkGamerCallsRepository
+import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.uiState.ProfileUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+
 
 class ProfileViewModel:ViewModel() {
     private val _profileUiState = MutableStateFlow(ProfileUiState())
@@ -17,28 +24,33 @@ class ProfileViewModel:ViewModel() {
     var gamerIDtextfieldValue by mutableStateOf("")
     var gamerBiotextfieldValue by mutableStateOf("")
     var selectedStatus by mutableStateOf(Pair(0,0))
-
+    private var _gamerCallList = MutableLiveData<GamerCallsList>()
+    val gamercallList: LiveData<GamerCallsList> get() = _gamerCallList
 
 
     init {
 
-        var GamerCallList : List<GamerCalls>?
+        viewModelScope.launch {
+                while(isActive){
+                    backGroundGetGamerCall()
+                }
 
-//        viewModelScope.launch {
-//            try {
-//                GamerCallList = networkGamerCallsRepository.getGamerCalls()
-//                _profileUiState.update { currentState -> currentState.copy(
-//                    UserGamerCalls = GamerCallList
-//                ) }
-//            }
-//            catch (e : HttpException){
-//                Log.d(TAG,"error in fetching data")
-//            }
-//
-//        }
+        }
+
 
     }
 
+    suspend fun backGroundGetGamerCall(){
+        _gamerCallList.value = networkGamerCallsRepository.getGamerCalls().value
+        var response = _gamerCallList.value
+        if (response != null) {
+            gamercallList.observeForever { response ->
+                _profileUiState.update { currentState -> currentState.copy(
+                    UserGamerCalls = response
+                ) }
+            }
+        }
+    }
 
     fun onGamerIDtextFieldChanged(gamerID: String){
         gamerIDtextfieldValue=gamerID

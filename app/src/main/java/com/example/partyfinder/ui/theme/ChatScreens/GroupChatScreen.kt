@@ -50,27 +50,7 @@ fun GroupChatScreen(){
             .background(color = colorResource(id = R.color.black))
         ) {
             LazyColumn(modifier = Modifier.weight(1f)) {
-                item { Spacer(modifier = Modifier.height(16.dp)) }
-                item { SenderDM() }
-                item { GroupReceiverDm() }
-                item { GroupReceiverDm() }
-                item { GroupReceiverDm() }
-                item { SenderDM() }
-                item { GroupReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { GroupReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { GroupReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { GroupReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
-                item { GroupReceiverDm() }
-                item { SenderDM() }
-                item { SenderDM() }
+
             }
             DmChatInput()
         }

@@ -1,5 +1,7 @@
 package com.example.partyfinder.ui.theme.ChatScreens
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,9 +38,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.partyfinder.R
-import com.example.partyfinder.model.ChatChannel
-import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.ChatChannel
+import com.example.partyfinder.model.ChatChannelList
+import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
@@ -82,7 +85,8 @@ fun PreviewChatsScreen(){
             isMenuClicked = false,
             chats = { Chat(
                 chatChannel = datasource.ChatChannels.get(0),
-                userAccount = datasource.UserAccounts.get(0))
+                userAccount = datasource.UserAccounts.get(0),
+                onClick = {})
             }
 
         )
@@ -188,7 +192,7 @@ fun ChatMenu(
     Box(modifier = modifier
         .fillMaxWidth()
     ) {
-        Card(modifier=Modifier
+        Card(modifier= Modifier
             .padding(end = 8.dp,)
             .align(Alignment.CenterEnd)
             .shadow(10.dp)
@@ -224,9 +228,10 @@ fun ChatMenu(
 @Composable
 fun Chats(
     modifier: Modifier = Modifier,
-    chatChannelList:List<ChatChannel>,
+    chatChannelList:ChatChannelList?,
     userAccountList:List<UserAccount>,
     navController:NavHostController,
+    onNewChatClicked: () -> Unit
 ) {
     Box(
         modifier = modifier.fillMaxHeight()
@@ -234,35 +239,39 @@ fun Chats(
         LazyColumn(
             modifier = modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)
         ) {
-            items(chatChannelList){
+            items(chatChannelList!!.chatChannels.values.toList()){
                 if(it.isGroupChat){
 
-                    Chat( modifier.clickable { navController.navigate("DMScreen/${it.channelID}") },chatChannel = it, userAccount = datasource.UserAccounts.get(0))
+                    Chat( onClick =  {
+                        navController.navigate("DMScreen/${it.channelID}") },chatChannel = it, userAccount = datasource.UserAccounts.get(0))
+                        Log.d(TAG,it.channelID.toString())
                 }
-                else
-                {
-                    var gamertag = it.gamerTag
-                    var userAccount = userAccountList.find { it.gamerTag == gamertag  }?:userAccountList.get(0)
-                    Chat(modifier.clickable { navController.navigate("DMScreen/${it.channelID}")},chatChannel = it, userAccount = userAccount)
+                else{
+                    Chat(onClick = { navController.navigate("DMScreen/${it.channelID}") }, chatChannel =it , userAccount = datasource.UserAccounts.get(1))
+                }
 
-                }
 
 
             }
         }
-        NewChat()
+        NewChat( modifier=
+        modifier
+            .size(80.dp)
+            .align(alignment = Alignment.BottomEnd),onNewChatClicked = onNewChatClicked)
     }
 }
 
-
 @Composable
 fun Chat(
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     chatChannel: ChatChannel,
     userAccount: UserAccount,
-){
-    Row ( verticalAlignment = Alignment.CenterVertically,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
+            .clickable { onClick() }
             .padding(10.dp, 5.dp)
             .background(
                 color = colorResource(id = R.color.DarkBG),
@@ -271,14 +280,12 @@ fun Chat(
             .fillMaxWidth()
             .height(75.dp)
     ) {
-        Image (
+        Image(
             painter = painterResource(
-                if(chatChannel.isGroupChat){
+                if (chatChannel.isGroupChat) {
                     chatChannel.channelProfile
-                }
-                else
-                {
-                   userAccount.profilePic
+                } else {
+                    userAccount.profilePic
                 }
             ),
             contentDescription = null,
@@ -290,20 +297,18 @@ fun Chat(
                     RoundedCornerShape(50.dp)
                 )
         )
-        Column ( modifier = modifier
-            .padding(5.dp,0.dp,0.dp,0.dp)
-        ){
+        // Separate modifier for the Column
+        Column(modifier = Modifier.padding(5.dp, 0.dp, 0.dp, 0.dp)) {
             Text(
-                text = if(chatChannel.isGroupChat)
-                {
-                chatChannel.channelName
-                }else{
-                     userAccount.gamerID
-                     },
+                text = if (chatChannel.isGroupChat) {
+                    chatChannel.channelName
+                } else {
+                    userAccount.gamerID
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.white)
             )
-            Spacer(modifier = modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "58008",
                 style = MaterialTheme.typography.bodySmall,
@@ -313,10 +318,13 @@ fun Chat(
     }
 }
 
+
 @Composable
-fun NewChat(modifier: Modifier = Modifier) {
+fun NewChat(modifier: Modifier = Modifier , onNewChatClicked:()->Unit) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .clickable { onNewChatClicked() },
         contentAlignment = Alignment.BottomEnd
     ) {
         Image(

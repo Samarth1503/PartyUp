@@ -38,11 +38,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.partyfinder.R
-import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.ui.theme.GamersCallScreens.G_Calls
 import com.example.partyfinder.ui.theme.PartyFinderTheme
-
 
 //creating other screens
 
@@ -84,7 +83,7 @@ fun PreviewProfileScreen(){
                 },
                 profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = "") },
                 profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { /*TODO*/ }) },
-                profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = datasource.MyGamerCalls) }) }
+                profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = datasource.gamerCallsList) }) }
             )
 
     }
@@ -288,7 +287,7 @@ fun ProfileRankDisplay(modifier: Modifier = Modifier
 
 
 @Composable
-fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userGamerCalls:List<GamerCalls>?){
+fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userGamerCalls:GamerCallsList?){
     Card(modifier= modifier
         .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
@@ -327,14 +326,14 @@ fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userG
                 {
                     Column(modifier=Modifier.padding(top = 16.dp)) {
                         if (userGamerCalls != null) {
-                            userGamerCalls.forEach(){
+                            userGamerCalls.gamerCalls.forEach(){
                                 G_Calls(
-                                    profilePic = it.ProfilePic,
-                                    gamerID = it.gamerID,
-                                    gamerTag = it.gamerTag,
-                                    gameName = it.gameName,
-                                    partySize = it.partySize,
-                                    callDes =it.callDes
+                                    profilePic = it.value.ProfilePic,
+                                    gamerID = it.value.gamerID,
+                                    gamerTag = it.value.gamerTag,
+                                    gameName = it.value.gameName,
+                                    partySize = it.value.partySize,
+                                    callDes =it.value.callDes
                                 )
                             }
                         }

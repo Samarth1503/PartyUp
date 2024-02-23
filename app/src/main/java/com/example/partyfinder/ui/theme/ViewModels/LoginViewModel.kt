@@ -3,6 +3,7 @@ package com.example.partyfinder.ui.theme.ViewModels
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.partyfinder.datasource.LocalUserRepository
 import com.example.partyfinder.model.uiEvent.LoginUIEvent
 import com.example.partyfinder.model.uiState.LoginUIState
 import com.google.firebase.Firebase
@@ -13,10 +14,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(private val userRepository: LocalUserRepository) : ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
-
 
     private val _loginUIState = MutableStateFlow(LoginUIState())
     val loginUIState: StateFlow<LoginUIState> = _loginUIState.asStateFlow()
@@ -38,7 +38,6 @@ class LoginViewModel : ViewModel() {
                     password = event.password)}
                 printState()
             }
-
 
             is LoginUIEvent.ForgotPasswordClicked -> {
                 sendPasswordReset()

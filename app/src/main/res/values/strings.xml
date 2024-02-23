@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Party Finder</string>
+    <string name="partyUp">Party\nUp!</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="welcome">Welcome</string>
     <string name="ONLINE">Online</string>
     <string name="DND">Do Not Disturb</string>
     <string name="AFK">AFK</string>

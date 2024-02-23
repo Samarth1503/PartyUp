@@ -1,15 +1,9 @@
-
-@file:Suppress("DEPRECATION")
-
-package com.example.partyfinder.ui.theme
+package com.example.partyfinder.ui.theme.LoginAndRegisterScreens
 
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.util.Log
-import android.view.LayoutInflater
-import android.widget.TextView
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,151 +23,164 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.partyfinder.R
-import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.model.uiEvent.LoginUIEvent
+import com.example.partyfinder.ui.theme.ButtonComponent
+import com.example.partyfinder.ui.theme.ClickableLoginTextComponent
+import com.example.partyfinder.ui.theme.CustomOutlinedTextField
+import com.example.partyfinder.ui.theme.DividerTextComponent
+import com.example.partyfinder.ui.theme.ForgotPasswordComponent
+import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
 import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
-import com.example.partyfinder.model.uiState.RegistrationUIState
+import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 
-
-@SuppressLint("SetTextI18n", "InflateParams")
+@SuppressLint("SetTextI18n","InflateParams", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-
-fun LogInPage(
+fun LogInPage( registrationViewModel : RegistrationViewModel,
     loginViewModel: LoginViewModel,
-    navigateToRegisterScreen:() ->Unit,
-    onLogInClicked:() ->Unit,
+    navigateToRegisterScreen: () -> Unit,
+    onLogInClicked: () -> Unit,
 ) {
+    val emailState = remember { mutableStateOf(TextFieldValue()) }
+    val passwordState = remember { mutableStateOf(TextFieldValue()) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    val context = LocalContext.current
-    val userAccount = UserAccount()
+    val localUserEmail = remember { mutableStateOf("") }
+    // Use LaunchedEffect to call getUserEmail()
+    LaunchedEffect(key1 = registrationViewModel) {
+        localUserEmail.value = registrationViewModel.getUserEmail()
+        Log.d("App-TestCase", localUserEmail.value)
+    }
+    // Update emailState with userEmail
+    LaunchedEffect(registrationViewModel.userEmail) {
+        emailState.value = TextFieldValue(registrationViewModel.userEmail)
+    }
 
-    val _registrationUIState = RegistrationUIState()
-
-    Box(
-        modifier = Modifier
-            .height(808.dp) 
-            .width(393.dp)
-            .background(color = colorResource(id = R.color.black))
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .padding(horizontal = 36.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .height(808.dp)
+                .width(393.dp)
+                .background(color = colorResource(id = R.color.black))
         ) {
-
-            Row(
+            Column(
                 modifier = Modifier
-                    .padding(top = 60.dp, bottom = 80.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 36.dp)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 60.dp, bottom = 80.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Party\nUp!",
+                        style = MaterialTheme.typography.displayMedium,
+                        color = colorResource(id = R.color.primary)
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.register_logo),
+                        contentDescription = "Register Logo",
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .size(128.dp)
+                    )
+                }
+
                 Text(
-                    text = "Party\nUp!",
-                    style = MaterialTheme.typography.displayMedium,
+                    text = "Login",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.SubliminalText)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Welcome Back",
+                    style = MaterialTheme.typography.titleMedium,
                     color = colorResource(id = R.color.primary)
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.register_logo),
-                    contentDescription = "Register Logo",
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .size(128.dp)
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                CustomOutlinedTextField(
+                    labelValue = if (emailState.value.text.isEmpty()) {
+                        "EnterEmail"
+                    } else {
+                        emailState.value.text
+                    },
+                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = "EmailIcon") },
+                    onTextSelected = { emailState.value = TextFieldValue(it) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                PasswordTextFieldComponent(
+                    labelValue = "Password",
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
+                    onTextSelected = { passwordState.value = TextFieldValue(it) }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ForgotPasswordComponent(value = "Forgot Password?",
+                    onTextSelected = { loginViewModel.onEvent(LoginUIEvent.ForgotPasswordClicked) })
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                ButtonComponent(
+                    value = "Login",
+                    onButtonClicked = {
+                        loginViewModel.onEvent(LoginUIEvent.EmailChanged(emailState.value.text))
+                        loginViewModel.onEvent(LoginUIEvent.PasswordChanged(passwordState.value.text))
+                        onLogInClicked()
+                    },
+                    isEnabled = true
+                )
+
+                DividerTextComponent()
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ClickableLoginTextComponent(tryingToLogin = false, onTextSelected = {
+                    navigateToRegisterScreen()
+                })
+            }
+            if (loginViewModel.loginInProgress.value) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = colorResource(id = R.color.primary)
                 )
             }
 
-            Text(
-                text = "Login",
-                style = MaterialTheme.typography.titleSmall,
-                color = colorResource(id = R.color.SubliminalText)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Welcome Back",
-                style = MaterialTheme.typography.titleMedium,
-                color = colorResource(id = R.color.primary)
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            CustomOutlinedTextField(
-                labelValue = if (userAccount.email.isEmpty()){ "Enter Email" } else { userAccount.email },
-                leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email Icon") },
-                onTextSelected = {
-                    loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
+            // For prompting acc creation
+            LaunchedEffect(key1 = loginViewModel.loginIsSuccessful.value) {
+                if (loginViewModel.loginIsSuccessful.value) {
+                    Log.d(ContentValues.TAG, "Snackbar Prompted")
+                    snackbarHostState.showSnackbar("Signed In!")
                 }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            PasswordTextFieldComponent(labelValue = "Password",
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
-                onTextSelected = {
-                    loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ForgotPasswordComponent(value = "Forgot Password?",
-                onTextSelected = {loginViewModel.onEvent(LoginUIEvent.ForgotPasswordClicked)})
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            ButtonComponent(value = "Login",
-                onButtonClicked = { onLogInClicked() },
-                isEnabled = true)
-
-            DividerTextComponent()
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ClickableLoginTextComponent(tryingToLogin = false, onTextSelected = {
-                navigateToRegisterScreen()
-            })
-        }
-        if(loginViewModel.loginInProgress.value) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = colorResource(id = R.color.primary) )
-        }
-
-//        for prompting acc creation
-
-        LaunchedEffect(key1 = loginViewModel.loginIsSuccessful.value) {
-            if (loginViewModel.loginIsSuccessful.value) {
-                Log.d(ContentValues.TAG,"Toast Prompted")
-
-                // Create a LayoutInflater instance
-                val inflater = LayoutInflater.from(context)
-
-                // Inflate the custom layout
-                val layout = inflater.inflate(R.layout.custom_toast, null)
-
-                // Find the TextView in the custom layout and set the text
-                val textView = layout.findViewById<TextView>(R.id.text)
-                textView.text = "Signed In!"
-
-                // Create a new Toast
-                val toast = Toast(context)
-
-                // Set the custom view, duration, and show the Toast
-                toast.view = layout
-                toast.duration = Toast.LENGTH_SHORT
-                toast.show()
             }
         }
     }
@@ -188,7 +195,8 @@ fun Preview(){
         LogInPage(
             loginViewModel = viewModel(),
             navigateToRegisterScreen = {},
-            onLogInClicked = {}
+            onLogInClicked = {},
+            registrationViewModel = viewModel()
         )
     }
 }

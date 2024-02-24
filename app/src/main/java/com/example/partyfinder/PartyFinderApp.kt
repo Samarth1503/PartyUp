@@ -247,9 +247,9 @@ fun PartyFinderApp(
 
         composable("DMScreen/{channelID}", arguments = listOf(navArgument("channelID"){type= NavType.StringType}))
         {backStackEntry ->
-
+            chatScreenViewModel.setCurrentChatChannel(backStackEntry.arguments!!.getString("channelID")!!)
             DmScreen(
-                currentChatChannel = chatScreenViewModel.setAndRetreiveCurrentChatChannel(backStackEntry.arguments!!.getString("channelID")!!)!!,
+                currentChatChannel = chatScreenUiState.currentChannelObject!!,
                 UserTag = "kaizoku",
                 dmTopBar ={
                     DmTopBar(

@@ -36,11 +36,11 @@ object datasource {
     )
 
     val ChatChannels:List<ChatChannel> = listOf(
-        ChatChannel(channelID = 1,isGroupChat = true, gamerTag = "2",  memberTags = arrayOf("1"), channelName = "Group", channelProfile = R.drawable.pp,content = arrayOf(ChatItem(author="kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()))),
-        ChatChannel(channelID = 2,isGroupChat = false, gamerTag = "3", memberTags = arrayOf("1"), channelName = "Pushkar", channelProfile = R.drawable.pp,content = arrayOf(ChatItem("kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()),ChatItem("Sam",content="Sup", timeStamp = LocalDateTime.now().toString()))),
-        ChatChannel(channelID = 3,isGroupChat = true, gamerTag = "4", memberTags = arrayOf("1"), channelName = "Group2", channelProfile = R.drawable.pp,content = arrayOf(ChatItem("kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()))),
-        ChatChannel(channelID = 4,isGroupChat = false, gamerTag = "5", memberTags = arrayOf("1"), channelName = "Ganesh", channelProfile = R.drawable.pp,content = arrayOf(ChatItem("kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()))),
-        ChatChannel(channelID = 5,isGroupChat = false, gamerTag = "6", memberTags = arrayOf("6"), channelName = "Kaizoku", channelProfile = R.drawable.pp,content = arrayOf(ChatItem("kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()))),
+        ChatChannel(channelID = 1,isGroupChat = true, gamerTag = "2",  memberTags = listOf("1"), channelName = "Group", channelProfile = R.drawable.pp,content = listOf(ChatItem(author="kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()))),
+        ChatChannel(channelID = 2,isGroupChat = false, gamerTag = "3", memberTags = listOf("1"), channelName = "Pushkar", channelProfile = R.drawable.pp,content = listOf(ChatItem("kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()),ChatItem("Sam",content="Sup", timeStamp = LocalDateTime.now().toString()))),
+        ChatChannel(channelID = 3,isGroupChat = true, gamerTag = "4", memberTags = listOf("1"), channelName = "Group2", channelProfile = R.drawable.pp,content = listOf(ChatItem("kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()))),
+        ChatChannel(channelID = 4,isGroupChat = false, gamerTag = "5", memberTags = listOf("1"), channelName = "Ganesh", channelProfile = R.drawable.pp,content = listOf(ChatItem("kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()))),
+        ChatChannel(channelID = 5,isGroupChat = false, gamerTag = "6", memberTags = listOf("6"), channelName = "Kaizoku", channelProfile = R.drawable.pp,content = listOf(ChatItem("kaizoku",content="Hello", timeStamp = LocalDateTime.now().toString()))),
     )
 
     val FindPartyGamesMenuItems = listOf("Valorant", "CS : GO", "Overwatch","Team Fortress2")

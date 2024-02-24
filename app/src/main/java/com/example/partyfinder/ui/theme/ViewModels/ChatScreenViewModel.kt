@@ -17,6 +17,10 @@ import com.example.partyfinder.model.ChatChannelList
 import com.example.partyfinder.model.ChatItem
 import com.example.partyfinder.model.local.SortType
 import com.example.partyfinder.model.uiState.ChatScreenUiState
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,18 +47,19 @@ class chatScreenViewModel : ViewModel(){
 
     val _currentChannelObject = MutableLiveData<ChatChannel>()
     val currentChannelObject:LiveData<ChatChannel> get() = _currentChannelObject
+
+    val dbref = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app").reference
     init {
        viewModelScope.launch {
            while (isActive){
-                currentChannelObject.observeForever {
-                    it ->
-                    _chatsScreenUiState.update { currentState -> currentState.copy(
-                        currentChannelObject = it
-                    ) }
-                }
-               if (chatsScreenUiState.value.currentChannel!=""){
-                       updateChatChannel(chatsScreenUiState.value.currentChannel)
+               currentChannelObject.observeForever { response ->
+                   _chatsScreenUiState.update { currentState -> currentState.copy(
+                       currentChannelObject = response
+                   ) }
                }
+
+               if (chatsScreenUiState.value.currentChannel!=""){
+               setLiveChangesListenerForNode(chatsScreenUiState.value.currentChannel)}
 
                val response = retrieveChatChannelList()
                if (response.isSuccessful){
@@ -72,24 +77,46 @@ class chatScreenViewModel : ViewModel(){
        }
 
     }
-        fun onNewChatClicked(){
+
+    fun setLiveChangesListenerForNode(currentChannelID:String) {
+        dbref.child("chatChannels")
+            .child("data")
+            .child(currentChannelID)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    // Handle data changes
+                    val currentChannel: ChatChannel? = snapshot.getValue(ChatChannel::class.java)
+
+                    // Update your UI state or perform other actions
+                    _currentChannelObject.value=currentChannel!!
+                    Log.d(TAG,"Channel updated")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle errors
+                    Log.e(TAG, "Error reading data: ${error.message}")
+                }
+            })
+    }
+
+    fun onNewChatClicked(){
             val ChatChannel = ChatChannel(
                 channelID = 2,
                 channelName = "Trial Chat 3",
                 isGroupChat = true,
                 channelProfile = R.drawable.pp,
                 gamerTag = "#1342",
-                content = arrayOf(
+                content = listOf(
                     ChatItem("kaizoku",content="Hello",timeStamp = LocalDateTime.now().toString()),
                     ChatItem("Sam",content="Sup",timeStamp = LocalDateTime.now().toString())),
 
-                memberTags = arrayOf("Sam","Kurama","Ichigo")
+                memberTags = listOf("Sam","Kurama","Ichigo")
 
             )
 
         viewModelScope.launch {
-            if (chatsScreenUiState.value.currentChannel !=""){
-            networkChatChannelRepository.postChatChannel(ChatChannel)}
+
+            networkChatChannelRepository.postChatChannel(ChatChannel)
         }
         Log.d(TAG,"Chat channel posted")
     }
@@ -110,27 +137,28 @@ class chatScreenViewModel : ViewModel(){
         ) }
     }
 
-    fun setAndRetreiveCurrentChatChannel(channelId:String):ChatChannel?{
+    fun setCurrentChatChannel(channelId:String){
         _chatsScreenUiState.update { currentState -> currentState.copy(
             currentChannel = channelId
         ) }
 
-        viewModelScope.launch {
 
-                val response = networkChatChannelRepository.retreiveCurrentChannel(channelId)
-                if (response.isSuccessful){
-                    _chatsScreenUiState.update { currentState -> currentState.copy(
-                        currentChannelObject = response.body()
-                    ) }
-                    Log.d(TAG,"Current ChatChannelFetched")
-                }
-                else{
-                    Log.d(TAG,"Error Fetching chat Channel")
-                }
+//        viewModelScope.launch {
+//
+//                val response = networkChatChannelRepository.retreiveCurrentChannel(channelId)
+//                if (response.isSuccessful){
+//                    _chatsScreenUiState.update { currentState -> currentState.copy(
+//                        currentChannelObject = response.body()
+//                    ) }
+//                    Log.d(TAG,"Current ChatChannelFetched")
+//                }
+//                else{
+//                    Log.d(TAG,"Error Fetching chat Channel")
+//                }
+//
+//        }
 
-        }
 
-        return chatsScreenUiState.value.currentChannelObject
     }
 
 
@@ -165,19 +193,28 @@ class chatScreenViewModel : ViewModel(){
             message = changedMsg
         )} }
 
-    fun sendChatButtonClick(fireBaseUniqueID:String,message:String){
-        val chatItem = ChatItem(author ="kaizoku",content=message, timeStamp = LocalDateTime.now().toString())
-        viewModelScope.launch{
-           val response = networkChatChannelRepository.retreiveCurrentChannel(Id =  fireBaseUniqueID)
-            var Channel = response.body()
-            Channel!!.content = arrayOf(*Channel.content,chatItem)
+    fun sendChatButtonClick(fireBaseUniqueID: String, message: String) {
+        val chatItem = ChatItem(author = "kaizoku", content = message, timeStamp = LocalDateTime.now().toString())
+        viewModelScope.launch {
+            var localCurrentChannel = chatsScreenUiState.value.currentChannelObject
 
-            networkChatChannelRepository.postDmContent(Id = fireBaseUniqueID , content = Channel.content)
-            _chatsScreenUiState.update { currentState -> currentState.copy(
-                message=""
-            ) }
+            localCurrentChannel!!.content = localCurrentChannel.content.toMutableList().apply { add(chatItem) }
+            _currentChannelObject.value=localCurrentChannel!!
+
+            val response = networkChatChannelRepository.retreiveCurrentChannel(Id = fireBaseUniqueID)
+            var channel = response.body()
+            channel!!.content = channel.content.toMutableList().apply { add(chatItem) }
+
+            networkChatChannelRepository.postDmContent(Id = fireBaseUniqueID, content = channel.content)
+            _chatsScreenUiState.update { currentState ->
+                currentState.copy(
+                    message = ""
+                )
+            }
+
         }
     }
+
 
 
     fun updateChatChannel(id:String){

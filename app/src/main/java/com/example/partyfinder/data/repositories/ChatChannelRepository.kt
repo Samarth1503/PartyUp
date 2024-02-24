@@ -13,7 +13,7 @@ interface ChatChannelRepository{
 
     suspend fun getAllChatChannels():Response<ChatChannelList>
 
-    suspend fun postDmContent(Id:String,content:Array<ChatItem>)
+    suspend fun postDmContent(Id:String,content:List<ChatItem>)
 
     suspend fun retreiveCurrentChannel(Id: String):Response<ChatChannel>
 }
@@ -33,7 +33,7 @@ object networkChatChannelRepository : ChatChannelRepository{
 
     }
 
-    override suspend fun postDmContent(Id: String, content: Array<ChatItem>) {
+    override suspend fun postDmContent(Id: String, content: List<ChatItem>) {
        ChatChannelApiService.addChatItem(firebaseID = Id , content = content)
     }
 

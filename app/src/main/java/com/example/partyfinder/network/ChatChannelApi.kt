@@ -21,5 +21,5 @@ interface ChatChannelApi {
     suspend fun retreiveCurrentChannel(@Path("uniqueID")firebaseID: String):Response<ChatChannel>
 
     @PUT("chatChannels/data/{uniqueID}/content.json")
-    suspend fun addChatItem(@Path("uniqueID")firebaseID:String , @Body content:Array<ChatItem>)
+    suspend fun addChatItem(@Path("uniqueID")firebaseID:String , @Body content:List<ChatItem>)
 }

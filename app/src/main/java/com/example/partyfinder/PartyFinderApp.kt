@@ -77,14 +77,12 @@ enum class PartyFinderScreen{
     ChatsScreen,
     LoginScreen,
     RegisterScreen,
-    TermsAndConditionsScreen,
-//    TF
+    TermsAndConditionsScreen
 }
 
-private fun
-        navigateBack(navController: NavController){
-            navController.navigateUp()
-        }
+private fun navigateBack(navController: NavController) {
+    navController.navigateUp()
+}
 
 
 @Composable
@@ -116,7 +114,7 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-        startDestination = PartyFinderScreen.RegisterScreen.name
+        startDestination = if (localUserEmail.value == "null") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -134,9 +132,10 @@ fun PartyFinderApp(
                 registrationViewModel = registrationViewModel,
                 loginViewModel = loginViewModel,
                 navigateToRegisterScreen = { navController.navigate(PartyFinderScreen.RegisterScreen.name) },
-                onLogInClicked = {loginViewModel.login(navigateToHomeScreen = { navController.navigate(
-                    PartyFinderScreen.HomeScreen.name) })}
-            )
+                onLogInClicked = { loginViewModel.login(navigateToHomeScreen = {
+                        navController.navigate(PartyFinderScreen.HomeScreen.name)
+                    })
+                } )
         }
 
         composable(route = PartyFinderScreen.TermsAndConditionsScreen.name ){
@@ -148,8 +147,9 @@ fun PartyFinderApp(
                 registrationViewModel = registrationViewModel,
                 navigateToTermsAndConditions = {navController.navigate(PartyFinderScreen.TermsAndConditionsScreen.name)},
                 navigateToLoginScreen = {navController.navigate(PartyFinderScreen.LoginScreen.name)},
-                onRegisterButtonClicked = {registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked) })
-        }
+                onRegisterButtonClicked = { registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
+                    navController.navigate(PartyFinderScreen.EditProfileScreen.name) }
+            ) }
 
         composable(route = PartyFinderScreen.SpecificCommunityScreen.name){
             SpecificCommunityScreen(navigateUp = {navController.navigateUp()})

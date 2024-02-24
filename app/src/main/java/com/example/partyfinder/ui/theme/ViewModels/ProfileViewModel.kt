@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
+import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.model.uiState.ProfileUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,33 +19,28 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
-class ProfileViewModel:ViewModel() {
+class ProfileViewModel : ViewModel() {
     private val _profileUiState = MutableStateFlow(ProfileUiState())
     val profileState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
     var gamerIDtextfieldValue by mutableStateOf("")
     var gamerBiotextfieldValue by mutableStateOf("")
     var selectedStatus by mutableStateOf(Pair(0,0))
     private var _gamerCallList = MutableLiveData<GamerCallsList>()
-    val gamercallList: LiveData<GamerCallsList> get() = _gamerCallList
-
+    val gamerCallList: LiveData<GamerCallsList> get() = _gamerCallList
 
     init {
-
         viewModelScope.launch {
-                while(isActive){
-                    backGroundGetGamerCall()
-                }
-
+            while (isActive) {
+                backGroundGetGamerCall()
+            }
         }
-
-
     }
 
-    suspend fun backGroundGetGamerCall(){
+    suspend fun backGroundGetGamerCall() {
         _gamerCallList.value = networkGamerCallsRepository.getGamerCalls().value
         var response = _gamerCallList.value
         if (response != null) {
-            gamercallList.observeForever { response ->
+            gamerCallList.observeForever { response ->
                 _profileUiState.update { currentState -> currentState.copy(
                     UserGamerCalls = response
                 ) }
@@ -52,92 +48,63 @@ class ProfileViewModel:ViewModel() {
         }
     }
 
-    fun onGamerIDtextFieldChanged(gamerID: String){
-        gamerIDtextfieldValue=gamerID
+    fun onGamerIDtextFieldChanged(gamerID: String) {
+        _profileUiState.update { currentState -> currentState.copy(
+            gamerID = gamerID
+        )}
     }
 
-    fun onGamerBioFieldChanged(gamerBio:String){
-        gamerBiotextfieldValue=gamerBio
-    }
-    fun updateGamerID(gamerID: String) {
-        _profileUiState.update { currentState ->
-            currentState.copy(
-                gamerID = gamerID
-            )
-        }
+    fun onGamerBioFieldChanged(gamerBio: String) {
+        _profileUiState.update { currentState -> currentState.copy(
+            bio = gamerBio
+        )}
     }
 
-    fun updateBio(userBio: String) {
-        _profileUiState.update { currentState ->
-            currentState.copy(
-                bio = userBio
-            )
-        }
+    fun onSaveChangesClicked(userAccount: UserAccount) {
+        userAccount.gamerID = _profileUiState.value.gamerID
+        userAccount.bio = _profileUiState.value.bio
+        userAccount.rank1GameName = _profileUiState.value.rank1GameName
+        userAccount.rank1GameRank = _profileUiState.value.rank1GameRank
+        userAccount.rank2GameName = _profileUiState.value.rank2GameName
+        userAccount.rank2GameRank = _profileUiState.value.rank2GameRank
+        userAccount.rank3GameName = _profileUiState.value.rank3GameName
+        userAccount.rank3GameRank = _profileUiState.value.rank3GameRank
+        userAccount.status = _profileUiState.value.status
     }
 
-    fun onSaveChangesClicked(){
-        updateGamerID(gamerIDtextfieldValue)
-        updateBio(gamerBiotextfieldValue)
-    }
-    fun updateGamerTag(gamerTag: String) {
-        _profileUiState.update { currentState ->
-            currentState.copy(
-                gamerTag = gamerTag
-            )
-        }
-    }
-
-    fun updateGamerStatus(status: Pair<Int, Int>) {
-        _profileUiState.update { currentState ->
-            currentState.copy(
-                status = status
-            )
+    fun updateRank(gameNo: Int, updatedGameName: String, updatedGameRank: String) {
+        when (gameNo) {
+            1 -> _profileUiState.update { currentState -> currentState.copy(
+                rank1GameName = updatedGameName,
+                rank1GameRank = updatedGameRank
+            )}
+            2 -> _profileUiState.update { currentState -> currentState.copy(
+                rank2GameName = updatedGameName,
+                rank2GameRank = updatedGameRank
+            )}
+            3 -> _profileUiState.update { currentState -> currentState.copy(
+                rank3GameName = updatedGameName,
+                rank3GameRank = updatedGameRank
+            )}
         }
     }
 
-    fun updateRank1(updatedgameName: String, updatedgameRank: String) {
-        _profileUiState.update { currentState ->
-            currentState.copy(
-                rank1GameName = updatedgameName,
-                rank1GameRank = updatedgameRank
-            )
-        }
-    }
-    fun updateRank2(updatedgameName: String, updatedgameRank: String) {
-        _profileUiState.update { currentState ->
-            currentState.copy(
-                rank2GameName = updatedgameName,
-                rank2GameRank = updatedgameRank
-            )
-        }
-    }
-    fun updateRank3(updatedgameName: String, updatedgameRank: String) {
-        _profileUiState.update { currentState ->
-            currentState.copy(
-                rank3GameName = updatedgameName,
-                rank3GameRank = updatedgameRank
-            )
-        }
-    }
-    fun updateStatus(changedStatus:Pair<Int,Int>){
-        selectedStatus=changedStatus
+    fun updateStatus(changedStatus: Pair<Int, Int>) {
+        _profileUiState.update { currentState -> currentState.copy(
+            status = changedStatus
+        )}
     }
 
-    fun onChangeStatusClicked(isExpanded:Boolean,selectedStatus:Pair<Int,Int>){
-       if(isExpanded){
-           _profileUiState.update { currentState -> currentState.copy(
-            status = selectedStatus,
-            isChangeStatusExpanded = !isExpanded,) }
-       }
-        else{
-            _profileUiState.update{
-                currentState -> currentState.copy(
-                    isChangeStatusExpanded = !isExpanded
-                )
-            }
-       }
+    fun onChangeStatusClicked(isExpanded: Boolean, selectedStatus: Pair<Int, Int>) {
+        if (isExpanded) {
+            _profileUiState.update { currentState -> currentState.copy(
+                status = selectedStatus,
+                isChangeStatusExpanded = !isExpanded
+            )}
+        } else {
+            _profileUiState.update { currentState -> currentState.copy(
+                isChangeStatusExpanded = !isExpanded
+            )}
+        }
     }
 }
-
-
-

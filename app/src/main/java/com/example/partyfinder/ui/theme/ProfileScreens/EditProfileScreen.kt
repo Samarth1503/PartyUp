@@ -1,7 +1,5 @@
 package com.example.partyfinder.ui.theme.ProfileScreens
 
-
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,16 +25,20 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -47,7 +49,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
 import com.example.partyfinder.ui.theme.PartyFinderTheme
-
 
 @Preview(showBackground = true)
 @Composable
@@ -65,7 +66,7 @@ fun EditProfileScreenPreview(){
 
 @Composable
 fun EditProfileScreen(
-    modifier:Modifier=Modifier.fillMaxSize(),
+    modifier: Modifier=Modifier.fillMaxSize(),
     gamerID: String,
     onGamerIDchanged:(String)->Unit,
     bio:String,
@@ -74,33 +75,105 @@ fun EditProfileScreen(
     navigateBack: () -> Unit
     ){
 
+    var gameName1 by remember{ mutableStateOf("") }
+    var gameName2 by remember{ mutableStateOf("") }
+    var gameName3 by remember{ mutableStateOf("") }
+    var rank1 by remember { mutableStateOf("") }
+    var rank2 by remember { mutableStateOf("") }
+    var rank3 by remember { mutableStateOf("") }
 
 
     Column(modifier = modifier
         .background(color = colorResource(id = R.color.black))
         .verticalScroll(
-            rememberScrollState()
-        )) {
+            rememberScrollState())
+    ) {
         EditProfileScreenTopBar(navigateBack = navigateBack)
-        EditProfileScreenBanner()
-        EditProfileDataWidget(
-            gamerID = gamerID,
-            onValueChanged = onGamerIDchanged,
-            bio = bio,
-            onBioValueChanged = onGamerBioChanged,
-            onSaveChanges=onSaveChanges)
-    }
 
+        EditProfileScreenBanner()
+
+
+        Column ( modifier = modifier
+            .padding(dimensionResource(id = R.dimen.main_padding))
+            .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            EditProfileDataWidget(
+                gamerID = gamerID,
+                onValueChanged = onGamerIDchanged,
+                bio = bio,
+                onBioValueChanged = onGamerBioChanged,
+                onSaveChanges=onSaveChanges, )
+
+//        Update Ranks Section
+            Spacer(modifier = Modifier.height(36.dp))
+
+            Row {
+                Spacer(modifier = Modifier.weight(1f))
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Your Ranks",
+                        color= colorResource(id = R.color.primary),
+                        style = MaterialTheme.typography.titleLarge )
+
+//                    For the underline effect
+                    Row ( modifier = Modifier
+                            .padding(top = 4.dp)
+                            .height(1.dp)
+                            .width(120.dp)
+                            .background(color = colorResource(id = R.color.primary)) ) {}
+                }
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+
+            UpdateRankWidget(
+                gameNo = "Game 1",
+                gameName = gameName1,
+                onGameNameChanged = {gameName1=it},
+                rank= rank1,
+                onRankValueChanged = {rank1=it}
+            )
+            UpdateRankWidget(
+                gameNo = "Game 2",
+                gameName = gameName2,
+                onGameNameChanged = {gameName2=it},
+                rank= rank2,
+                onRankValueChanged = {rank2=it}
+            )
+            UpdateRankWidget(
+                gameNo = "Game 3",
+                gameName = gameName3,
+                onGameNameChanged = {gameName3=it},
+                rank= rank3,
+                onRankValueChanged = {rank3=it}
+            )
+            Button(
+                modifier = Modifier
+                    .padding(top = 16.dp),
+                shape = RoundedCornerShape(5.dp),
+                onClick = { },
+                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
+            ) {
+                Text(text = "Save",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.primary),
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                )
+            }
+        }
+    }
 }
 
 @Composable
 fun EditProfileScreenTopBar(modifier:Modifier=Modifier,navigateBack:()->Unit){
-        Row(modifier= modifier
+        Box(modifier= modifier
             .height(dimensionResource(id = R.dimen.top_bar_height))
             .background(color = colorResource(id = R.color.DarkBG))
             .padding(start = dimensionResource(id = R.dimen.main_padding))
-            .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth()
         ) {
                 Image(
                     painter = painterResource(id = R.drawable.icons8_left_arrow_48),
@@ -108,20 +181,16 @@ fun EditProfileScreenTopBar(modifier:Modifier=Modifier,navigateBack:()->Unit){
                     modifier= Modifier
                         .height(dimensionResource(id = R.dimen.top_bar_back_icon_size))
                         .width(dimensionResource(id = R.dimen.top_bar_back_icon_size))
+                        .align(Alignment.CenterStart)
                         .clickable { navigateBack() }
                 )
-
-            Spacer(modifier = Modifier.width(112.dp))
                 Text(
-                    text = "Profile",
-                    modifier = Modifier.align(alignment = Alignment.CenterVertically),
+                    text = "Edit Profile",
+                    modifier = Modifier
+                        .align(Alignment.Center),
                     color = colorResource(id = R.color.primary),
                     style = MaterialTheme.typography.titleMedium,
                 )
-
-
-
-
         }
 }
 
@@ -151,7 +220,8 @@ fun EditProfileScreenBanner(modifier:Modifier=Modifier){
                 contentDescription =null,
                 modifier=Modifier.padding(bottom = 4.dp, start = 1.dp))
         }
-        Box(modifier=Modifier.align(Alignment.BottomStart)) {
+        Box(modifier=Modifier.align(Alignment.BottomStart)
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.luffy),
                 contentDescription = null,
@@ -174,14 +244,11 @@ fun EditProfileScreenBanner(modifier:Modifier=Modifier){
                 Image(
                     painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
                     contentDescription =null,
-                    modifier=Modifier.padding(bottom = 4.dp, start = 1.dp))
+                    modifier=Modifier.padding(bottom = 4.dp, start = 1.dp) )
             }
-
-
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileDataWidget(
@@ -190,84 +257,134 @@ fun EditProfileDataWidget(
     bio:String,
     onBioValueChanged:(String)->Unit,
     onSaveChanges: () -> Unit,
-    modifier:Modifier=Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
-    Card(modifier= modifier
-        .fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
-    ) {
-           OutlinedTextField(
-               value = gamerID,
-               onValueChange =onValueChanged,
-               keyboardOptions = KeyboardOptions.Default.copy(
-                   imeAction = ImeAction.Next
-               ),
-               modifier= Modifier
-                   .padding(dimensionResource(id = R.dimen.main_padding))
-                   .fillMaxWidth()
-                   .border(
-                       (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
-                       RoundedCornerShape(5.dp)
-                   ),
-               label = { Text(text = "Gamer_ID")},
-               colors = TextFieldDefaults.outlinedTextFieldColors(
-                   cursorColor = colorResource(id = R.color.primary),
-                   focusedTextColor = colorResource(id = R.color.primary),
-                   unfocusedTextColor = colorResource(id = R.color.primary),
-                   focusedLabelColor = colorResource(id = R.color.primary),
-                   unfocusedLabelColor = colorResource(id = R.color.primary),
-                   containerColor = colorResource(id = R.color.black),
-                   focusedBorderColor = colorResource(id = R.color.black),
-                   unfocusedBorderColor = colorResource(id = R.color.black))
-               )
-        TextField(
-            value = bio,
-            onValueChange =onBioValueChanged,
-            label = { Text(text = "Bio")},
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
-            ),
-            modifier= Modifier
-                .padding(dimensionResource(id = R.dimen.main_padding))
-                .fillMaxWidth()
-                .height(400.dp)
-                .drawBehind {
-                    val borderSize = 4.dp.toPx()
-                    drawLine(
-                        color = Color.Cyan,
-                        start = Offset(0f, size.height),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = borderSize
-                    )
-                }
-                ,
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = colorResource(id = R.color.black),
-                focusedTextColor = colorResource(id = R.color.primary),
-                unfocusedTextColor = colorResource(id = R.color.primary),
-                unfocusedLabelColor = colorResource(id = R.color.primary),
-                focusedLabelColor = colorResource(id = R.color.primary),
+    modifier : Modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
 
-            )
-        )
+    Spacer(modifier = Modifier.height(16.dp))
 
-        Row (modifier=Modifier.padding(end = dimensionResource(id = R.dimen.main_padding), bottom = dimensionResource(
-            id = R.dimen.main_padding
-        ))){
-            Spacer(modifier = Modifier.weight(1f))
-            Button(
-                onClick = { onSaveChanges()},
-                modifier=Modifier.shadow(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.tertiary_40)),
-            ) {
-                Text(
-                    text = "Save Changes",
-                    style = MaterialTheme.typography.titleSmall
+    OutlinedTextField(
+        value = gamerID,
+        onValueChange =onValueChanged,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Next
+        ),
+        modifier= Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.main_padding))
+            .fillMaxWidth(),
+        label = { Text(text = "Gamer_ID")},
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            cursorColor = colorResource(id = R.color.primary),
+            focusedTextColor = colorResource(id = R.color.primary),
+            unfocusedTextColor = colorResource(id = R.color.primary),
+            focusedLabelColor = colorResource(id = R.color.primary),
+            unfocusedLabelColor = colorResource(id = R.color.primary),
+            containerColor = colorResource(id = R.color.DarkBG),
+            focusedBorderColor = colorResource(id = R.color.DarkBG),
+            unfocusedBorderColor = colorResource(id = R.color.DarkBG))
+    )
+
+    Spacer(modifier = Modifier.height(30.dp))
+
+    //        Textfield for Bio
+    TextField(
+        value = bio,
+        onValueChange =onBioValueChanged,
+        label = { Text(text = "Bio")},
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done
+        ),
+        modifier= Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.main_padding))
+            .fillMaxWidth()
+            .height(180.dp)
+            .drawBehind {
+                val borderSize = 4.dp.toPx()
+                drawLine(
+                    color = Color.Cyan,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = borderSize
                 )
-            }
-        }
-    }
+            },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = colorResource(id = R.color.DarkBG),
+            focusedTextColor = colorResource(id = R.color.primary),
+            unfocusedTextColor = colorResource(id = R.color.primary),
+            unfocusedLabelColor = colorResource(id = R.color.primary),
+            focusedLabelColor = colorResource(id = R.color.primary) )
+    )
 }
 
 
+@Composable
+fun UpdateRankWidget(
+    gameNo:String,
+    gameName:String,
+    onGameNameChanged:(String)->Unit,
+    rank:String,
+    onRankValueChanged:(String)->Unit,
+    modifier: Modifier=Modifier){
+    Card (
+        modifier= modifier
+            .padding(
+                start = dimensionResource(id = R.dimen.main_padding),
+                top = dimensionResource(id = R.dimen.main_padding),
+                bottom = 10.dp,
+                end = dimensionResource(id = R.dimen.main_padding)
+            )
+            .border(
+                2.dp,
+                color = colorResource(id = R.color.neutral5),
+                shape = RoundedCornerShape(10.dp)
+            ),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.DarkBG))
+    ){
+        Column(modifier= Modifier
+            .padding(dimensionResource(id = R.dimen.main_padding))
+            .fillMaxWidth()
+        ) {
+            Text(
+                text = gameNo,
+                color = colorResource(id = R.color.primary),
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(start = 8.dp, bottom = 12.dp))
 
+            OutlinedTextField(
+                value = gameName,
+                onValueChange = onGameNameChanged,
+                label = { Text(text = "Game Name", style = MaterialTheme.typography.bodyMedium)},
+                modifier= Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Next
+                ),
+                colors=OutlinedTextFieldDefaults.colors(
+                    unfocusedLabelColor = colorResource(id = R.color.primary),
+                    focusedTextColor = colorResource(id = R.color.primary),
+                    unfocusedTextColor = colorResource(id = R.color.primary),
+                    focusedLabelColor = colorResource(id = R.color.primary),
+                    focusedBorderColor = colorResource(id = R.color.primary),
+                    cursorColor = colorResource(id = R.color.primary)
 
+                )
+            )
+            OutlinedTextField(
+                value = rank,
+                onValueChange =onRankValueChanged,
+                label = { Text(text = "Rank", style = MaterialTheme.typography.bodyMedium)},
+                modifier=Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                ),
+                colors=OutlinedTextFieldDefaults.colors(
+                    unfocusedLabelColor = colorResource(id = R.color.primary),
+                    focusedTextColor = colorResource(id = R.color.primary),
+                    unfocusedTextColor = colorResource(id = R.color.primary),
+                    focusedLabelColor = colorResource(id = R.color.primary),
+                    focusedBorderColor = colorResource(id = R.color.primary),
+                    cursorColor = colorResource(id = R.color.primary)
+                )
+            )
+        }
+    }
+}

@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.partyfinder.model.local.LocalUser
 import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.model.UserAccount
+import com.example.partyfinder.model.local.LocalUser
 import com.example.partyfinder.model.uiEvent.RegisterUIEvent
 import com.example.partyfinder.model.uiState.RegistrationUIState
 import com.google.firebase.auth.FirebaseAuth
@@ -113,7 +113,7 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
             Log.d("AddUserUserDataTestCase", "No user email found")
         }
         mDbRef = FirebaseDatabase.getInstance().reference
-        mDbRef.child("users").child(uid).setValue(UserAccount(email, uid))
+        mDbRef.child("users").child("data").child(uid).setValue(UserAccount(email, uid))
     }
 
     suspend fun getUserEmail(): String {

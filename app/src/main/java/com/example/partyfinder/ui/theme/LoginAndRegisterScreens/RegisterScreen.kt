@@ -1,11 +1,8 @@
 package com.example.partyfinder.ui.theme.LoginAndRegisterScreens
 
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.util.Log
-import android.view.LayoutInflater
-import android.widget.TextView
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,13 +22,16 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,159 +51,137 @@ import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.PasswordTextFieldComponent
 import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 
-
-@SuppressLint("StateFlowValueCalledInComposition", "SetTextI18n", "InflateParams")
+@SuppressLint("SetTextI18n","InflateParams", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun RegisterPage(
-    registrationViewModel : RegistrationViewModel,
-    navigateToTermsAndConditions:() -> Unit,
-    navigateToLoginScreen:()->Unit,
-    onRegisterButtonClicked: ()->Unit,) {
-    val context = LocalContext.current
+    registrationViewModel: RegistrationViewModel,
+    navigateToTermsAndConditions: () -> Unit,
+    navigateToLoginScreen: () -> Unit,
+    onRegisterButtonClicked: () -> Unit,
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    Box(
-        modifier = Modifier
-            .height(808.dp)
-            .width(393.dp)
-            .background(color = colorResource(id = R.color.black))
+    Scaffold( snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .padding(horizontal = 36.dp)
-                .fillMaxSize(),
-//            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .height(808.dp)
+                .width(393.dp)
+                .background(color = colorResource(id = R.color.black))
         ) {
-
-            Row(
+            Column(
                 modifier = Modifier
-                    .padding(top = 60.dp, bottom = 60.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 36.dp)
+                    .fillMaxSize(),
+//            verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 60.dp, bottom = 60.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Party\nUp!",
+                        style = MaterialTheme.typography.displayMedium,
+                        color = colorResource(id = R.color.primary)
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.partyup_logo),
+                        contentDescription = "Register Logo",
+                        modifier = Modifier
+                            .size(120.dp)
+                    )
+                }
+
                 Text(
-                    text = "Party\nUp!",
-                    style = MaterialTheme.typography.displayMedium,
+                    text = "Create An Account",
+                    style = MaterialTheme.typography.titleMedium,
                     color = colorResource(id = R.color.primary)
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.partyup_logo),
-                    contentDescription = "Register Logo",
-                    modifier = Modifier
-                        .size(120.dp)
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                CustomOutlinedTextField(labelValue = "Email",
+                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email Icon") },
+                    onTextSelected = {
+                        registrationViewModel.onEvent(RegisterUIEvent.EmailChanged(it))
+                    }
                 )
-            }
 
-            Text(
-                text = "Create An Account",
-                style = MaterialTheme.typography.titleMedium,
-                color = colorResource(id = R.color.primary)
-            )
+                Spacer(modifier = Modifier.height(4.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
+                PasswordTextFieldComponent(labelValue = "Password",
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
+                    onTextSelected = {
+                        registrationViewModel.onEvent(RegisterUIEvent.PasswordChanged(it))
+                    } )
 
-            CustomOutlinedTextField(labelValue = "Email",
-                leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email Icon") },
-                onTextSelected = {
-                    registrationViewModel.onEvent(RegisterUIEvent.EmailChanged(it))
-                }
-            )
+                Spacer(modifier = Modifier.height(4.dp))
 
-            Spacer(modifier = Modifier.height(4.dp))
+                PasswordTextFieldComponent(labelValue = "Confirm Password",
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Confirm Password") },
+                    onTextSelected = {
+                        registrationViewModel.onEvent(RegisterUIEvent.ConfirmPasswordChanged(it))
+                    } )
 
-            PasswordTextFieldComponent(labelValue = "Password",
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
-                onTextSelected = {
-                    registrationViewModel.onEvent(RegisterUIEvent.PasswordChanged(it))
-                } )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            PasswordTextFieldComponent(labelValue = "Confirm Password",
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Confirm Password") },
-                onTextSelected = {
-                    registrationViewModel.onEvent(RegisterUIEvent.ConfirmPasswordChanged(it))
-                } )
-
-            if (registrationViewModel.confirmPasswordValidationStarted.value){
-                Text(
-                    text = "Password Do Not Match!", modifier = Modifier
-                        .padding(4.dp, 2.dp, 0.dp, 0.dp)
-                        .fillMaxWidth(),
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = Color.Red,
-                        fontWeight = FontWeight.Black,
-                        textAlign = TextAlign.Start
+                if (registrationViewModel.confirmPasswordValidationStarted.value){
+                    Text(
+                        text = "Password Do Not Match!", modifier = Modifier
+                            .padding(4.dp, 2.dp, 0.dp, 0.dp)
+                            .fillMaxWidth(),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = Color.Red,
+                            fontWeight = FontWeight.Black,
+                            textAlign = TextAlign.Start
+                        )
                     )
-                )
-            }
-
-            CustomCheckboxComponent(value = stringResource(id = R.string.terms_and_conditions),
-                onTextSelected = {
-                    navigateToTermsAndConditions()
-                },
-                onCheckedChange = {
-                    registrationViewModel.onEvent(RegisterUIEvent.PrivacyPolicyCheckBoxClicked(it))
                 }
-            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                CustomCheckboxComponent(value = stringResource(id = R.string.terms_and_conditions),
+                    onTextSelected = {
+                        navigateToTermsAndConditions()
+                    },
+                    onCheckedChange = {
+                        registrationViewModel.onEvent(RegisterUIEvent.PrivacyPolicyCheckBoxClicked(it))
+                    }
+                )
 
-            ButtonComponent(value = "Register",
-                onButtonClicked = { onRegisterButtonClicked() },
-                isEnabled = registrationViewModel.policyStatusChecked.value)
+                Spacer(modifier = Modifier.height(16.dp))
 
-            DividerTextComponent()
+                ButtonComponent(value = "Register",
+                    onButtonClicked = { onRegisterButtonClicked() },
+                    isEnabled = registrationViewModel.policyStatusChecked.value)
 
-            Spacer(modifier = Modifier.height(8.dp))
+                DividerTextComponent()
 
-            ClickableLoginTextComponent(tryingToLogin = true, onTextSelected = {
-                navigateToLoginScreen()
-            })
-        }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ClickableLoginTextComponent(tryingToLogin = true, onTextSelected = {
+                    navigateToLoginScreen()
+                })
+            }
 
 //        showing in-progress circle
-        if(registrationViewModel.registrationInProgress.value) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = colorResource(id = R.color.primary) )
-        }
-//        for prompting acc creation
-        LaunchedEffect(key1 = registrationViewModel.registrationSuccessful.value) {
-            if (registrationViewModel.registrationSuccessful.value) {
-                Log.d(TAG,"Toast Prompted")
-
-                // Create a LayoutInflater instance
-                val inflater = LayoutInflater.from(context)
-
-                // Inflate the custom layout
-                val layout = inflater.inflate(R.layout.custom_toast, null)
-
-                // Find the TextView in the custom layout and set the text
-                val textView = layout.findViewById<TextView>(R.id.text)
-                textView.text = "Account Created!"
-
-                // Create a new Toast
-                val toast = Toast(context)
-
-                // Set the custom view, duration, and show the Toast
-                toast.view = layout
-                toast.duration = Toast.LENGTH_SHORT
-                toast.show()
+            if(registrationViewModel.registrationInProgress.value) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = colorResource(id = R.color.primary) )
             }
-        }
-
-////        Working one without customization
-//        LaunchedEffect(key1 = registrationViewModel.registrationSuccessful.value) {
-//            if (registrationViewModel.registrationSuccessful.value) {
-//                Log.d(TAG,"Toast Prompted")
-//                Toast.makeText(context, "Account Created!", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+//        for prompting acc creation
+            LaunchedEffect(key1 = registrationViewModel.registrationSuccessful.value) {
+                if (registrationViewModel.registrationSuccessful.value) {
+                    Log.d(ContentValues.TAG, "Snackbar Prompted")
+                    snackbarHostState.showSnackbar("Registered Successfully!")
+                }
+            }
 //        redirecting aft prompt
-        if (registrationViewModel.registrationSuccessful.value) {
-            navigateToLoginScreen()
+            if (registrationViewModel.registrationSuccessful.value) {
+                navigateToLoginScreen()
+            }
         }
     }
 }

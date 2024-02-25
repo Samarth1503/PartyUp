@@ -102,20 +102,20 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
     }
 
     private suspend fun addUserToDatabase(email: String, uid: String) {
-        userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
-
-        Log.d("TestCase-Prompt", "addUserToDatabase() started")
-        val retrievedUserEmail = userRepository.getUser()
-
-        if (retrievedUserEmail != "") {
-            userEmail = retrievedUserEmail.toString() // Update userEmail
-            Log.d("AddUserUserDataTestCase", retrievedUserEmail.toString())
-        } else {
-            userEmail = "null"
-            Log.d("AddUserUserDataTestCase", "No user email found")
+        try {
+            userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+            mDbRef = FirebaseDatabase.getInstance().reference
+            mDbRef.child("users").child(uid).setValue(UserAccount(email, uid))
+                .addOnFailureListener { exception ->
+                    Log.e("FirebaseError", "Error writing to database", exception)
+                }
+            mDbRef.child("users").child(uid).setValue(UserAccount(email, uid))
+                .addOnFailureListener { exception ->
+                    Log.e("FirebaseError", "Error writing to database", exception)
+                }
+        } catch (e: Exception) {
+            Log.e("DatabaseError", "Error updating local database", e)
         }
-        mDbRef = FirebaseDatabase.getInstance().reference
-        mDbRef.child("users").child("data").child(uid).setValue(UserAccount(email, uid))
     }
 
     fun importUserEmail(): String {

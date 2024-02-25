@@ -150,7 +150,7 @@ fun DmTopBar(
                     painterResource(id = currentChatChannel.channelProfile)
                 }
                 else{
-                    painterResource(id = retreivedGamerAccount.profilePic)
+                    painterResource(id = R.drawable.pp)
                 },
                 contentDescription = "58008",
                 modifier = Modifier

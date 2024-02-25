@@ -12,8 +12,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.uiState.ProfileUiState
-import kotlinx.coroutines.delay
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -132,11 +132,11 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    fun getUserUID(uid: String){
-        if (uid != ""){
-            localUID = uid
-        } else {
-            Log.d("UID Not Found", "UID not found in the Profile View Model")
-        }
-    }
+//    fun getUserUID(uid: String){
+//        if (uid != ""){
+//            localUID = uid
+//        } else {
+//            Log.d("UID Not Found", "UID not found in the Profile View Model")
+//        }
+//    }
 }

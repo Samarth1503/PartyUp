@@ -118,7 +118,7 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
         mDbRef.child("users").child("data").child(uid).setValue(UserAccount(email, uid))
     }
 
-    fun getUserEmail(): String {
+    fun importUserEmail(): String {
         return userEmail
     }
 

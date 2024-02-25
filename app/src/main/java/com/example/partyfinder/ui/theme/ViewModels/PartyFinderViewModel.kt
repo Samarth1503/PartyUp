@@ -18,8 +18,9 @@ import kotlinx.coroutines.launch
 class PartyFinderViewModel :ViewModel(){
     private val _partyFinderScreenUiState = MutableStateFlow(PartyFinderUiState())
     val partyFinderUiState:StateFlow<PartyFinderUiState> = _partyFinderScreenUiState.asStateFlow()
-
+    var localUid = ""
     init {
+
         viewModelScope.launch {
             while (isActive){
                 networkLiveGamerCallRepository.getLiveGamerCallList()
@@ -35,7 +36,7 @@ class PartyFinderViewModel :ViewModel(){
     fun postLiveGamerCall(){
         var liveGamerCall = LiveGamerCall(
             gameName = partyFinderUiState.value.gameNameSelectedValue,
-            gamerId ="kaizoku",
+            uid = localUid ,
             gamerCallAccepted = false,
             isGamerCallLive = true,
             noOfPlayersRequired = partyFinderUiState.value.noOfPlayerRequired.toInt(),
@@ -158,6 +159,10 @@ class PartyFinderViewModel :ViewModel(){
         }
     }
 
+
+    fun getLocalGamerID(Uid:String){
+        localUid = Uid
+    }
     fun onStopCallClick(){
         _partyFinderScreenUiState.update { currentState ->currentState.copy(
             isGamerCallLive = false

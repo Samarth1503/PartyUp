@@ -50,7 +50,7 @@ object networkLiveGamerCallRepository : LiveGamerCallRepository{
         liveGamerCallList.value!!.liveGamerCallList.values.forEach {resultLiveGamerCall ->
             val liveGamerCallResultObject = LiveGamerCallSearchResult(
                 liveGamerCallObject = resultLiveGamerCall,
-                userAccount = datasource.UserAccounts.find {it.gamerID == resultLiveGamerCall.gamerId}!!
+                userAccount = datasource.UserAccounts.find {it.uid == resultLiveGamerCall.uid}!!
             )
             resultList.add(liveGamerCallResultObject)
         }

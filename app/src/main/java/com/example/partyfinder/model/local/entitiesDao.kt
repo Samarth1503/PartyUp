@@ -23,7 +23,7 @@ interface LocalUserDao {
     @Query("SELECT userUID FROM LocalUser")
     fun getUserUID(): String
 }
-
+@Dao
 interface UsersDao {
     @Query("SELECT * FROM Users")
     fun getAll(): Flow<List<Users>>

@@ -31,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -48,11 +47,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
-import com.example.partyfinder.datasource.AppDatabase
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
@@ -74,13 +70,13 @@ fun EditProfileScreen(
     val uiState by viewModel.profileState.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        launch(Dispatchers.IO) {
-            val localUserDao = AppDatabase.getDatabase(context).localUserDao()
-            val UID = localUserDao.getUserUID()
-            viewModel.getUserUID(UID)
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        launch(Dispatchers.IO) {
+//            val localUserDao = AppDatabase.getDatabase(context).localUserDao()
+//            val UID = localUserDao.getUserUID()
+//            viewModel.getUserUID(UID)
+//        }
+//    }
 
 
     Column(modifier = modifier

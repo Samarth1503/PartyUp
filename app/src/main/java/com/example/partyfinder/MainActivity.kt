@@ -146,7 +146,6 @@ class MainActivity : ComponentActivity() {
                     val registrationViewModel = RegistrationViewModel(userRepository)
                     val ChatScreenViewModel =chatScreenViewModel()
 
-
                     PartyFinderApp(registrationViewModel = registrationViewModel,
                         loginViewModel = LoginViewModel(userRepository,
                         localLoginEmail = registrationViewModel.updateLoginEmailField()),

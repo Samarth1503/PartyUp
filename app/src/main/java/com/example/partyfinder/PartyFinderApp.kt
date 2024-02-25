@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -108,9 +109,18 @@ fun PartyFinderApp(
     val localUserEmail = remember { mutableStateOf("") }
     // Use LaunchedEffect to call getUserEmail()
     LaunchedEffect(key1 = registrationViewModel) {
-        localUserEmail.value = registrationViewModel.getUserEmail()
+        localUserEmail.value = registrationViewModel.importUserEmail()
         Log.d("App-TestCase", localUserEmail.value)
     }
+    val context = LocalContext.current
+    var UID = remember { mutableStateOf("") }
+//    LaunchedEffect(Unit) {
+//        launch(Dispatchers.IO) {
+//            val localUserDao = AppDatabase.getDatabase(context).localUserDao()
+//            UID.value = localUserDao.getUserUID()
+//            partyFinderScreenViewModel.getLocalGamerID(UID.value)
+//        }
+//    }
 
     NavHost(
         navController = navController,

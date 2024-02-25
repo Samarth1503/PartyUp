@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
@@ -84,7 +85,9 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(Unit) {
                         launch(Dispatchers.IO) {
                             val localUserDao = AppDatabase.getDatabase(this@MainActivity).localUserDao()
-                            val retrievedUserEmail = localUserDao.getUser()
+                            val retrievedUserEmail: String? = withContext(Dispatchers.IO) {
+                                localUserDao.getUser()
+                            }
                             if (retrievedUserEmail != null) {
                                 Log.d("Local UserData", retrievedUserEmail)
                             } else {

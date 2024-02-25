@@ -160,9 +160,7 @@ class PartyFinderViewModel :ViewModel(){
     }
 
 
-    fun getLocalGamerID(Uid:String){
-        localUid = Uid
-    }
+
     fun onStopCallClick(){
         _partyFinderScreenUiState.update { currentState ->currentState.copy(
             isGamerCallLive = false

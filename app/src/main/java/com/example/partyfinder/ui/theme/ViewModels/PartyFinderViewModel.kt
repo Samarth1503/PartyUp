@@ -1,17 +1,66 @@
 package com.example.partyfinder.ui.theme.ViewModels
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.networkLiveGamerCallRepository
+import com.example.partyfinder.model.LiveGamerCall
+import com.example.partyfinder.model.LiveGamerCallRequest
 import com.example.partyfinder.model.uiState.PartyFinderUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class PartyFinderViewModel :ViewModel(){
     private val _partyFinderScreenUiState = MutableStateFlow(PartyFinderUiState())
     val partyFinderUiState:StateFlow<PartyFinderUiState> = _partyFinderScreenUiState.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            while (isActive){
+                networkLiveGamerCallRepository.getLiveGamerCallList()
 
+            }
+        }
+    }
+
+    fun getLiveGamerCallResults(){
+        val gamerCallList = networkLiveGamerCallRepository.liveGamerCallList.value
+
+    }
+    fun postLiveGamerCall(){
+        var liveGamerCall = LiveGamerCall(
+            gameName = partyFinderUiState.value.gameNameSelectedValue,
+            gamerId ="kaizoku",
+            gamerCallAccepted = false,
+            isGamerCallLive = true,
+            noOfPlayersRequired = partyFinderUiState.value.noOfPlayerRequired.toInt(),
+            noOfPlayersinParty = partyFinderUiState.value.noOfPlayersInParty.toInt(),
+            requestsReceived = listOf(LiveGamerCallRequest(senderGamerID = "defaultRequestItem", receiverGamerID = "defaultRequestItem", senderLiveGamerCallID = "defaultLiveGamerCallID", isAccepted = false)),
+            requestsSent = listOf(LiveGamerCallRequest(senderGamerID = "defaultRequestItem", receiverGamerID = "defaultRequestItem", senderLiveGamerCallID = "defaultLiveGamerCallID", isAccepted = false)),
+            liveGamerCallID="liveGamerCallID"
+        )
+
+
+
+        viewModelScope.launch {
+            val response = networkLiveGamerCallRepository.postLiveGamerCall(liveGamerCall)
+            liveGamerCall.liveGamerCallID = response.body()!!.name
+            val updatedResponse = networkLiveGamerCallRepository.updateLiveGamerCall(response.body()!!.name,liveGamerCall)
+
+            if (updatedResponse.isSuccessful){
+                Log.d(TAG,"LiveGamerCall Posted and Updated Successfully")
+            }
+            else
+            {
+                Log.d(TAG,"Failed to Post or update livegamerCall")
+            }
+        }
+    }
     fun onHideDetailsClicked(currentValue:Boolean){
         var updateTo =  !currentValue
         _partyFinderScreenUiState.update {currentState -> currentState.copy(
@@ -104,6 +153,9 @@ class PartyFinderViewModel :ViewModel(){
         _partyFinderScreenUiState.update { currentState -> currentState.copy(
             isGamerCallLive = true
         ) }
+        viewModelScope.launch {
+            postLiveGamerCall()
+        }
     }
 
     fun onStopCallClick(){

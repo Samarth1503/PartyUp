@@ -57,7 +57,16 @@ class UserAccount(
     var gamerTag: String = "",
     var bio: String = "",
     var profilePic: Int = NULL,
-    var status: Pair<Int, Int> = Pair(NULL, NULL)
+    var status: Pair<Int, Int> = Pair(NULL, NULL),
+    val liveGamerCallID:String="",
+    var rank1GameName :String = "",
+    var rank1GameRank:String = "",
+    var rank2GameName :String = "",
+    var rank2GameRank:String = "",
+    var rank3GameName :String = "",
+    var rank3GameRank:String = "",
+//    var chatChannelList:List<String>,
+//    var userGamerCallsList:List<String>
 ) {
     init {
         if (uid.isNotEmpty()) {

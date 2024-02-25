@@ -2,6 +2,7 @@ package com.example.partyfinder.data.repositories
 
 import com.example.partyfinder.network.ChatChannelApi
 import com.example.partyfinder.network.GamerCallApi
+import com.example.partyfinder.network.LiveGamerCallApi
 import com.example.partyfinder.network.RequestInterceptor
 import com.github.leonardoxh.livedatacalladapter.LiveDataCallAdapterFactory
 import com.google.gson.GsonBuilder
@@ -33,4 +34,8 @@ val GamerCallApiService : GamerCallApi by lazy{
 
 val ChatChannelApiService :ChatChannelApi by lazy{
     retrofit.create(ChatChannelApi :: class.java)
+}
+
+val LiveGamerCallApiService:LiveGamerCallApi by lazy {
+    retrofit.create(LiveGamerCallApi :: class.java)
 }

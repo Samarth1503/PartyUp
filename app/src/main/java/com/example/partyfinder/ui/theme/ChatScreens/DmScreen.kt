@@ -69,6 +69,7 @@ fun DmScreen(
             .width(393.dp)
             .background(color = colorResource(id = R.color.black))
         ) {
+
             LazyColumn(modifier = Modifier.weight(1f)) {
                items(currentChatChannel.content.toList()){
                     if (it.author == UserTag){

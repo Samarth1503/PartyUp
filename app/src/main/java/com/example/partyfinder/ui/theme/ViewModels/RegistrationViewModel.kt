@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.partyfinder.model.local.LocalUser
 import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.model.UserAccount
+import com.example.partyfinder.model.local.LocalUser
 import com.example.partyfinder.model.uiEvent.RegisterUIEvent
 import com.example.partyfinder.model.uiState.RegistrationUIState
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +28,7 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
     private val _registrationUIState = MutableStateFlow(RegistrationUIState())
     val registrationUIState: StateFlow<RegistrationUIState> = _registrationUIState.asStateFlow()
 
-    var userEmail by mutableStateOf("null")
+    var userEmail by mutableStateOf("")
 
     var registrationInProgress = mutableStateOf(false)
     var registrationSuccessful = mutableStateOf(false)
@@ -102,10 +102,12 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
     }
 
     private suspend fun addUserToDatabase(email: String, uid: String) {
-        userRepository.upsert(LocalUser(id = 0, userEmail = email))
+        userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+
         Log.d("TestCase-Prompt", "addUserToDatabase() started")
         val retrievedUserEmail = userRepository.getUser()
-        if (retrievedUserEmail != null) {
+
+        if (retrievedUserEmail != "") {
             userEmail = retrievedUserEmail.toString() // Update userEmail
             Log.d("AddUserUserDataTestCase", retrievedUserEmail.toString())
         } else {
@@ -113,22 +115,11 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
             Log.d("AddUserUserDataTestCase", "No user email found")
         }
         mDbRef = FirebaseDatabase.getInstance().reference
-        mDbRef.child("users").child(uid).setValue(UserAccount(email, uid))
+        mDbRef.child("users").child("data").child(uid).setValue(UserAccount(email, uid))
     }
 
-    suspend fun getUserEmail(): String {
-        var userEmailLocal = "null"
-        withContext(Dispatchers.IO) {
-            val retrievedUserEmail = userRepository.getUser()
-            if (retrievedUserEmail != null) {
-                userEmailLocal = retrievedUserEmail.toString()
-            }
-        }
-        // Update userEmail on the main thread
-        withContext(Dispatchers.Main) {
-            userEmail = userEmailLocal
-        }
-        return userEmailLocal
+    fun getUserEmail(): String {
+        return userEmail
     }
 
     fun updateLoginEmailField():String{

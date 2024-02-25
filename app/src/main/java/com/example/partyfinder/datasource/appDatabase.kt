@@ -26,7 +26,6 @@ import com.example.partyfinder.model.local.Users
 import com.example.partyfinder.model.local.UsersDao
 
 @Database(entities = [LocalUser::class, Users::class, GamerCalls::class, ChatChannels::class, Chat::class, UserPost::class, LiveGamerCall::class, Communities::class, Community::class], version = 1)
-
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun localUserDao(): LocalUserDao

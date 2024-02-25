@@ -18,10 +18,12 @@ interface LocalUserDao {
     suspend fun delete(user: LocalUser)
 
     @Query("SELECT userEmail FROM LocalUser")
-    fun getUser(): String?
+    fun getUser(): String
+
+    @Query("SELECT userUID FROM LocalUser")
+    fun getUserUID(): String
 }
 
-@Dao
 interface UsersDao {
     @Query("SELECT * FROM Users")
     fun getAll(): Flow<List<Users>>

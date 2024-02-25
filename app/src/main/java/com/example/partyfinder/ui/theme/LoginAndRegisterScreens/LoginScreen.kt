@@ -64,10 +64,7 @@ fun LogInPage( registrationViewModel : RegistrationViewModel,
 
 
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }
+    Scaffold( snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) {
         Box(
             modifier = Modifier

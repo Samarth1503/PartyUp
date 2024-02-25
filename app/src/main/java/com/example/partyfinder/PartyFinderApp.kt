@@ -53,7 +53,6 @@ import com.example.partyfinder.ui.theme.ProfileScreens.ProfileScreen
 import com.example.partyfinder.ui.theme.ProfileScreens.ProfileScreenBioWidget
 import com.example.partyfinder.ui.theme.ProfileScreens.ProfileScreenContent
 import com.example.partyfinder.ui.theme.ProfileScreens.ProfileUpdateStatus
-import com.example.partyfinder.ui.theme.ProfileScreens.UpdateRanksScreen
 import com.example.partyfinder.ui.theme.SpecificCommunityScreen
 import com.example.partyfinder.ui.theme.ViewModels.CreateGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.FilteredGamerCallsViewModel
@@ -78,14 +77,12 @@ enum class PartyFinderScreen{
     ChatsScreen,
     LoginScreen,
     RegisterScreen,
-    TermsAndConditionsScreen,
-//    TF
+    TermsAndConditionsScreen
 }
 
-private fun
-        navigateBack(navController: NavController){
-            navController.navigateUp()
-        }
+private fun navigateBack(navController: NavController) {
+    navController.navigateUp()
+}
 
 
 @Composable
@@ -117,7 +114,7 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-        startDestination = PartyFinderScreen.HomeScreen.name
+        startDestination = if (localUserEmail.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -135,9 +132,10 @@ fun PartyFinderApp(
                 registrationViewModel = registrationViewModel,
                 loginViewModel = loginViewModel,
                 navigateToRegisterScreen = { navController.navigate(PartyFinderScreen.RegisterScreen.name) },
-                onLogInClicked = {loginViewModel.login(navigateToHomeScreen = { navController.navigate(
-                    PartyFinderScreen.HomeScreen.name) })}
-            )
+                onLogInClicked = { loginViewModel.login(navigateToHomeScreen = {
+                        navController.navigate(PartyFinderScreen.HomeScreen.name)
+                    })
+                } )
         }
 
         composable(route = PartyFinderScreen.TermsAndConditionsScreen.name ){
@@ -149,8 +147,9 @@ fun PartyFinderApp(
                 registrationViewModel = registrationViewModel,
                 navigateToTermsAndConditions = {navController.navigate(PartyFinderScreen.TermsAndConditionsScreen.name)},
                 navigateToLoginScreen = {navController.navigate(PartyFinderScreen.LoginScreen.name)},
-                onRegisterButtonClicked = {registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked) })
-        }
+                onRegisterButtonClicked = { registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
+                    navController.navigate(PartyFinderScreen.EditProfileScreen.name) }
+            ) }
 
         composable(route = PartyFinderScreen.SpecificCommunityScreen.name){
             SpecificCommunityScreen(navigateUp = {navController.navigateUp()})
@@ -359,22 +358,11 @@ fun PartyFinderApp(
 
         composable(route= PartyFinderScreen.EditProfileScreen.name){
             EditProfileScreen(
-                gamerID = profileViewModel.gamerIDtextfieldValue,
-                onGamerIDchanged = {profileViewModel.onGamerIDtextFieldChanged(it)},
-                bio = profileViewModel.gamerBiotextfieldValue,
-                onGamerBioChanged = {profileViewModel.onGamerBioFieldChanged(it)},
+                viewModel = profileViewModel,
                 navigateBack = { navigateBack(navController) },
-                onSaveChanges = {
-                    profileViewModel.onSaveChangesClicked()
-                    navController.navigate(PartyFinderScreen.ProfileScreen.name){popUpTo(
-                        PartyFinderScreen.HomeScreen.name)}
-                }
             )
         }
 
-        composable(route= PartyFinderScreen.UpdateRanksScreen.name){
-            UpdateRanksScreen(navigateBack = { navigateBack(navController) })
-        }
 
 //        composable(route=PartyFinderScreen.TF.name){
 //            TF(text = profileViewModel.GamerCallList)

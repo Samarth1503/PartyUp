@@ -1,5 +1,6 @@
 package com.example.partyfinder.data.repositories
 
+import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.model.local.Chat
 import com.example.partyfinder.model.local.ChatChannels
 import com.example.partyfinder.model.local.ChatChannelsDao
@@ -17,7 +18,6 @@ import com.example.partyfinder.model.local.UserPost
 import com.example.partyfinder.model.local.UserPostDao
 import com.example.partyfinder.model.local.Users
 import com.example.partyfinder.model.local.UsersDao
-import com.example.partyfinder.model.GamerCalls
 import kotlinx.coroutines.flow.Flow
 
 class LocalUserRepository(private val localUserDao: LocalUserDao) {
@@ -30,8 +30,12 @@ class LocalUserRepository(private val localUserDao: LocalUserDao) {
         localUserDao.delete(user)
     }
 
-    fun getUser(): String? {
+    fun getUser(): String {
         return localUserDao.getUser()
+    }
+
+    fun getUserUID(): String {
+        return localUserDao.getUserUID()
     }
 }
 

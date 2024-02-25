@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.R
 import com.example.partyfinder.data.repositories.networkChatChannelRepository
-import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.ChatChannelList
 import com.example.partyfinder.model.ChatItem
@@ -38,7 +37,6 @@ class chatScreenViewModel : ViewModel(){
 
     private val _chatsScreenUiState = MutableStateFlow(ChatScreenUiState())
     val chatsScreenUiState:StateFlow<ChatScreenUiState> =_chatsScreenUiState.asStateFlow()
-    var currentChannel by mutableStateOf(datasource.ChatChannels.get(0))
     var isMenuClicked by mutableStateOf(false)
     var isDmScreenMenuClicked by mutableStateOf(false)
     private val _sortType = MutableStateFlow(SortType.MOST_RECENT)

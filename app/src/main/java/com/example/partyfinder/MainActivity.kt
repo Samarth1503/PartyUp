@@ -155,9 +155,6 @@ class MainActivity : ComponentActivity() {
                         chatScreenViewModel = ChatScreenViewModel
                     )
 
-
-//                    val ChatScreenViewModel: chatScreenViewModel = viewModel()
-//                    TF(text = ChatScreenViewModel.setAndRetreiveCurrentChatChannel("-NrKbe5OhWOC9s6IMAvq").toString())
                 }
             }
         }

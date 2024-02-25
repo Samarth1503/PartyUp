@@ -10,5 +10,5 @@ data class ChatScreenUiState(
     val isDmTopbarMenuClicked:Boolean=false,
     val currentChannel:String="",
     val message:String="",
-    val currentChannelObject:ChatChannel? = datasource.ChatChannels.get(0)
+    val currentChannelObject:ChatChannel? = datasource.chatChannelList.chatChannels.get("-1")
     )

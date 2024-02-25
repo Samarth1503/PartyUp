@@ -421,13 +421,13 @@ fun PreviewDmScreen(){
     PartyFinderTheme {
         DmScreen(
 
-            currentChatChannel = datasource.ChatChannels.get(0),
+            currentChatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
             UserTag = "Kaizoku",
             dmTopBar = { DmTopBar(
                 navigateBack = {},
                 onMenuItemClicked = {},
                 isMenuClicked = true,
-            currentChatChannel = datasource.ChatChannels.get(0),
+            currentChatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
             onMenuClicked = { /*TODO*/ },
             retreivedGamerAccount = datasource.UserAccounts.get(0),
         )

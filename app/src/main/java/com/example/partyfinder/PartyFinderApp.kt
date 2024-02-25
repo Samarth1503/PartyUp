@@ -124,7 +124,9 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-        startDestination = if (localUserEmail.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
+        startDestination = PartyFinderScreen.HomeScreen.name
+//        if (localUserEmail.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
+
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -329,7 +331,8 @@ fun PartyFinderApp(
                     onClickClearDetails = {partyFinderScreenViewModel.onClickClearDetails()},
                     isGamerCallLive = partyFinderScreenUiState.isGamerCallLive,
                     onClickSearch = {partyFinderScreenViewModel.onSearchClick()},
-                    onClickStopCall = {partyFinderScreenViewModel.onStopCallClick()}
+                    onClickStopCall = {partyFinderScreenViewModel.onStopCallClick()},
+                    liveGamerCallResultList = partyFinderScreenUiState.liveGamerCallResultLits
                 )
                 }
             )

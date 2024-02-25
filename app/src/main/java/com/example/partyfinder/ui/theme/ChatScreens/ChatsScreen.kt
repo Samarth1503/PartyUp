@@ -84,7 +84,7 @@ fun PreviewChatsScreen(){
             chatMenu = { ChatMenu(isMenuClicked = true, onMenuClicked = {}, onMenuItemClicked = {}) },
             isMenuClicked = false,
             chats = { Chat(
-                chatChannel = datasource.ChatChannels.get(0),
+                chatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
                 userAccount = datasource.UserAccounts.get(0),
                 onClick = {})
             }

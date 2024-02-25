@@ -1,7 +1,8 @@
 package com.example.partyfinder.model
 
+import kotlinx.serialization.Serializable
 import java.sql.Types.NULL
-
+@Serializable
 class UserAccount(
     var email: String = "",
     var uid: String = "",

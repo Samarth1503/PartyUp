@@ -1,6 +1,7 @@
 package com.example.partyfinder.model.uiState
 
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.LiveGamerCallSearchResult
 
 data class PartyFinderUiState(
     val hideDetails:Boolean = false,
@@ -12,5 +13,6 @@ data class PartyFinderUiState(
     val noOfPlayerRequired:String = "",
     val isNoOfPlayerRequiredDDExtended:Boolean=false,
     val listOfGameNameDDitems:List<String> = datasource.FindPartyGamesMenuItems,
-    val listOfNoOfPLayerDDitems:List<String> = datasource.FindPartyNoOfPlayerMenuItems
+    val listOfNoOfPLayerDDitems:List<String> = datasource.FindPartyNoOfPlayerMenuItems,
+    val liveGamerCallResultLits:List<LiveGamerCallSearchResult>? = null
 )

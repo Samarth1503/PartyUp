@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -49,6 +50,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.LiveGamerCall
+import com.example.partyfinder.model.LiveGamerCallSearchResult
+import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.ui.theme.CustomExposedDropDownMenu
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
@@ -128,7 +132,8 @@ fun PrevivewFindPartyScreen(){
                     requiredvalue=""},
                 isGamerCallLive = isCallLive,
                 onClickSearch = {isCallLive = true},
-                onClickStopCall = {isCallLive =false}
+                onClickStopCall = {isCallLive =false},
+                liveGamerCallResultList = emptyList()
             )
             }
         )
@@ -154,11 +159,11 @@ fun FindPartyScreenTopBar(
             )
 
         Box(
-            modifier=Modifier
+            modifier= Modifier
                 .align(Alignment.CenterEnd)
                 .wrapContentSize()
                 .padding(end = 20.dp)
-                .clickable {  },
+                .clickable { },
         ) {
             Icon(
                 modifier = Modifier.size(36.dp),
@@ -184,6 +189,7 @@ fun PartyFinderContent(
     gameNameExposedDD:@Composable ()-> Unit,
     noOfPlayerInParty:@Composable ()->Unit,
     noOfPlayersRequired:@Composable ()->Unit,
+    liveGamerCallResultList:List<LiveGamerCallSearchResult>?
 ){
 
 
@@ -197,7 +203,7 @@ fun PartyFinderContent(
 
         Row(modifier= Modifier
             .padding(10.dp)
-            .clickable { onClickHideDetails()}){
+            .clickable { onClickHideDetails() }){
             Text(
                 modifier=Modifier.padding(start=10.dp),
                 text = "Party Up!" ,
@@ -321,22 +327,28 @@ fun PartyFinderContent(
         }
 
     }
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight())
-    {
-        items(7){
-            item -> PartyFinderLiveCallsResult()
+    
+    if(liveGamerCallResultList == null){
+        Text(text = "Start A Live GamerCall")
+    }
+    else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        )
+        {
+            items(liveGamerCallResultList) {
+                PartyFinderLiveCallsResult(liveGamerCallObject = it.liveGamerCallObject, userAccountObject = it.userAccount)
+            }
         }
     }
-
 }
 
 @Composable
 fun PartyFinderLiveCallsResult(
-    gamerID:String= "Sarang",
+    liveGamerCallObject:LiveGamerCall,
+    userAccountObject:UserAccount,
     modifier:Modifier=Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp)
 ){
     var requestSent by remember { mutableStateOf(false) }
@@ -363,14 +375,14 @@ fun PartyFinderLiveCallsResult(
                 painter = painterResource(id = R.drawable.pp),
                 contentDescription ="pp" )
             Text(
-                text = gamerID,
+                text = userAccountObject.gamerID,
                 color = colorResource(id = R.color.primary),
                 style = MaterialTheme.typography.titleSmall
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 modifier = Modifier.padding(),
-                text ="#3425",
+                text =userAccountObject.gamerTag,
                 color= colorResource(id = R.color.primary),
                 style = MaterialTheme.typography.titleSmall)
             Spacer(modifier = Modifier.weight(1f))
@@ -402,7 +414,7 @@ fun PartyFinderLiveCallsResult(
                 painter = painterResource(id = R.drawable.playericon_white),
                 contentDescription ="partyImg" )
             Text(
-                text = "4",
+                text = liveGamerCallObject.noOfPlayersinParty.toString(),
                 color= colorResource(id = R.color.primary))
 
             Spacer(modifier = modifier.width(40.dp))
@@ -415,7 +427,7 @@ fun PartyFinderLiveCallsResult(
                 painter = painterResource(id = R.drawable.playericon_white),
                 contentDescription ="partyImg" )
             Text(
-                text = "4",
+                text = liveGamerCallObject.noOfPlayersRequired.toString(),
                 color= colorResource(id = R.color.primary))
         }
 

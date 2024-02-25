@@ -4,6 +4,7 @@ import com.example.partyfinder.network.ChatChannelApi
 import com.example.partyfinder.network.GamerCallApi
 import com.example.partyfinder.network.LiveGamerCallApi
 import com.example.partyfinder.network.RequestInterceptor
+import com.example.partyfinder.network.UserAccountApi
 import com.github.leonardoxh.livedatacalladapter.LiveDataCallAdapterFactory
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -38,4 +39,8 @@ val ChatChannelApiService :ChatChannelApi by lazy{
 
 val LiveGamerCallApiService:LiveGamerCallApi by lazy {
     retrofit.create(LiveGamerCallApi :: class.java)
+}
+
+val UserApiService:UserAccountApi by lazy {
+    retrofit.create(UserAccountApi :: class.java)
 }

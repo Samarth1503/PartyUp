@@ -52,7 +52,6 @@ import com.example.partyfinder.ui.theme.ProfileScreens.ProfileScreen
 import com.example.partyfinder.ui.theme.ProfileScreens.ProfileScreenBioWidget
 import com.example.partyfinder.ui.theme.ProfileScreens.ProfileScreenContent
 import com.example.partyfinder.ui.theme.ProfileScreens.ProfileUpdateStatus
-import com.example.partyfinder.ui.theme.ProfileScreens.UpdateRanksScreen
 import com.example.partyfinder.ui.theme.SpecificCommunityScreen
 import com.example.partyfinder.ui.theme.ViewModels.CreateGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.FilteredGamerCallsViewModel
@@ -348,22 +347,11 @@ fun PartyFinderApp(
 
         composable(route= PartyFinderScreen.EditProfileScreen.name){
             EditProfileScreen(
-                gamerID = profileViewModel.gamerIDtextfieldValue,
-                onGamerIDchanged = {profileViewModel.onGamerIDtextFieldChanged(it)},
-                bio = profileViewModel.gamerBiotextfieldValue,
-                onGamerBioChanged = {profileViewModel.onGamerBioFieldChanged(it)},
+                viewModel = profileViewModel,
                 navigateBack = { navigateBack(navController) },
-                onSaveChanges = {
-                    profileViewModel.onSaveChangesClicked()
-                    navController.navigate(PartyFinderScreen.ProfileScreen.name){popUpTo(
-                        PartyFinderScreen.HomeScreen.name)}
-                }
             )
         }
 
-        composable(route= PartyFinderScreen.UpdateRanksScreen.name){
-            UpdateRanksScreen(navigateBack = { navigateBack(navController) })
-        }
 
 //        composable(route=PartyFinderScreen.TF.name){
 //            TF(text = profileViewModel.GamerCallList)

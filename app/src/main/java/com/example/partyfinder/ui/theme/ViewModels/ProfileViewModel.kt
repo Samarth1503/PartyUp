@@ -1,5 +1,7 @@
 package com.example.partyfinder.ui.theme.ViewModels
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,8 +11,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
-import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.model.uiState.ProfileUiState
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,12 +21,17 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
+@Suppress("NAME_SHADOWING")
 class ProfileViewModel : ViewModel() {
     private val _profileUiState = MutableStateFlow(ProfileUiState())
     val profileState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
-    var gamerIDtextfieldValue by mutableStateOf("")
-    var gamerBiotextfieldValue by mutableStateOf("")
+
+    private var localUID: String = ""
+
+    private var profilePicLink: String = ""
+
     var selectedStatus by mutableStateOf(Pair(0,0))
+
     private var _gamerCallList = MutableLiveData<GamerCallsList>()
     val gamerCallList: LiveData<GamerCallsList> get() = _gamerCallList
 
@@ -38,7 +45,7 @@ class ProfileViewModel : ViewModel() {
 
     suspend fun backGroundGetGamerCall() {
         _gamerCallList.value = networkGamerCallsRepository.getGamerCalls().value
-        var response = _gamerCallList.value
+        val response = _gamerCallList.value
         if (response != null) {
             gamerCallList.observeForever { response ->
                 _profileUiState.update { currentState -> currentState.copy(
@@ -48,29 +55,43 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    fun onGamerIDtextFieldChanged(gamerID: String) {
+    fun onGamerIDChanged(gamerID: String) {
         _profileUiState.update { currentState -> currentState.copy(
             gamerID = gamerID
         )}
     }
 
-    fun onGamerBioFieldChanged(gamerBio: String) {
+    fun onBioChanged(gamerBio: String) {
         _profileUiState.update { currentState -> currentState.copy(
             bio = gamerBio
         )}
     }
 
-    fun onSaveChangesClicked(userAccount: UserAccount) {
-        userAccount.gamerID = _profileUiState.value.gamerID
-        userAccount.bio = _profileUiState.value.bio
-        userAccount.rank1GameName = _profileUiState.value.rank1GameName
-        userAccount.rank1GameRank = _profileUiState.value.rank1GameRank
-        userAccount.rank2GameName = _profileUiState.value.rank2GameName
-        userAccount.rank2GameRank = _profileUiState.value.rank2GameRank
-        userAccount.rank3GameName = _profileUiState.value.rank3GameName
-        userAccount.rank3GameRank = _profileUiState.value.rank3GameRank
-        userAccount.status = _profileUiState.value.status
+    fun onSaveChangesClicked() {
+        if (localUID != "") {
+            val profileData = mapOf(
+                "gamerID" to _profileUiState.value.gamerID,
+                "bio" to _profileUiState.value.bio,
+                "rank1GameName" to _profileUiState.value.rank1GameName,
+                "rank1GameRank" to _profileUiState.value.rank1GameRank,
+                "rank2GameName" to _profileUiState.value.rank2GameName,
+                "rank2GameRank" to _profileUiState.value.rank2GameRank,
+                "rank3GameName" to _profileUiState.value.rank3GameName,
+                "rank3GameRank" to _profileUiState.value.rank3GameRank
+            )
+
+            Log.d(TAG, profileData.toString())
+
+            val db = FirebaseDatabase.getInstance().getReference("users")
+            db.child(localUID).setValue(profileData)
+                .addOnSuccessListener { Log.d(TAG, "Realtime Database update successful!") }
+                .addOnFailureListener { e -> Log.w(TAG, "Error updating Realtime Database", e) }
+        } else {
+            Log.d(TAG, "No local UID found")
+        }
     }
+
+
 
     fun updateRank(gameNo: Int, updatedGameName: String, updatedGameRank: String) {
         when (gameNo) {
@@ -105,6 +126,14 @@ class ProfileViewModel : ViewModel() {
             _profileUiState.update { currentState -> currentState.copy(
                 isChangeStatusExpanded = !isExpanded
             )}
+        }
+    }
+
+    fun getUserUID(uid: String){
+        if (uid != ""){
+            localUID = uid
+        } else {
+            Log.d("UID Not Found", "UID not found in the Profile View Model")
         }
     }
 }

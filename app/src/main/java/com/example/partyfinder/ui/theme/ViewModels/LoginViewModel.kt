@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.update
 
 class LoginViewModel(
     private val userRepository: LocalUserRepository,
-    val localLoginEmail:String="") : ViewModel() {
+    val localLoginEmail:String = ""
+) : ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
 

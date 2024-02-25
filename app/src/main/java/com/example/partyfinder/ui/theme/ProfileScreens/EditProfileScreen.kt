@@ -31,16 +31,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -48,39 +48,39 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
+import com.example.partyfinder.datasource.AppDatabase
 import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
 fun EditProfileScreenPreview(){
     PartyFinderTheme {
-     EditProfileScreen(
-         navigateBack = {},
-         gamerID = "Kaizoku",
-         onGamerIDchanged = {},
-         bio = "hello",
-         onGamerBioChanged = {},
-         onSaveChanges = {})
+        EditProfileScreen(
+            navigateBack = {},
+            viewModel = ProfileViewModel()
+        )
     }
 }
 
 @Composable
 fun EditProfileScreen(
     modifier: Modifier=Modifier.fillMaxSize(),
-    gamerID: String,
-    onGamerIDchanged:(String)->Unit,
-    bio:String,
-    onGamerBioChanged:(String) ->Unit,
-    onSaveChanges:()->Unit,
+    viewModel: ProfileViewModel,
     navigateBack: () -> Unit
     ){
+    val uiState by viewModel.profileState.collectAsState()
+    val context = LocalContext.current
 
-    var gameName1 by remember{ mutableStateOf("") }
-    var gameName2 by remember{ mutableStateOf("") }
-    var gameName3 by remember{ mutableStateOf("") }
-    var rank1 by remember { mutableStateOf("") }
-    var rank2 by remember { mutableStateOf("") }
-    var rank3 by remember { mutableStateOf("") }
+    LaunchedEffect(Unit) {
+        launch(Dispatchers.IO) {
+            val localUserDao = AppDatabase.getDatabase(context).localUserDao()
+            val UID = localUserDao.getUserUID()
+            viewModel.getUserUID(UID)
+        }
+    }
 
 
     Column(modifier = modifier
@@ -93,19 +93,21 @@ fun EditProfileScreen(
         EditProfileScreenBanner()
 
 
-        Column ( modifier = modifier
-            .padding(dimensionResource(id = R.dimen.main_padding))
-            .fillMaxWidth(),
+        Column(
+            modifier = Modifier
+                .padding(dimensionResource(id = R.dimen.main_padding))
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             EditProfileDataWidget(
-                gamerID = gamerID,
-                onValueChanged = onGamerIDchanged,
-                bio = bio,
-                onBioValueChanged = onGamerBioChanged,
-                onSaveChanges=onSaveChanges, )
+                gamerID = uiState.gamerID,
+                onValueChanged = { viewModel.onGamerIDChanged(it) },
+                bio = uiState.bio,
+                onBioValueChanged = { viewModel.onBioChanged(it) },
+                onSaveChanges = { viewModel.onSaveChangesClicked() }
+            )
 
-//        Update Ranks Section
+            // Update Ranks Section
             Spacer(modifier = Modifier.height(36.dp))
 
             Row {
@@ -113,15 +115,18 @@ fun EditProfileScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "Your Ranks",
-                        color= colorResource(id = R.color.primary),
-                        style = MaterialTheme.typography.titleLarge )
+                        color = colorResource(id = R.color.primary),
+                        style = MaterialTheme.typography.titleLarge
+                    )
 
-//                    For the underline effect
-                    Row ( modifier = Modifier
+                    // For the underline effect
+                    Row(
+                        modifier = Modifier
                             .padding(top = 4.dp)
                             .height(1.dp)
                             .width(120.dp)
-                            .background(color = colorResource(id = R.color.primary)) ) {}
+                            .background(color = colorResource(id = R.color.primary))
+                    ) {}
                 }
                 Spacer(modifier = Modifier.weight(1f))
             }
@@ -129,38 +134,37 @@ fun EditProfileScreen(
 
             UpdateRankWidget(
                 gameNo = "Game 1",
-                gameName = gameName1,
-                onGameNameChanged = {gameName1=it},
-                rank= rank1,
-                onRankValueChanged = {rank1=it}
+                gameName = uiState.rank1GameName,
+                onGameNameChanged = { viewModel.updateRank(1, it, uiState.rank1GameName) },
+                rank = uiState.rank1GameRank,
+                onRankValueChanged = { viewModel.updateRank(1, uiState.rank1GameRank, it) }
             )
             UpdateRankWidget(
                 gameNo = "Game 2",
-                gameName = gameName2,
-                onGameNameChanged = {gameName2=it},
-                rank= rank2,
-                onRankValueChanged = {rank2=it}
+                gameName = uiState.rank2GameName,
+                onGameNameChanged = { viewModel.updateRank(2, it, uiState.rank2GameName) },
+                rank = uiState.rank2GameRank,
+                onRankValueChanged = { viewModel.updateRank(2, uiState.rank2GameRank, it) }
             )
             UpdateRankWidget(
                 gameNo = "Game 3",
-                gameName = gameName3,
-                onGameNameChanged = {gameName3=it},
-                rank= rank3,
-                onRankValueChanged = {rank3=it}
+                gameName = uiState.rank3GameName,
+                onGameNameChanged = { viewModel.updateRank(3, it, uiState.rank3GameName) },
+                rank = uiState.rank3GameRank,
+                onRankValueChanged = { viewModel.updateRank(3, uiState.rank3GameRank, it) }
             )
             Button(
-                modifier = Modifier
-                    .padding(top = 16.dp),
+                modifier = Modifier.padding(top = 16.dp),
                 shape = RoundedCornerShape(5.dp),
-                onClick = { },
+                onClick = { viewModel.onSaveChangesClicked() },
                 border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
             ) {
-                Text(text = "Save",
+                Text(
+                    text = "Save",
                     style = MaterialTheme.typography.titleSmall,
                     color = colorResource(id = R.color.primary),
-                    modifier = Modifier
-                        .padding(bottom = 4.dp)
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
             }
         }

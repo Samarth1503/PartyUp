@@ -28,7 +28,7 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
     private val _registrationUIState = MutableStateFlow(RegistrationUIState())
     val registrationUIState: StateFlow<RegistrationUIState> = _registrationUIState.asStateFlow()
 
-    var userEmail by mutableStateOf("null")
+    var userEmail by mutableStateOf("")
 
     var registrationInProgress = mutableStateOf(false)
     var registrationSuccessful = mutableStateOf(false)
@@ -102,10 +102,12 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
     }
 
     private suspend fun addUserToDatabase(email: String, uid: String) {
-        userRepository.upsert(LocalUser(id = 0, userEmail = email))
+        userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+
         Log.d("TestCase-Prompt", "addUserToDatabase() started")
         val retrievedUserEmail = userRepository.getUser()
-        if (retrievedUserEmail != null) {
+
+        if (retrievedUserEmail != "") {
             userEmail = retrievedUserEmail.toString() // Update userEmail
             Log.d("AddUserUserDataTestCase", retrievedUserEmail.toString())
         } else {
@@ -116,19 +118,8 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
         mDbRef.child("users").child("data").child(uid).setValue(UserAccount(email, uid))
     }
 
-    suspend fun getUserEmail(): String {
-        var userEmailLocal = "null"
-        withContext(Dispatchers.IO) {
-            val retrievedUserEmail = userRepository.getUser()
-            if (retrievedUserEmail != null) {
-                userEmailLocal = retrievedUserEmail.toString()
-            }
-        }
-        // Update userEmail on the main thread
-        withContext(Dispatchers.Main) {
-            userEmail = userEmailLocal
-        }
-        return userEmailLocal
+    fun getUserEmail(): String {
+        return userEmail
     }
 
     fun updateLoginEmailField():String{

@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class LocalUser(
     @PrimaryKey val id: Int = 0,
-    val userEmail: String = "null"
+    val userEmail: String = "",
+    val userUID: String = ""
 )
 
 @Entity

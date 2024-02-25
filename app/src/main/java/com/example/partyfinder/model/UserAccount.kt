@@ -1,6 +1,5 @@
 package com.example.partyfinder.model
 
-import com.example.partyfinder.model.local.LiveGamerCall
 import java.sql.Types.NULL
 
 class UserAccount(
@@ -9,7 +8,8 @@ class UserAccount(
     var gamerID: String = "",
     var gamerTag: String = "",
     var bio: String = "",
-    var profilePic: Int = NULL,
+    var profilePic: String = "",
+    var profileBanner: String = "",
     var rank1GameName :String = "",
     var rank1GameRank:String = "",
     var rank2GameName :String = "",
@@ -17,7 +17,9 @@ class UserAccount(
     var rank3GameName :String = "",
     var rank3GameRank:String = "",
     var status: Pair<Int, Int> = Pair(NULL, NULL),
-    var liveGamerCall: LiveGamerCall
+    var liveGamerCallID: String = "",
+//    var chatChannelList:List<String>,
+//    var userGamerCallsList:List<String>
 ) {
     init {
         if (uid.isNotEmpty()) {

@@ -40,4 +40,6 @@ object networkChatChannelRepository : ChatChannelRepository{
     override suspend fun retreiveCurrentChannel(Id: String):Response<ChatChannel> {
         return ChatChannelApiService.retreiveCurrentChannel(firebaseID = Id)
     }
+
+
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.LiveGamerCall
@@ -327,10 +329,26 @@ fun PartyFinderContent(
         }
 
     }
-    
-    if(liveGamerCallResultList == null){
-        Text(text = "Start A Live GamerCall")
+    if(isGamerCallLive == true && liveGamerCallResultList == null) {
+        Row(modifier=Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(50.dp),
+                color = colorResource(id = R.color.primary)
+            )
+        }
     }
+    else if(liveGamerCallResultList == null){
+        Row (
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()){
+            Text(
+                text = "Start A Live GamerCall",
+                color = colorResource(id = R.color.primary),
+            )
+        }
+    }
+
     else {
         LazyColumn(
             modifier = Modifier
@@ -381,10 +399,12 @@ fun PartyFinderLiveCallsResult(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                modifier = Modifier.padding(),
+                modifier = Modifier.padding(top = 6.dp),
                 text =userAccountObject.gamerTag,
                 color= colorResource(id = R.color.primary),
-                style = MaterialTheme.typography.titleSmall)
+                fontSize = 8.sp,
+                style = MaterialTheme.typography.labelSmall,
+                )
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 modifier= Modifier

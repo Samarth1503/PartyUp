@@ -2,6 +2,7 @@ package com.example.partyfinder.ui.theme.ViewModels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.partyfinder.model.CommunityPost
 import com.example.partyfinder.model.uiEvent.CommunityUIEvent
 import com.example.partyfinder.model.uiState.CommunityUIState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,7 @@ class CommunityViewModel: ViewModel() {
     private val TAG = CommunityViewModel::class.simpleName
 
     private val _communityUIState = MutableStateFlow(CommunityUIState())
-    val communityViewModel: StateFlow<CommunityUIState> = _communityUIState.asStateFlow()
+    val communityUiState: StateFlow<CommunityUIState> = _communityUIState.asStateFlow()
 
     fun onEvent(event: CommunityUIEvent){
         when (event){
@@ -30,6 +31,14 @@ class CommunityViewModel: ViewModel() {
         }
     }
 
+    fun postAndUpdateUserCommunityPost(){
+        val tempUserPost = CommunityPost(
+            postContent = communityUiState.value.newPostContent,
+            postId = "default",
+            userName = "Kaizoku",
+            userProfilepic =
+        )
+    }
 
     private fun printState(){
         Log.d(TAG, "InsideStack")

@@ -1,6 +1,7 @@
 package com.example.partyfinder.data.repositories
 
 import com.example.partyfinder.network.ChatChannelApi
+import com.example.partyfinder.network.CommunitiesApi
 import com.example.partyfinder.network.GamerCallApi
 import com.example.partyfinder.network.LiveGamerCallApi
 import com.example.partyfinder.network.RequestInterceptor
@@ -43,4 +44,8 @@ val LiveGamerCallApiService:LiveGamerCallApi by lazy {
 
 val UserApiService:UserAccountApi by lazy {
     retrofit.create(UserAccountApi :: class.java)
+}
+
+val CommunityApiService:CommunitiesApi by lazy {
+    retrofit.create(CommunitiesApi :: class.java)
 }

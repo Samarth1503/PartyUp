@@ -19,7 +19,7 @@ class UserAccount(
     var rank3GameRank:String = "",
     var status: Pair<Int, Int> = Pair(NULL, NULL),
     var liveGamerCallID: String = "",
-//    var chatChannelList:List<String>,
+//    var chatChannelList:List<String> ,
 //    var userGamerCallsList:List<String>
 ) {
     init {

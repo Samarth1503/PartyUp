@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class PartyFinderViewModel :ViewModel(){
@@ -25,23 +26,33 @@ class PartyFinderViewModel :ViewModel(){
     val liveGamerCallSearchResultList : LiveData<List<LiveGamerCallSearchResult>> get() = _liveGamerCallSearchResultList
 
     init {
+
         viewModelScope.launch {
-            partyFinderUiState.collect { currentState ->
-                if (currentState.isGamerCallLive) {
-                    getLiveGamerCallResults()
-                    Log.d("resultsetCoRoutine", currentState.liveGamerCallResultLits.toString())
-                } else {
-                    Log.d("resultsetCoRoutine", "GamerCallNot Live")
+            while (isActive) {
+                partyFinderUiState.collect { currentState ->
+                    if (currentState.isGamerCallLive == true) {
+                        getLiveGamerCallResults(
+                            gameName = currentState.gameNameSelectedValue,
+                            NoOfPlayersRequired = currentState.noOfPlayerRequired,
+                            NoOfPlayersinParty = currentState.noOfPlayersInParty)
+                        Log.d("resultsetCoRoutine", currentState.liveGamerCallResultLits.toString())
+                    } else {
+                        Log.d("resultsetCoRoutine", "GamerCallNot Live")
+                        _partyFinderScreenUiState.update { currentState ->
+                            currentState.copy(
+                                liveGamerCallResultLits = null
+                            )
+                        }
+                    }
                 }
             }
-
-
         }
     }
 
-    suspend fun getLiveGamerCallResults(){
+    suspend fun getLiveGamerCallResults(gameName:String,NoOfPlayersinParty:String,NoOfPlayersRequired:String){
        var resultList:List<LiveGamerCallSearchResult>
-                resultList = networkLiveGamerCallRepository.liveGamerCallSearchResult()
+                resultList = networkLiveGamerCallRepository.liveGamerCallSearchResult(gameName = gameName,NoOfPlayersinParty=NoOfPlayersinParty,NoOfPlayersRequired=NoOfPlayersRequired)
+                _liveGamerCallSearchResultList.value= resultList
                 Log.d("UpdatingViewModelData" , resultList.toString())
                 _partyFinderScreenUiState.update { currentState -> currentState.copy(
                     liveGamerCallResultLits = liveGamerCallSearchResultList.value
@@ -167,19 +178,21 @@ class PartyFinderViewModel :ViewModel(){
     }
 
     fun onSearchClick(){
-        _partyFinderScreenUiState.update { currentState -> currentState.copy(
-            isGamerCallLive = true
-        ) }
         viewModelScope.launch {
             postLiveGamerCall()
         }
+        _partyFinderScreenUiState.update { currentState -> currentState.copy(
+            isGamerCallLive = true
+        ) }
+
     }
 
 
 
     fun onStopCallClick(){
         _partyFinderScreenUiState.update { currentState ->currentState.copy(
-            isGamerCallLive = false
+            isGamerCallLive = false,
+            liveGamerCallResultLits = null
         ) }
     }
 

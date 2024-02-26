@@ -7,6 +7,7 @@ import com.example.partyfinder.model.FirebaseResponse
 import com.example.partyfinder.model.LiveGamerCall
 import com.example.partyfinder.model.LiveGamerCallList
 import com.example.partyfinder.model.LiveGamerCallSearchResult
+import com.example.partyfinder.model.UserAccount
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -22,7 +23,7 @@ interface LiveGamerCallRepository{
     suspend fun fetchLiveGamerCallList()
     suspend fun updateLiveGamerCall(liveGamerCallId:String,liveGamerCall:LiveGamerCall):Response<ResponseBody>
 
-    suspend fun liveGamerCallSearchResult():List<LiveGamerCallSearchResult>
+    suspend fun liveGamerCallSearchResult(gameName:String,NoOfPlayersinParty:String,NoOfPlayersRequired:String):List<LiveGamerCallSearchResult>
 }
 
 object networkLiveGamerCallRepository : LiveGamerCallRepository{
@@ -68,30 +69,58 @@ object networkLiveGamerCallRepository : LiveGamerCallRepository{
         return response
     }
 
-    override suspend fun liveGamerCallSearchResult(): List<LiveGamerCallSearchResult> {
+    override suspend fun liveGamerCallSearchResult(gameName:String,NoOfPlayersinParty:String,NoOfPlayersRequired:String): List<LiveGamerCallSearchResult> {
         val resultList = mutableListOf<LiveGamerCallSearchResult>()
 
-        liveGamerCallList.value?.liveGamerCallList?.values?.forEach { resultLiveGamerCall ->
-            try {
-                val userAccountResponse = UserApiService.getUserAccount(resultLiveGamerCall.uid)
+        liveGamerCallList.value?.liveGamerCallList?.values?.forEach {
+            resultLiveGamerCall ->
+            if (
+                resultLiveGamerCall.gameName == gameName &&
+                resultLiveGamerCall.noOfPlayersRequired.toString() == NoOfPlayersinParty &&
+                resultLiveGamerCall.noOfPlayersinParty.toString() ==NoOfPlayersRequired) {
+                try {
+                    val userAccountResponse =
+                        UserApiService.getUserAccount(userID = resultLiveGamerCall.uid)
 
-                if (userAccountResponse.isSuccessful) {
-                    val userAccount = userAccountResponse.body()
-                    if (userAccount != null) {
-                        val liveGamerCallResultObject = LiveGamerCallSearchResult(
-                            liveGamerCallObject = resultLiveGamerCall,
-                            userAccount = userAccount
+                    if (userAccountResponse.isSuccessful) {
+
+                        val userAccount = UserAccount(
+                            email = userAccountResponse.body()!!.email,
+                            uid = userAccountResponse.body()!!.uid,
+                            gamerID = userAccountResponse.body()!!.gamerID,
+                            gamerTag = userAccountResponse.body()!!.gamerTag,
+                            bio = userAccountResponse.body()!!.bio,
+                            profilePic = userAccountResponse.body()!!.profilePic,
+                            profileBanner = userAccountResponse.body()!!.profileBanner,
+                            rank1GameName = userAccountResponse.body()!!.rank1GameName,
+                            rank1GameRank = userAccountResponse.body()!!.rank1GameRank,
+                            rank2GameName = userAccountResponse.body()!!.rank2GameName,
+                            rank2GameRank = userAccountResponse.body()!!.rank2GameRank,
+                            rank3GameName = userAccountResponse.body()!!.rank3GameName,
+                            rank3GameRank = userAccountResponse.body()!!.rank3GameRank,
+                            status = userAccountResponse.body()!!.status,
+                            liveGamerCallID = userAccountResponse.body()!!.liveGamerCallID
                         )
-                        resultList.add(liveGamerCallResultObject)
-                        Log.d("liveGamerCallResultObject", liveGamerCallResultObject.toString())
+                        if (userAccount != null) {
+                            val liveGamerCallResultObject = LiveGamerCallSearchResult(
+                                liveGamerCallObject = resultLiveGamerCall,
+                                userAccount = userAccount
+
+                            )
+                            resultList.add(liveGamerCallResultObject)
+                            Log.d("liveGamerCallResultObject", liveGamerCallResultObject.toString())
+                        } else {
+                            Log.e("FetchingDatabase", "User account data is null")
+                        }
                     } else {
-                        Log.e("FetchingDatabase", "User account data is null")
+                        Log.e(
+                            "FetchingDatabase",
+                            "Error fetching user account data. Code: ${userAccountResponse.code()}"
+                        )
                     }
-                } else {
-                    Log.e("FetchingDatabase", "Error fetching user account data. Code: ${userAccountResponse.code()}")
+                } catch (e: Exception) {
+                    Log.e("FetchingDatabase", "Exception while fetching user account data", e)
                 }
-            } catch (e: Exception) {
-                Log.e("FetchingDatabase", "Exception while fetching user account data", e)
             }
         }
 

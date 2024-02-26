@@ -233,7 +233,7 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(2) {
-            CommunityComments()
+            CommunityPosts()
         }
     }
 }
@@ -241,7 +241,7 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier) {
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun CommunityComments(modifier: Modifier = Modifier,
+fun CommunityPosts(modifier: Modifier = Modifier,
                       postViewModel: PostViewModel = viewModel()) {
 
 //        Variable declaration for like

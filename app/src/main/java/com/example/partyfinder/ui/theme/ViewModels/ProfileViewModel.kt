@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.uiState.ProfileUiState
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,9 +28,14 @@ class ProfileViewModel : ViewModel() {
     private val _profileUiState = MutableStateFlow(ProfileUiState())
     val profileState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
 
-    private var localUID: String = ""
+    // Database Variable
+    private val database: FirebaseDatabase = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app")
+    private lateinit var mDbRef: DatabaseReference
 
-    private var profilePicLink: String = ""
+    private val _snackbarMessage = MutableLiveData<String>()
+    val snackbarMessage: LiveData<String> get() = _snackbarMessage
+
+    private var localUID: String = ""
 
     var selectedStatus by mutableStateOf(Pair(0,0))
 
@@ -42,7 +48,6 @@ class ProfileViewModel : ViewModel() {
                     backGroundGetGamerCall()
                     delay(5000)
                 }
-
         }
     }
 
@@ -80,7 +85,7 @@ class ProfileViewModel : ViewModel() {
                 "rank2GameName" to _profileUiState.value.rank2GameName,
                 "rank2GameRank" to _profileUiState.value.rank2GameRank,
                 "rank3GameName" to _profileUiState.value.rank3GameName,
-                "rank3GameRank" to _profileUiState.value.rank3GameRank
+                "rank3GameRank" to _profileUiState.value.rank3GameRank,
             )
 
             Log.d(TAG, profileData.toString())
@@ -93,8 +98,6 @@ class ProfileViewModel : ViewModel() {
             Log.d(TAG, "No local UID found")
         }
     }
-
-
 
     fun updateRank(gameNo: Int, updatedGameName: String, updatedGameRank: String) {
         when (gameNo) {
@@ -131,6 +134,71 @@ class ProfileViewModel : ViewModel() {
             )}
         }
     }
+
+    suspend fun fetchData(userUID: String) {
+//        val localUserDao = AppDatabase.getDatabase(this).localUserDao()
+//        val retrievedUserEmail: String = withContext(Dispatchers.IO) {
+//            localUserDao.getUser()
+//        }
+
+        val db = FirebaseDatabase.getInstance().getReference("users")
+        db.child(userUID).get().addOnSuccessListener { dataSnapshot ->
+            val profileData = dataSnapshot.getValue(ProfileUiState::class.java)
+            if (profileData != null) {
+                _profileUiState.value = profileData
+            } else {
+                Log.e(TAG,"No data available")
+            }
+        }.addOnFailureListener {
+            Log.e(TAG,"Error fetching data")
+        }
+    }
+
+
+//    fun chooseAndUploadImage(launcher: ActivityResultLauncher<Intent>) {
+//        val intent = Intent().apply {
+//            type = "image/*"
+//            action = Intent.ACTION_GET_CONTENT
+//        }
+//        launcher.launch(Intent.createChooser(intent, "Choose Image to Upload"))
+//    }
+//
+//    fun onImageChosenAndUpload(context: Context, uri: Uri?) {
+//        _imageUri.value = uri
+//        uploadImage(context)
+//    }
+//
+//    private fun uploadImage(context: Context) {
+//        val imageUri = _imageUri.value
+//        if (imageUri != null) {
+//            val progressDialog = ProgressDialog(context).apply {
+//                setTitle("Uploading Image...")
+//                setMessage("Processing...")
+//                show()
+//            }
+//
+////            val ref: StorageReference = FirebaseStorage.getInstance().getReference()
+////                .child("images")
+////            ref.putFile(fileUri!!).addOnSuccessListener {
+////            }
+//            val ref: StorageReference = FirebaseStorage.getInstance().getReference().child("images")
+//            ref.putFile(imageUri).addOnSuccessListener { taskSnapshot ->
+//                progressDialog.dismiss()
+//                _snackbarMessage.value = "File Uploaded Successfully"
+//                val firebaseUri = taskSnapshot.metadata?.reference?.downloadUrl
+//                firebaseUri?.addOnSuccessListener { uri ->
+//                    val downloadUrl = uri.toString()
+//                    _profileUiState.update { currentState -> currentState.copy(
+//                        profileImageLink = downloadUrl ) }
+//                }
+//            }.addOnFailureListener { exception ->
+//                progressDialog.dismiss()
+//                _snackbarMessage.value = "File Upload Failed: ${exception.message}"
+//            }
+//        } else {
+//            _snackbarMessage.value = "Please Select Image to Upload"
+//        }
+//    }
 
 //    fun getUserUID(uid: String){
 //        if (uid != ""){

@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -88,6 +88,7 @@ private fun navigateBack(navController: NavController) {
 
 @Composable
 fun PartyFinderApp(
+    userViewModel: UserViewModel,
     profileViewModel: ProfileViewModel = viewModel(),
     chatScreenViewModel: chatScreenViewModel,
     partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
@@ -97,7 +98,6 @@ fun PartyFinderApp(
     createGamerCallViewModel: CreateGamerCallsViewModel = viewModel(),
     filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel()
 ){
-
     val profileUiState by profileViewModel.profileState.collectAsState()
     val chatScreenUiState by chatScreenViewModel.chatsScreenUiState.collectAsState()
     val partyFinderScreenUiState by partyFinderScreenViewModel.partyFinderUiState.collectAsState()
@@ -106,14 +106,16 @@ fun PartyFinderApp(
     val filteredGamerCallsUiState by filterGamerCallsViewModel.FilteredGamerCallUiState.collectAsState()
     val navController : NavHostController= rememberNavController()
 
+    val uid by userViewModel.UID.observeAsState("Initial UID")
+
     val localUserEmail = remember { mutableStateOf("") }
     // Use LaunchedEffect to call getUserEmail()
     LaunchedEffect(key1 = registrationViewModel) {
         localUserEmail.value = registrationViewModel.importUserEmail()
         Log.d("App-TestCase", localUserEmail.value)
     }
-    val context = LocalContext.current
-    var UID = remember { mutableStateOf("") }
+//    val context = LocalContext.current
+//    var UID = remember { mutableStateOf("") }
 //    LaunchedEffect(Unit) {
 //        launch(Dispatchers.IO) {
 //            val localUserDao = AppDatabase.getDatabase(context).localUserDao()
@@ -373,9 +375,5 @@ fun PartyFinderApp(
             )
         }
 
-
-//        composable(route=PartyFinderScreen.TF.name){
-//            TF(text = profileViewModel.GamerCallList)
-//        }
     }
 }

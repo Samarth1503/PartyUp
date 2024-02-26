@@ -1,7 +1,7 @@
 package com.example.partyfinder.ui.theme
 
-
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -26,9 +28,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,9 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.partyfinder.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-
-//Merger Comment
 @Composable
  fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -78,8 +82,10 @@ import com.example.partyfinder.R
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -113,8 +119,10 @@ import com.example.partyfinder.R
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -144,12 +152,14 @@ import com.example.partyfinder.R
 
             Column(modifier = modifier
                 .padding(top = 4.dp)
-                .clickable {navigateToPartyFinder() },
+                .clickable { navigateToPartyFinder() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -182,8 +192,10 @@ import com.example.partyfinder.R
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -218,8 +230,10 @@ import com.example.partyfinder.R
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -271,28 +285,24 @@ fun HomepageContent(modifier: Modifier = Modifier) {
 //                shape = RoundedCornerShape(15.dp)
             )
         ) {
-            Image(
-                painter = painterResource(id = (R.drawable.valorant)),
-                contentDescription = "BackIcon",
-                modifier = modifier
-                    .height(180.dp)
-                    .background(color = colorResource(id = R.color.black))
-                    .fillMaxWidth()
+//            Carousel Section
+            val images = listOf(
+                R.drawable.default_community_filler,
+                R.drawable.valorant,R.drawable.default_community_filler, R.drawable.valorant_three,
+                R.drawable.valorant, R.drawable.valorant_three,R.drawable.default_community_filler,R.drawable.valorant, R.drawable.valorant_three,R.drawable.valorant, R.drawable.valorant_three
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp) // Change this to adjust the border thickness
-                    .background(Color.Red)
-                    .align(Alignment.TopCenter)
-            )
-            Box(
-                modifier = Modifier
+            ImageCarousel(images = images, modifier = Modifier
+                .fillMaxWidth())
+            Box(modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp) // Change this to adjust the border thickness
-                    .background(Color.Red)
-                    .align(Alignment.BottomCenter)
-            )
+                    .background(colorResource(id = R.color.primary))
+                    .align(Alignment.TopCenter))
+            Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp) // Change this to adjust the border thickness
+                    .background(colorResource(id = R.color.primary))
+                    .align(Alignment.BottomCenter))
         }
 
         Row(modifier = modifier
@@ -738,6 +748,38 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ImageCarousel(images: List<Int>, modifier: Modifier = Modifier) {
+    val pagerState = rememberPagerState(pageCount = { images.size })
+    val coroutineScope = rememberCoroutineScope()
+
+    Box(modifier = modifier
+        .fillMaxWidth()
+        .background(color = colorResource(id = R.color.black))
+    ) {
+        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxWidth()) { page ->
+            Image(
+                painter = painterResource(id = images[page]),
+                contentDescription = "Carousel Image",
+                modifier = Modifier
+                    .height(180.dp)
+                    .fillMaxWidth()
+            )
+        }
+
+        // Scroll to next image every 3 seconds
+        LaunchedEffect(key1 = images) {
+            while (true) {
+                delay(3000L)
+                coroutineScope.launch {
+                    val nextPage = (pagerState.currentPage + 1) % images.size
+                    pagerState.animateScrollToPage(nextPage)
+                }
+            }
+        }
+    }
+}
 
 
 @Preview

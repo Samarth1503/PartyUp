@@ -8,6 +8,7 @@ data class ProfileUiState(
     val gamerTag:String = "#123",
     val status:Pair<Int,Int> = datasource.userStatusOption.get(0),
     val bio:String = "Hey,I like to play games",
+    val profileImageLink: String = "",
     val rank1GameName :String = "",
     val rank1GameRank:String = "",
     val rank2GameName :String = "",

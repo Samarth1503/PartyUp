@@ -166,7 +166,8 @@ fun ProfileDataWidget(
     ) {
         Column(modifier= Modifier.padding(16.dp)) {
             Text(
-                text = gamerID,
+//                text = gamerID,
+                text = "Kaizoku",
                 color = colorResource(id = R.color.primary),
                 style=MaterialTheme.typography.headlineSmall
             )

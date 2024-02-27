@@ -1,5 +1,6 @@
 package com.example.partyfinder.ui.theme.ProfileScreens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,137 +34,197 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.ui.theme.LoadingIndicator
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
 
-@Preview(showBackground = true)
-@Composable
-fun EditProfileScreenPreview(){
-    PartyFinderTheme {
-        EditProfileScreen(
-            navigateBack = {},
-            viewModel = ProfileViewModel()
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun EditProfileScreenPreview(){
+//    PartyFinderTheme {
+//        EditProfileScreen(
+//            navigateBack = {},
+//            viewModel = ProfileViewModel()
+//        )
+//    }
+//}
 
 @Composable
 fun EditProfileScreen(
     modifier: Modifier=Modifier.fillMaxSize(),
     viewModel: ProfileViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToHomeScreen: () -> Unit,
+    userUID: String
     ){
     val uiState by viewModel.profileState.collectAsState()
-    val context = LocalContext.current
+    var isLoading by remember { mutableStateOf(true) }
 
-//    LaunchedEffect(Unit) {
-//        launch(Dispatchers.IO) {
-//            val localUserDao = AppDatabase.getDatabase(context).localUserDao()
-//            val UID = localUserDao.getUserUID()
-//            viewModel.getUserUID(UID)
-//        }
-//    }
+    try {
+        viewModel.fetchUID(userUID)
+        Log.d("EditProfile TestCase","UID: $userUID")
+        viewModel.fetchData()
+        isLoading = false
+    } catch (_: Exception){}
 
-
-    Column(modifier = modifier
-        .background(color = colorResource(id = R.color.black))
-        .verticalScroll(
-            rememberScrollState())
-    ) {
-        EditProfileScreenTopBar(navigateBack = navigateBack)
-
-        EditProfileScreenBanner()
-
-
-        Column(
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.main_padding))
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+    if (!isLoading) {
+        Column(modifier = modifier
+            .background(color = colorResource(id = R.color.black))
+            .verticalScroll(
+                rememberScrollState()
+            )
         ) {
-            EditProfileDataWidget(
-                gamerID = uiState.gamerID,
-                onValueChanged = { viewModel.onGamerIDChanged(it) },
-                bio = uiState.bio,
-                onBioValueChanged = { viewModel.onBioChanged(it) },
-                onSaveChanges = { viewModel.onSaveChangesClicked() }
-            )
+            EditProfileScreenTopBar(navigateBack = navigateBack)
 
-            // Update Ranks Section
-            Spacer(modifier = Modifier.height(36.dp))
+            Box(modifier = Modifier.height(dimensionResource(id = R.dimen.Profile_Banner_Box_Height))){
+                Surface(modifier= Modifier
+                    .fillMaxWidth()
+                    .height(dimensionResource(id = R.dimen.Profile_banner_height)),
+                    color = colorResource(id = R.color.on_tertiary)
+                ) {
 
-            Row {
-                Spacer(modifier = Modifier.weight(1f))
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "Your Ranks",
-                        color = colorResource(id = R.color.primary),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    // For the underline effect
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .height(1.dp)
-                            .width(120.dp)
-                            .background(color = colorResource(id = R.color.primary))
-                    ) {}
                 }
-                Spacer(modifier = Modifier.weight(1f))
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-
-            UpdateRankWidget(
-                gameNo = "Game 1",
-                gameName = uiState.rank1GameName,
-                onGameNameChanged = { viewModel.updateRank(1, it, uiState.rank1GameName) },
-                rank = uiState.rank1GameRank,
-                onRankValueChanged = { viewModel.updateRank(1, uiState.rank1GameRank, it) }
-            )
-            UpdateRankWidget(
-                gameNo = "Game 2",
-                gameName = uiState.rank2GameName,
-                onGameNameChanged = { viewModel.updateRank(2, it, uiState.rank2GameName) },
-                rank = uiState.rank2GameRank,
-                onRankValueChanged = { viewModel.updateRank(2, uiState.rank2GameRank, it) }
-            )
-            UpdateRankWidget(
-                gameNo = "Game 3",
-                gameName = uiState.rank3GameName,
-                onGameNameChanged = { viewModel.updateRank(3, it, uiState.rank3GameName) },
-                rank = uiState.rank3GameRank,
-                onRankValueChanged = { viewModel.updateRank(3, uiState.rank3GameRank, it) }
-            )
-            Button(
-                modifier = Modifier.padding(top = 16.dp),
-                shape = RoundedCornerShape(5.dp),
-                onClick = { viewModel.onSaveChangesClicked() },
-                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
-            ) {
-                Text(
-                    text = "Save",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = colorResource(id = R.color.primary),
-                    modifier = Modifier.padding(bottom = 4.dp)
+                Surface(
+                    modifier= Modifier
+                        .padding(12.dp)
+                        .height(36.dp)
+                        .width(36.dp)
+                        .align(Alignment.TopEnd),
+                    shape = RoundedCornerShape(50),
+                    color = colorResource(id = R.color.primary)
                 )
+                {
+                    Image(
+                        painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
+                        contentDescription =null,
+                        modifier=Modifier.padding(bottom = 4.dp, start = 1.dp))
+                }
+                Box(modifier=Modifier.align(Alignment.BottomStart)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.luffy),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = dimensionResource(id = R.dimen.main_padding))
+                            .height(dimensionResource(id = R.dimen.profile_picture_height))
+                            .width(dimensionResource(id = R.dimen.profile_picture_height))
+                            .clip(RoundedCornerShape(50))
+
+                    )
+                    Surface(
+                        modifier= Modifier
+                            .height(36.dp)
+                            .width(36.dp)
+                            .align(Alignment.TopEnd),
+                        shape = RoundedCornerShape(50),
+                        color = colorResource(id = R.color.primary)
+                    )
+                    {
+                        Image(
+                            painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
+                            contentDescription =null,
+                            modifier= Modifier
+                                .padding(bottom = 4.dp, start = 1.dp)
+                                .clickable {},
+                        )
+                    }
+                }
             }
+
+
+            Column(
+                modifier = Modifier
+                    .padding(dimensionResource(id = R.dimen.main_padding))
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                EditProfileDataWidget(
+                    gamerID = uiState.gamerID,
+                    onValueChanged = { viewModel.onGamerIDChanged(it) },
+                    bio = uiState.bio,
+                    onBioValueChanged = { viewModel.onBioChanged(it) }
+                )
+
+                // Update Ranks Section
+                Spacer(modifier = Modifier.height(36.dp))
+
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Your Ranks",
+                            color = colorResource(id = R.color.primary),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+
+                        // For the underline effect
+                        Row(
+                            modifier = Modifier
+                                .padding(top = 4.dp)
+                                .height(1.dp)
+                                .width(120.dp)
+                                .background(color = colorResource(id = R.color.primary))
+                        ) {}
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+
+                UpdateRankWidget(
+                    gameNo = "Game 1",
+                    gameName = uiState.rank1GameName,
+                    onGameNameChanged = { viewModel.updateRank1(1, it, "") },
+                    rank = uiState.rank1GameRank,
+                    onRankValueChanged = { viewModel.updateRank1(2, "", it) }
+                )
+                UpdateRankWidget(
+                    gameNo = "Game 2",
+                    gameName = uiState.rank2GameName,
+                    onGameNameChanged = { viewModel.updateRank2(1, it, "") },
+                    rank = uiState.rank2GameRank,
+                    onRankValueChanged = { viewModel.updateRank2(2, "", it) }
+                )
+                UpdateRankWidget(
+                    gameNo = "Game 3",
+                    gameName = uiState.rank3GameName,
+                    onGameNameChanged = { viewModel.updateRank3(1, it, "") },
+                    rank = uiState.rank3GameRank,
+                    onRankValueChanged = { viewModel.updateRank3(2, "", it) }
+                )
+                Button(
+                    modifier = Modifier.padding(top = 16.dp),
+                    shape = RoundedCornerShape(5.dp),
+                    onClick = { viewModel.onSaveChangesClicked(navigateToHomeScreen) },
+                    border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
+                ) {
+                    Text(
+                        text = "Save",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = colorResource(id = R.color.primary),
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+            }
+//        SnackbarHost(hostState = scaffoldState)
         }
+    }
+    else{
+        LoadingIndicator()
     }
 }
 
@@ -195,60 +256,8 @@ fun EditProfileScreenTopBar(modifier:Modifier=Modifier,navigateBack:()->Unit){
 }
 
 
-@Composable
-fun EditProfileScreenBanner(modifier:Modifier=Modifier){
-    Box(modifier =modifier.height(dimensionResource(id = R.dimen.Profile_Banner_Box_Height))){
-        Surface(modifier= Modifier
-            .fillMaxWidth()
-            .height(dimensionResource(id = R.dimen.Profile_banner_height)),
-            color = colorResource(id = R.color.on_tertiary)
-        ) {
 
-        }
-        Surface(
-            modifier= Modifier
-                .padding(12.dp)
-                .height(36.dp)
-                .width(36.dp)
-                .align(Alignment.TopEnd),
-            shape = RoundedCornerShape(50),
-            color = colorResource(id = R.color.primary)
-        )
-        {
-            Image(
-                painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
-                contentDescription =null,
-                modifier=Modifier.padding(bottom = 4.dp, start = 1.dp))
-        }
-        Box(modifier=Modifier.align(Alignment.BottomStart)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.luffy),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.main_padding))
-                    .height(dimensionResource(id = R.dimen.profile_picture_height))
-                    .width(dimensionResource(id = R.dimen.profile_picture_height))
-                    .clip(RoundedCornerShape(50))
 
-            )
-            Surface(
-                modifier= Modifier
-                    .height(36.dp)
-                    .width(36.dp)
-                    .align(Alignment.TopEnd),
-                shape = RoundedCornerShape(50),
-                color = colorResource(id = R.color.primary)
-            )
-            {
-                Image(
-                    painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
-                    contentDescription =null,
-                    modifier=Modifier.padding(bottom = 4.dp, start = 1.dp) )
-            }
-        }
-    }
-}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileDataWidget(
@@ -256,7 +265,6 @@ fun EditProfileDataWidget(
     onValueChanged:(String)-> Unit,
     bio:String,
     onBioValueChanged:(String)->Unit,
-    onSaveChanges: () -> Unit,
     modifier : Modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
 
     Spacer(modifier = Modifier.height(16.dp))

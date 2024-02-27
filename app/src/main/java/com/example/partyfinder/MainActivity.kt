@@ -1,30 +1,45 @@
 package com.example.partyfinder
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.datasource.AppDatabase
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
+import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
 import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+class UserViewModel : ViewModel() {
+    val UID = MutableLiveData<String>()
+    val Email = MutableLiveData<String>()
+
+    fun updateUidInView(uid: String){
+        UID.value = uid
+    }
+    fun updateEmailInView(email: String){
+        Email.value = email
+    }
+}
+
 class MainActivity : ComponentActivity() {
+
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,80 +97,82 @@ class MainActivity : ComponentActivity() {
 //                        }
 //                    }
 
-                    LaunchedEffect(Unit) {
-                        launch(Dispatchers.IO) {
-                            val localUserDao = AppDatabase.getDatabase(this@MainActivity).localUserDao()
-                            val retrievedUserEmail: String? = withContext(Dispatchers.IO) {
-                                localUserDao.getUser()
-                            }
-                            if (retrievedUserEmail != null) {
-                                Log.d("Local UserData", retrievedUserEmail)
-                            } else {
-                                Log.d("Local UserData", "No user email found")
-                            }
 
-                            val usersDao = AppDatabase.getDatabase(this@MainActivity).usersDao()
-                            val retrievedUsersEntities = usersDao.getAll().first()
-                            retrievedUsersEntities.forEach { user ->
-                                Log.d("Users Data", user.toString())
-                            }
+//                    LaunchedEffect(Unit) {
+//                        launch(Dispatchers.IO) {
+//                            val localUserDao = AppDatabase.getDatabase(this@MainActivity).localUserDao()
+//                            val retrievedUserEmail: String = withContext(Dispatchers.IO) {
+//                                localUserDao.getUser()
+//                            }
+//
+//                            if (retrievedUserEmail != "" || retrievedUserEmail != null) {
+//                                Log.d("Local UserData", retrievedUserEmail)
+//                            } else {
+//                                Log.d("Local UserData", "No user email found")
+//                            }
+//
+//                            val usersDao = AppDatabase.getDatabase(this@MainActivity).usersDao()
+//                            val retrievedUsersEntities = usersDao.getAll().first()
+//                            retrievedUsersEntities.forEach { user ->
+//                                Log.d("Users Data", user.toString())
+//                            }
+//
+//                            val gamerCallsDao = AppDatabase.getDatabase(this@MainActivity).gamerCallsDao()
+//                            val retrievedGamerCalls = gamerCallsDao.getAll().first()
+//                            retrievedGamerCalls.forEach { gamerCall ->
+//                                Log.d("GamerCalls Data", gamerCall.toString())
+//                            }
+//
+//                            val chatChannelsDao = AppDatabase.getDatabase(this@MainActivity).chatChannelsDao()
+//                            val retrievedChatChannels = chatChannelsDao.getAll().first()
+//                            retrievedChatChannels.forEach { chatChannel ->
+//                                Log.d("ChatChannels Data", chatChannel.toString())
+//                            }
+//
+//                            val chatDao = AppDatabase.getDatabase(this@MainActivity).chatDao()
+//                            val retrievedChats = chatDao.getAll().first()
+//                            retrievedChats.forEach { chat ->
+//                                Log.d("Chat Data", chat.toString())
+//                            }
+//
+//                            val userPostDao = AppDatabase.getDatabase(this@MainActivity).userPostDao()
+//                            val retrievedUserPosts = userPostDao.getAll().first()
+//                            retrievedUserPosts.forEach { userPost ->
+//                                Log.d("UserPost Data", userPost.toString())
+//                            }
+//
+//                            val liveGamerCallDao = AppDatabase.getDatabase(this@MainActivity).liveGamerCallDao()
+//                            val retrievedLiveGamerCalls = liveGamerCallDao.getAll().first()
+//                            retrievedLiveGamerCalls.forEach { liveGamerCall ->
+//                                Log.d("LiveGamerCall Data", liveGamerCall.toString())
+//                            }
+//
+//                            val communitiesDao = AppDatabase.getDatabase(this@MainActivity).communitiesDao()
+//                            val retrievedCommunities = communitiesDao.getAll().first()
+//                            retrievedCommunities.forEach { community ->
+//                                Log.d("Communities Data", community.toString())
+//                            }
+//
+//                            val communityDao = AppDatabase.getDatabase(this@MainActivity).communityDao()
+//                            val retrievedCommunity = communityDao.getAll().first()
+//                            retrievedCommunity.forEach { community ->
+//                                Log.d("Community Data", community.toString())
+//                            }
+//                        }
+//                    }
 
-                            val gamerCallsDao = AppDatabase.getDatabase(this@MainActivity).gamerCallsDao()
-                            val retrievedGamerCalls = gamerCallsDao.getAll().first()
-                            retrievedGamerCalls.forEach { gamerCall ->
-                                Log.d("GamerCalls Data", gamerCall.toString())
-                            }
-
-                            val chatChannelsDao = AppDatabase.getDatabase(this@MainActivity).chatChannelsDao()
-                            val retrievedChatChannels = chatChannelsDao.getAll().first()
-                            retrievedChatChannels.forEach { chatChannel ->
-                                Log.d("ChatChannels Data", chatChannel.toString())
-                            }
-
-                            val chatDao = AppDatabase.getDatabase(this@MainActivity).chatDao()
-                            val retrievedChats = chatDao.getAll().first()
-                            retrievedChats.forEach { chat ->
-                                Log.d("Chat Data", chat.toString())
-                            }
-
-                            val userPostDao = AppDatabase.getDatabase(this@MainActivity).userPostDao()
-                            val retrievedUserPosts = userPostDao.getAll().first()
-                            retrievedUserPosts.forEach { userPost ->
-                                Log.d("UserPost Data", userPost.toString())
-                            }
-
-                            val liveGamerCallDao = AppDatabase.getDatabase(this@MainActivity).liveGamerCallDao()
-                            val retrievedLiveGamerCalls = liveGamerCallDao.getAll().first()
-                            retrievedLiveGamerCalls.forEach { liveGamerCall ->
-                                Log.d("LiveGamerCall Data", liveGamerCall.toString())
-                            }
-
-                            val communitiesDao = AppDatabase.getDatabase(this@MainActivity).communitiesDao()
-                            val retrievedCommunities = communitiesDao.getAll().first()
-                            retrievedCommunities.forEach { community ->
-                                Log.d("Communities Data", community.toString())
-                            }
-
-                            val communityDao = AppDatabase.getDatabase(this@MainActivity).communityDao()
-                            val retrievedCommunity = communityDao.getAll().first()
-                            retrievedCommunity.forEach { community ->
-                                Log.d("Community Data", community.toString())
-                            }
-                        }
-                    }
                     val userDao = AppDatabase.getDatabase(this).localUserDao()
                     val userRepository = LocalUserRepository(userDao)
 
                     val registrationViewModel = RegistrationViewModel(userRepository)
-                    val ChatScreenViewModel =chatScreenViewModel()
+                    val ChatScreenViewModel = chatScreenViewModel()
 
-                    PartyFinderApp(registrationViewModel = registrationViewModel,
-                        loginViewModel = LoginViewModel(userRepository,
-                        localLoginEmail = registrationViewModel.updateLoginEmailField()),
+                    PartyFinderApp(userViewModel = userViewModel,
+                        profileViewModel = ProfileViewModel(userViewModel),
+                        registrationViewModel = registrationViewModel,
+                        loginViewModel = LoginViewModel( localLoginEmail = registrationViewModel.updateLoginEmailField() ),
                         chatScreenViewModel = ChatScreenViewModel
                     )
-
-
                 }
             }
         }

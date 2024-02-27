@@ -9,7 +9,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -90,7 +89,8 @@ private fun navigateBack(navController: NavController) {
 
 @Composable
 fun PartyFinderApp(
-    profileViewModel: ProfileViewModel = viewModel(),
+    userViewModel: UserViewModel,
+    profileViewModel: ProfileViewModel,
     chatScreenViewModel: chatScreenViewModel,
     partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
     loginViewModel: LoginViewModel,
@@ -100,7 +100,6 @@ fun PartyFinderApp(
     filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel(),
     communityViewModel:CommunityViewModel = viewModel()
 ){
-
     val profileUiState by profileViewModel.profileState.collectAsState()
     val chatScreenUiState by chatScreenViewModel.chatsScreenUiState.collectAsState()
     val partyFinderScreenUiState by partyFinderScreenViewModel.partyFinderUiState.collectAsState()
@@ -111,26 +110,17 @@ fun PartyFinderApp(
     val navController : NavHostController= rememberNavController()
 
     val localUserEmail = remember { mutableStateOf("") }
+    val localUserUID = remember { mutableStateOf("") }
+
     // Use LaunchedEffect to call getUserEmail()
     LaunchedEffect(key1 = registrationViewModel) {
         localUserEmail.value = registrationViewModel.importUserEmail()
         Log.d("App-TestCase", localUserEmail.value)
     }
-    val context = LocalContext.current
-    var UID = remember { mutableStateOf("") }
-//    LaunchedEffect(Unit) {
-//        launch(Dispatchers.IO) {
-//            val localUserDao = AppDatabase.getDatabase(context).localUserDao()
-//            UID.value = localUserDao.getUserUID()
-//            partyFinderScreenViewModel.getLocalGamerID(UID.value)
-//        }
-//    }
 
     NavHost(
         navController = navController,
-        startDestination = PartyFinderScreen.HomeScreen.name
-//        if (localUserEmail.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-
+        startDestination = if (localUserEmail.value == "") PartyFinderScreen.EditProfileScreen.name else PartyFinderScreen.HomeScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -159,13 +149,17 @@ fun PartyFinderApp(
             TermsAndConditons(closeTermsScreen = {navController.popBackStack()})
         }
 
-        composable( route = PartyFinderScreen.RegisterScreen.name){
+        composable(route = PartyFinderScreen.RegisterScreen.name) {
             RegisterPage(
                 registrationViewModel = registrationViewModel,
                 navigateToTermsAndConditions = {navController.navigate(PartyFinderScreen.TermsAndConditionsScreen.name)},
                 navigateToLoginScreen = {navController.navigate(PartyFinderScreen.LoginScreen.name)},
-                onRegisterButtonClicked = { registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
-                    navController.navigate(PartyFinderScreen.EditProfileScreen.name) }
+                onRegisterButtonClicked = {registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
+                    if (registrationViewModel.registrationSuccessful.value) {
+                        localUserUID.value = registrationViewModel.importUserUID()
+                        navController.navigate(PartyFinderScreen.EditProfileScreen.name)
+                    }
+                }
             ) }
 
         composable(route = PartyFinderScreen.SpecificCommunityScreen.name){
@@ -376,16 +370,13 @@ fun PartyFinderApp(
 
         }
 
-        composable(route= PartyFinderScreen.EditProfileScreen.name){
+        composable(route= PartyFinderScreen.EditProfileScreen.name) {
             EditProfileScreen(
                 viewModel = profileViewModel,
                 navigateBack = { navigateBack(navController) },
+                navigateToHomeScreen = {navController.navigate(PartyFinderScreen.HomeScreen.name)},
+                userUID = localUserUID.value
             )
         }
-
-
-//        composable(route=PartyFinderScreen.TF.name){
-//            TF(text = profileViewModel.GamerCallList)
-//        }
     }
 }

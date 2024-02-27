@@ -57,7 +57,7 @@ fun RegisterPage(
     registrationViewModel: RegistrationViewModel,
     navigateToTermsAndConditions: () -> Unit,
     navigateToLoginScreen: () -> Unit,
-    onRegisterButtonClicked: () -> Unit,
+    onRegisterButtonClicked: () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -178,10 +178,6 @@ fun RegisterPage(
                     snackbarHostState.showSnackbar("Registered Successfully!")
                 }
             }
-//        redirecting aft prompt
-            if (registrationViewModel.registrationSuccessful.value) {
-                navigateToLoginScreen()
-            }
         }
     }
 }
@@ -196,7 +192,8 @@ fun PreviewRegisterPage(){
             registrationViewModel = viewModel(),
             navigateToTermsAndConditions = {},
             navigateToLoginScreen = {},
-            onRegisterButtonClicked = {})
+            onRegisterButtonClicked = {}
+        )
     }
 }
 

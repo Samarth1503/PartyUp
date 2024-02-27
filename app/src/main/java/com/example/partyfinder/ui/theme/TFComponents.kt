@@ -2,7 +2,10 @@ package com.example.partyfinder.ui.theme
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -17,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults.colors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -355,5 +359,17 @@ fun DividerTextComponent() {
             color = colorResource(id = R.color.SubliminalText),
             thickness = 1.dp
         )
+    }
+}
+
+@Composable
+fun LoadingIndicator() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = colorResource(id = R.color.black))
+    ) {
+        CircularProgressIndicator(color = colorResource(id = R.color.primary))
     }
 }

@@ -62,8 +62,6 @@ fun LogInPage( registrationViewModel : RegistrationViewModel,
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
     val snackbarHostState = remember { SnackbarHostState() }
 
-
-
     Scaffold( snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) {
         Box(

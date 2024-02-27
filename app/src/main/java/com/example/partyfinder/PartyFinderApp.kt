@@ -365,6 +365,7 @@ fun PartyFinderApp(
             EditProfileScreen(
                 viewModel = profileViewModel,
                 navigateBack = { navigateBack(navController) },
+                navigateToHomeScreen = {navController.navigate(PartyFinderScreen.HomeScreen.name)},
                 userUID = localUserUID.value
             )
         }

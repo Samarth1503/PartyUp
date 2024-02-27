@@ -68,6 +68,7 @@ fun EditProfileScreen(
     modifier: Modifier=Modifier.fillMaxSize(),
     viewModel: ProfileViewModel,
     navigateBack: () -> Unit,
+    navigateToHomeScreen: () -> Unit,
     userUID: String
     ){
     val uiState by viewModel.profileState.collectAsState()
@@ -155,8 +156,7 @@ fun EditProfileScreen(
                     gamerID = uiState.gamerID,
                     onValueChanged = { viewModel.onGamerIDChanged(it) },
                     bio = uiState.bio,
-                    onBioValueChanged = { viewModel.onBioChanged(it) },
-                    onSaveChanges = { viewModel.onSaveChangesClicked() }
+                    onBioValueChanged = { viewModel.onBioChanged(it) }
                 )
 
                 // Update Ranks Section
@@ -208,7 +208,7 @@ fun EditProfileScreen(
                 Button(
                     modifier = Modifier.padding(top = 16.dp),
                     shape = RoundedCornerShape(5.dp),
-                    onClick = { viewModel.onSaveChangesClicked() },
+                    onClick = { viewModel.onSaveChangesClicked(navigateToHomeScreen) },
                     border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
                 ) {
@@ -265,7 +265,6 @@ fun EditProfileDataWidget(
     onValueChanged:(String)-> Unit,
     bio:String,
     onBioValueChanged:(String)->Unit,
-    onSaveChanges: () -> Unit,
     modifier : Modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
 
     Spacer(modifier = Modifier.height(16.dp))

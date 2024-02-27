@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
 
 
 @Suppress("NAME_SHADOWING")
@@ -112,7 +111,7 @@ class ProfileViewModel(userViewModel: UserViewModel) : ViewModel() {
         }
     }
 
-    fun onSaveChangesClicked() {
+    fun onSaveChangesClicked(navigateToHomeScreen: () -> Unit) {
         if (localUID != "") {
             val db = FirebaseDatabase.getInstance().getReference("users")
 
@@ -132,6 +131,7 @@ class ProfileViewModel(userViewModel: UserViewModel) : ViewModel() {
         } else {
             Log.d(TAG, "No local UID found")
         }
+        navigateToHomeScreen()
     }
 
 
@@ -178,58 +178,48 @@ class ProfileViewModel(userViewModel: UserViewModel) : ViewModel() {
     }
 
     private suspend fun updatingFetchedData() {
-        val db = FirebaseDatabase.getInstance().getReference("users")
-        localUID = "YPY9KPABcwUyqjx6RetoJAaQ0jK2"
 
-        _profileUiState.update { currentState ->
-            val updatedState = currentState.copy(gamerID = db.child("data").child(localUID).child("gamerID").get().await().value.toString())
-            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-            updatedState
-        }
-        _profileUiState.update { currentState ->
-            val updatedState = currentState.copy(bio = db.child("data").child(localUID).child("bio").get().await().value.toString())
-            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-            updatedState
-        }
-        _profileUiState.update { currentState ->
-            val updatedState = currentState.copy(rank1GameName = db.child("data").child(localUID).child("rank1GameName").get().await().value.toString())
-            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-            updatedState
-        }
-        _profileUiState.update { currentState ->
-            val updatedState = currentState.copy(rank1GameRank = db.child("data").child(localUID).child("rank1GameRank").get().await().value.toString())
-            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-            updatedState
-        }
-        _profileUiState.update { currentState ->
-            val updatedState = currentState.copy(rank2GameName = db.child("data").child(localUID).child("rank2GameName").get().await().value.toString())
-            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-            updatedState
-        }
-        _profileUiState.update { currentState ->
-            val updatedState = currentState.copy(rank2GameRank = db.child("data").child(localUID).child("rank2GameRank").get().await().value.toString())
-            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-            updatedState
-        }
-        _profileUiState.update { currentState ->
-            val updatedState = currentState.copy(rank3GameName = db.child("data").child(localUID).child("rank3GameName").get().await().value.toString())
-            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-            updatedState
-        }
-        _profileUiState.update { currentState ->
-            val updatedState = currentState.copy(rank3GameRank = db.child("data").child(localUID).child("rank3GameRank").get().await().value.toString())
-            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-            updatedState
-        }
-
-//        _profileUiState.update { currentState -> currentState.copy(gamerID = db.child("data").child(localUID).child("gamerID").get().await().value.toString())}
-//        _profileUiState.update { currentState -> currentState.copy(bio = db.child("data").child(localUID).child("bio").get().await().value.toString())}
-//        _profileUiState.update { currentState -> currentState.copy(rank1GameName = db.child("data").child(localUID).child("rank1GameName").get().await().value.toString())}
-//        _profileUiState.update { currentState -> currentState.copy(rank1GameRank = db.child("data").child(localUID).child("rank1GameRank").get().await().value.toString())}
-//        _profileUiState.update { currentState -> currentState.copy(rank2GameName = db.child("data").child(localUID).child("rank2GameName").get().await().value.toString())}
-//        _profileUiState.update { currentState -> currentState.copy(rank2GameRank = db.child("data").child(localUID).child("rank2GameRank").get().await().value.toString())}
-//        _profileUiState.update { currentState -> currentState.copy(rank3GameName = db.child("data").child(localUID).child("rank3GameName").get().await().value.toString())}
-//        _profileUiState.update { currentState -> currentState.copy(rank3GameRank = db.child("data").child(localUID).child("rank3GameRank").get().await().value.toString())}
+//        val db = FirebaseDatabase.getInstance().getReference("users")
+//
+//        _profileUiState.update { currentState ->
+//            val updatedState = currentState.copy(gamerID = db.child("data").child(localUID).child("gamerID").get().await().value.toString())
+//            Log.d("UpdatingDataTrial TestCase12", profileState.value.gamerID)
+//            updatedState
+//        }
+//        _profileUiState.update { currentState ->
+//            val updatedState = currentState.copy(bio = db.child("data").child(localUID).child("bio").get().await().value.toString())
+//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+//            updatedState
+//        }
+//        _profileUiState.update { currentState ->
+//            val updatedState = currentState.copy(rank1GameName = db.child("data").child(localUID).child("rank1GameName").get().await().value.toString())
+//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+//            updatedState
+//        }
+//        _profileUiState.update { currentState ->
+//            val updatedState = currentState.copy(rank1GameRank = db.child("data").child(localUID).child("rank1GameRank").get().await().value.toString())
+//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+//            updatedState
+//        }
+//        _profileUiState.update { currentState ->
+//            val updatedState = currentState.copy(rank2GameName = db.child("data").child(localUID).child("rank2GameName").get().await().value.toString())
+//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+//            updatedState
+//        }
+//        _profileUiState.update { currentState ->
+//            val updatedState = currentState.copy(rank2GameRank = db.child("data").child(localUID).child("rank2GameRank").get().await().value.toString())
+//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+//            updatedState
+//        }
+//        _profileUiState.update { currentState ->
+//            val updatedState = currentState.copy(rank3GameName = db.c hild("data").child(localUID).child("rank3GameName").get().await().value.toString())
+//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+//            updatedState
+//        }
+//        _profileUiState.update { currentState ->
+//            val updatedState = currentState.copy(rank3GameRank = db.child("data").child(localUID).child("rank3GameRank").get().await().value.toString())
+//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+//            updatedState
+//        }
     }
-
 }

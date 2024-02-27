@@ -3,7 +3,6 @@ package com.example.partyfinder.ui.theme.ViewModels
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.model.uiEvent.LoginUIEvent
 import com.example.partyfinder.model.uiState.LoginUIState
 import com.google.firebase.Firebase
@@ -14,10 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class LoginViewModel(
-    private val userRepository: LocalUserRepository,
-    val localLoginEmail:String = ""
-) : ViewModel() {
+class LoginViewModel(val localLoginEmail:String = "") : ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
 
@@ -56,11 +52,9 @@ class LoginViewModel(
     }
 
     fun login(navigateToHomeScreen:()->Unit) {
-
         loginInProgress.value = true
         val email = _loginUIState.value.email
         val password = _loginUIState.value.password
-
         FirebaseAuth.getInstance()
             .signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
@@ -78,9 +72,7 @@ class LoginViewModel(
                 it.localizedMessage?.let { it1 -> Log.d(TAG, it1) }
 
                 loginInProgress.value = false
-
             }
-
     }
 
     private fun sendPasswordReset() {

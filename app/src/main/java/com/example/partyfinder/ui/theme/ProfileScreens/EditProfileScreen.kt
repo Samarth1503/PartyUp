@@ -1,5 +1,6 @@
 package com.example.partyfinder.ui.theme.ProfileScreens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,48 +43,44 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
 import com.example.partyfinder.ui.theme.LoadingIndicator
-import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
 
-@Preview(showBackground = true)
-@Composable
-fun EditProfileScreenPreview(){
-    PartyFinderTheme {
-        EditProfileScreen(
-            navigateBack = {},
-            viewModel = ProfileViewModel()
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun EditProfileScreenPreview(){
+//    PartyFinderTheme {
+//        EditProfileScreen(
+//            navigateBack = {},
+//            viewModel = ProfileViewModel()
+//        )
+//    }
+//}
 
 @Composable
 fun EditProfileScreen(
     modifier: Modifier=Modifier.fillMaxSize(),
     viewModel: ProfileViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    userUID: String
     ){
     val uiState by viewModel.profileState.collectAsState()
     var isLoading by remember { mutableStateOf(true) }
-    val context = LocalContext.current
-//    LaunchedEffect(Unit) {
-//        launch(Dispatchers.IO) {
-//            val localUserDao = AppDatabase.getDatabase(context).localUserDao()
-//            val uid = localUserDao.getUserUID()
-//            viewModel.fetchData(uid)
-//            isLoading = false
-//        }
-//    }
 
-    if (isLoading) {
+    try {
+        viewModel.fetchUID(userUID)
+        Log.d("EditProfile TestCase","UID: $userUID")
+        viewModel.fetchData()
+        isLoading = false
+    } catch (_: Exception){}
+
+    if (!isLoading) {
         Column(modifier = modifier
             .background(color = colorResource(id = R.color.black))
             .verticalScroll(
@@ -190,23 +187,23 @@ fun EditProfileScreen(
                 UpdateRankWidget(
                     gameNo = "Game 1",
                     gameName = uiState.rank1GameName,
-                    onGameNameChanged = { viewModel.updateRank(1, it, uiState.rank1GameName) },
+                    onGameNameChanged = { viewModel.updateRank1(1, it, "") },
                     rank = uiState.rank1GameRank,
-                    onRankValueChanged = { viewModel.updateRank(1, uiState.rank1GameRank, it) }
+                    onRankValueChanged = { viewModel.updateRank1(2, "", it) }
                 )
                 UpdateRankWidget(
                     gameNo = "Game 2",
                     gameName = uiState.rank2GameName,
-                    onGameNameChanged = { viewModel.updateRank(2, it, uiState.rank2GameName) },
+                    onGameNameChanged = { viewModel.updateRank2(1, it, "") },
                     rank = uiState.rank2GameRank,
-                    onRankValueChanged = { viewModel.updateRank(2, uiState.rank2GameRank, it) }
+                    onRankValueChanged = { viewModel.updateRank2(2, "", it) }
                 )
                 UpdateRankWidget(
                     gameNo = "Game 3",
                     gameName = uiState.rank3GameName,
-                    onGameNameChanged = { viewModel.updateRank(3, it, uiState.rank3GameName) },
+                    onGameNameChanged = { viewModel.updateRank3(1, it, "") },
                     rank = uiState.rank3GameRank,
-                    onRankValueChanged = { viewModel.updateRank(3, uiState.rank3GameRank, it) }
+                    onRankValueChanged = { viewModel.updateRank3(2, "", it) }
                 )
                 Button(
                     modifier = Modifier.padding(top = 16.dp),

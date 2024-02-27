@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.UserViewModel
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.uiState.ProfileUiState
@@ -21,10 +22,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 
 
 @Suppress("NAME_SHADOWING")
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(userViewModel: UserViewModel) : ViewModel() {
+
+//    val userUID = "dtU0UnHSqgaM5BMsdsVqyQwaHW22"
+
     private val _profileUiState = MutableStateFlow(ProfileUiState())
     val profileState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
 
@@ -44,10 +50,10 @@ class ProfileViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-                while(isActive){
+            while(isActive){
                     backGroundGetGamerCall()
-                    delay(5000)
-                }
+                    delay(10000000000000)
+            }
         }
     }
 
@@ -75,46 +81,59 @@ class ProfileViewModel : ViewModel() {
         )}
     }
 
+    fun updateRank1(fieldNo: Int, updatedGameName: String, updatedGameRank: String) {
+        when (fieldNo) {
+            1 -> _profileUiState.update { currentState -> currentState.copy(
+                rank1GameName = updatedGameName
+            )}
+            2 -> _profileUiState.update { currentState -> currentState.copy(
+                rank1GameRank = updatedGameRank
+            )}
+        }
+    }
+    fun updateRank2(fieldNo: Int, updatedGameName: String, updatedGameRank: String) {
+        when (fieldNo) {
+            1 -> _profileUiState.update { currentState -> currentState.copy(
+                rank2GameName = updatedGameName
+            )}
+            2 -> _profileUiState.update { currentState -> currentState.copy(
+                rank2GameRank = updatedGameRank
+            )}
+        }
+    }
+    fun updateRank3(fieldNo: Int, updatedGameName: String, updatedGameRank: String) {
+        when (fieldNo) {
+            1 -> _profileUiState.update { currentState -> currentState.copy(
+                rank3GameName = updatedGameName
+            )}
+            2 -> _profileUiState.update { currentState -> currentState.copy(
+                rank3GameRank = updatedGameRank
+            )}
+        }
+    }
+
     fun onSaveChangesClicked() {
         if (localUID != "") {
-            val profileData = mapOf(
-                "gamerID" to _profileUiState.value.gamerID,
-                "bio" to _profileUiState.value.bio,
-                "rank1GameName" to _profileUiState.value.rank1GameName,
-                "rank1GameRank" to _profileUiState.value.rank1GameRank,
-                "rank2GameName" to _profileUiState.value.rank2GameName,
-                "rank2GameRank" to _profileUiState.value.rank2GameRank,
-                "rank3GameName" to _profileUiState.value.rank3GameName,
-                "rank3GameRank" to _profileUiState.value.rank3GameRank,
-            )
-
-            Log.d(TAG, profileData.toString())
-
             val db = FirebaseDatabase.getInstance().getReference("users")
-            db.child(localUID).setValue(profileData)
+
+            db.child("data").child(localUID).child("gameID").setValue(_profileUiState.value.gamerID)
+            db.child("data").child(localUID).child("bio").setValue(_profileUiState.value.bio)
+            db.child("data").child(localUID).child("rank1GameName").setValue(_profileUiState.value.rank1GameName)
+            db.child("data").child(localUID).child("rank1GameRank").setValue(_profileUiState.value.rank1GameRank)
+            db.child("data").child(localUID).child("rank2GameName").setValue(_profileUiState.value.rank2GameName)
+            db.child("data").child(localUID).child("rank2GameRank").setValue(_profileUiState.value.rank2GameRank)
+            db.child("data").child(localUID).child("rank3GameName").setValue(_profileUiState.value.rank3GameName)
+            db.child("data").child(localUID).child("rank3GameRank").setValue(_profileUiState.value.rank3GameRank)
                 .addOnSuccessListener { Log.d(TAG, "Realtime Database update successful!") }
                 .addOnFailureListener { e -> Log.w(TAG, "Error updating Realtime Database", e) }
+
+            val editedProfileData = db.child("data").child(localUID).get()
+            Log.d(TAG, editedProfileData.toString())
         } else {
             Log.d(TAG, "No local UID found")
         }
     }
 
-    fun updateRank(gameNo: Int, updatedGameName: String, updatedGameRank: String) {
-        when (gameNo) {
-            1 -> _profileUiState.update { currentState -> currentState.copy(
-                rank1GameName = updatedGameName,
-                rank1GameRank = updatedGameRank
-            )}
-            2 -> _profileUiState.update { currentState -> currentState.copy(
-                rank2GameName = updatedGameName,
-                rank2GameRank = updatedGameRank
-            )}
-            3 -> _profileUiState.update { currentState -> currentState.copy(
-                rank3GameName = updatedGameName,
-                rank3GameRank = updatedGameRank
-            )}
-        }
-    }
 
     fun updateStatus(changedStatus: Pair<Int, Int>) {
         _profileUiState.update { currentState -> currentState.copy(
@@ -135,76 +154,82 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    suspend fun fetchData(userUID: String) {
-//        val localUserDao = AppDatabase.getDatabase(this).localUserDao()
-//        val retrievedUserEmail: String = withContext(Dispatchers.IO) {
-//            localUserDao.getUser()
-//        }
+    fun fetchUID(uid: String){
+        localUID = uid
+        Log.d("ProfileViewModel TestCase","fetchUID(), $localUID, $uid")
+    }
 
+    fun fetchData() {
+        Log.d("ProfileViewModel TestCase","FetchData() called")
         val db = FirebaseDatabase.getInstance().getReference("users")
-        db.child(userUID).get().addOnSuccessListener { dataSnapshot ->
+        db.child("data").child(localUID).get().addOnSuccessListener { dataSnapshot ->
             val profileData = dataSnapshot.getValue(ProfileUiState::class.java)
             if (profileData != null) {
-                _profileUiState.value = profileData
+                Log.d("FetchDataTrial TestCase", profileData.toString())
+                runBlocking {
+                    updatingFetchedData()
+                }
             } else {
-                Log.e(TAG,"No data available")
+                Log.e("FetchDataTrial TestCase","No data available")
             }
         }.addOnFailureListener {
-            Log.e(TAG,"Error fetching data")
+            Log.e("FetchDataTrial TestCase","Error fetching data")
         }
     }
 
+    private suspend fun updatingFetchedData() {
+        val db = FirebaseDatabase.getInstance().getReference("users")
+        localUID = "YPY9KPABcwUyqjx6RetoJAaQ0jK2"
 
-//    fun chooseAndUploadImage(launcher: ActivityResultLauncher<Intent>) {
-//        val intent = Intent().apply {
-//            type = "image/*"
-//            action = Intent.ACTION_GET_CONTENT
-//        }
-//        launcher.launch(Intent.createChooser(intent, "Choose Image to Upload"))
-//    }
-//
-//    fun onImageChosenAndUpload(context: Context, uri: Uri?) {
-//        _imageUri.value = uri
-//        uploadImage(context)
-//    }
-//
-//    private fun uploadImage(context: Context) {
-//        val imageUri = _imageUri.value
-//        if (imageUri != null) {
-//            val progressDialog = ProgressDialog(context).apply {
-//                setTitle("Uploading Image...")
-//                setMessage("Processing...")
-//                show()
-//            }
-//
-////            val ref: StorageReference = FirebaseStorage.getInstance().getReference()
-////                .child("images")
-////            ref.putFile(fileUri!!).addOnSuccessListener {
-////            }
-//            val ref: StorageReference = FirebaseStorage.getInstance().getReference().child("images")
-//            ref.putFile(imageUri).addOnSuccessListener { taskSnapshot ->
-//                progressDialog.dismiss()
-//                _snackbarMessage.value = "File Uploaded Successfully"
-//                val firebaseUri = taskSnapshot.metadata?.reference?.downloadUrl
-//                firebaseUri?.addOnSuccessListener { uri ->
-//                    val downloadUrl = uri.toString()
-//                    _profileUiState.update { currentState -> currentState.copy(
-//                        profileImageLink = downloadUrl ) }
-//                }
-//            }.addOnFailureListener { exception ->
-//                progressDialog.dismiss()
-//                _snackbarMessage.value = "File Upload Failed: ${exception.message}"
-//            }
-//        } else {
-//            _snackbarMessage.value = "Please Select Image to Upload"
-//        }
-//    }
+        _profileUiState.update { currentState ->
+            val updatedState = currentState.copy(gamerID = db.child("data").child(localUID).child("gamerID").get().await().value.toString())
+            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+            updatedState
+        }
+        _profileUiState.update { currentState ->
+            val updatedState = currentState.copy(bio = db.child("data").child(localUID).child("bio").get().await().value.toString())
+            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+            updatedState
+        }
+        _profileUiState.update { currentState ->
+            val updatedState = currentState.copy(rank1GameName = db.child("data").child(localUID).child("rank1GameName").get().await().value.toString())
+            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+            updatedState
+        }
+        _profileUiState.update { currentState ->
+            val updatedState = currentState.copy(rank1GameRank = db.child("data").child(localUID).child("rank1GameRank").get().await().value.toString())
+            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+            updatedState
+        }
+        _profileUiState.update { currentState ->
+            val updatedState = currentState.copy(rank2GameName = db.child("data").child(localUID).child("rank2GameName").get().await().value.toString())
+            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+            updatedState
+        }
+        _profileUiState.update { currentState ->
+            val updatedState = currentState.copy(rank2GameRank = db.child("data").child(localUID).child("rank2GameRank").get().await().value.toString())
+            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+            updatedState
+        }
+        _profileUiState.update { currentState ->
+            val updatedState = currentState.copy(rank3GameName = db.child("data").child(localUID).child("rank3GameName").get().await().value.toString())
+            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+            updatedState
+        }
+        _profileUiState.update { currentState ->
+            val updatedState = currentState.copy(rank3GameRank = db.child("data").child(localUID).child("rank3GameRank").get().await().value.toString())
+            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
+            updatedState
+        }
 
-//    fun getUserUID(uid: String){
-//        if (uid != ""){
-//            localUID = uid
-//        } else {
-//            Log.d("UID Not Found", "UID not found in the Profile View Model")
-//        }
-//    }
+//        _profileUiState.update { currentState -> currentState.copy(gamerID = db.child("data").child(localUID).child("gamerID").get().await().value.toString())}
+//        _profileUiState.update { currentState -> currentState.copy(bio = db.child("data").child(localUID).child("bio").get().await().value.toString())}
+//        _profileUiState.update { currentState -> currentState.copy(rank1GameName = db.child("data").child(localUID).child("rank1GameName").get().await().value.toString())}
+//        _profileUiState.update { currentState -> currentState.copy(rank1GameRank = db.child("data").child(localUID).child("rank1GameRank").get().await().value.toString())}
+//        _profileUiState.update { currentState -> currentState.copy(rank2GameName = db.child("data").child(localUID).child("rank2GameName").get().await().value.toString())}
+//        _profileUiState.update { currentState -> currentState.copy(rank2GameRank = db.child("data").child(localUID).child("rank2GameRank").get().await().value.toString())}
+//        _profileUiState.update { currentState -> currentState.copy(rank3GameName = db.child("data").child(localUID).child("rank3GameName").get().await().value.toString())}
+//        _profileUiState.update { currentState -> currentState.copy(rank3GameRank = db.child("data").child(localUID).child("rank3GameRank").get().await().value.toString())}
+    }
+
 }

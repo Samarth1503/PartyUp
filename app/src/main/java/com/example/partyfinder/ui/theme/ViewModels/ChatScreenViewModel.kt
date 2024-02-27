@@ -71,7 +71,7 @@ class chatScreenViewModel : ViewModel(){
                else{
                    Log.d(TAG,"Error fetching data")
                }
-               delay(1000)
+               delay(100000000000000000)
            }
 
        }

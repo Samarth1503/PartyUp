@@ -28,6 +28,8 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
     private val _registrationUIState = MutableStateFlow(RegistrationUIState())
     val registrationUIState: StateFlow<RegistrationUIState> = _registrationUIState.asStateFlow()
 
+
+    var localUID by mutableStateOf("")
     var userEmail by mutableStateOf("")
 
     var registrationInProgress = mutableStateOf(false)
@@ -36,8 +38,6 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
     var confirmPasswordValidationStarted = mutableStateOf(false)
     private var confirmPasswordValidation = mutableStateOf(false)
 
-    // Database Variable
-    private val database: FirebaseDatabase = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app")
     private lateinit var mDbRef: DatabaseReference
 
     private val TAG = RegistrationViewModel::class.simpleName
@@ -66,7 +66,22 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
             is RegisterUIEvent.RegisterButtonClicked -> {
                 if (confirmPasswordValidation.value && policyStatusChecked.value) {
                     viewModelScope.launch {
-                        registerToFireBase()
+                        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+                        registrationInProgress.value = true
+                        try {
+                            withContext(Dispatchers.IO) {
+                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(_registrationUIState.value.email, _registrationUIState.value.password).await()
+                            }
+                            mAuth.uid?.let { uid ->
+                                localUID = uid
+                                Log.d("RegisterationView TestCase 2", "$localUID, $uid")
+                                addUserToDatabase(_registrationUIState.value.email, uid)
+                            }
+                            registrationInProgress.value = false
+                            registrationSuccessful.value = true
+                        } catch (e: Exception) {
+                            Log.d(TAG, "Failure")
+                        }
                     }
                 } else if (!policyStatusChecked.value) {
                     Log.d(TAG, "Privacy policy not accepted")
@@ -77,32 +92,10 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
         }
     }
 
-    private suspend fun registerToFireBase() {
-        createUserInFireBase(
-            email = _registrationUIState.value.email,
-            password = _registrationUIState.value.password
-        )
-    }
-
-    private suspend fun createUserInFireBase(email: String, password: String) {
-        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-        registrationInProgress.value = true
-        try {
-            withContext(Dispatchers.IO) {
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
-            }
-            registrationInProgress.value = false
-            registrationSuccessful.value = true
-            mAuth.uid?.let { uid ->
-                addUserToDatabase(email, uid)
-            }
-        } catch (e: Exception) {
-            Log.d(TAG, "Failure")
-        }
-    }
-
     private suspend fun addUserToDatabase(email: String, uid: String) {
         try {
+            localUID = uid
+            Log.d("RegisterationView TestCase 1", "$localUID, $uid")
             userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
             mDbRef = FirebaseDatabase.getInstance().reference
             mDbRef.child("users").child("data").child(uid).setValue(UserAccount(email, uid))
@@ -120,6 +113,11 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
 
     fun importUserEmail(): String {
         return userEmail
+    }
+
+    fun importUserUID(): String {
+        Log.d("RegisterationView TestCase", "importUserUID() called with $localUID")
+        return localUID
     }
 
     fun updateLoginEmailField():String{

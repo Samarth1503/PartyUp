@@ -16,6 +16,7 @@ import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.datasource.AppDatabase
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
+import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
 import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 import com.google.firebase.FirebaseApp
@@ -25,6 +26,14 @@ import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
     val UID = MutableLiveData<String>()
+    val Email = MutableLiveData<String>()
+
+    fun updateUidInView(uid: String){
+        UID.value = uid
+    }
+    fun updateEmailInView(email: String){
+        Email.value = email
+    }
 }
 
 class MainActivity : ComponentActivity() {
@@ -157,12 +166,12 @@ class MainActivity : ComponentActivity() {
                     val registrationViewModel = RegistrationViewModel(userRepository)
                     val ChatScreenViewModel = chatScreenViewModel()
 
-                    PartyFinderApp(userViewModel = userViewModel,registrationViewModel = registrationViewModel,
-                        loginViewModel = LoginViewModel(userRepository,
-                        localLoginEmail = registrationViewModel.updateLoginEmailField()),
+                    PartyFinderApp(userViewModel = userViewModel,
+                        profileViewModel = ProfileViewModel(userViewModel),
+                        registrationViewModel = registrationViewModel,
+                        loginViewModel = LoginViewModel( localLoginEmail = registrationViewModel.updateLoginEmailField() ),
                         chatScreenViewModel = ChatScreenViewModel
                     )
-
                 }
             }
         }

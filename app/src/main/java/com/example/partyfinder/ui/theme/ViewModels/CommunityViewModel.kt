@@ -1,14 +1,28 @@
 package com.example.partyfinder.ui.theme.ViewModels
 
+import android.content.ContentValues
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.networkCommunityRepository
+import com.example.partyfinder.model.CommunitiesList
+import com.example.partyfinder.model.Community
 import com.example.partyfinder.model.CommunityPost
 import com.example.partyfinder.model.uiEvent.CommunityUIEvent
 import com.example.partyfinder.model.uiState.CommunityUIState
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class CommunityViewModel: ViewModel() {
     private val TAG = CommunityViewModel::class.simpleName
@@ -16,6 +30,61 @@ class CommunityViewModel: ViewModel() {
     private val _communityUIState = MutableStateFlow(CommunityUIState())
     val communityUiState: StateFlow<CommunityUIState> = _communityUIState.asStateFlow()
 
+    val dbref = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app").reference
+
+    private val _communityList = MutableLiveData<CommunitiesList> ()
+    val communityList : LiveData<CommunitiesList> get() = _communityList
+    init {
+        viewModelScope.launch {
+            while (isActive) {
+//                retreiveCurrentCommunityData(communityUiState.value.communityName)
+                fetchCommunitiesData()
+                communityList.observeForever { response ->
+                    _communityUIState.update { currentState ->
+                        currentState.copy(
+                            communityList = communityList.value
+                        )
+                    }
+                }
+
+                delay(60000)
+            }
+        }
+    }
+
+    fun retreiveCurrentCommunityData(communityName:String){
+        dbref.child("communities")
+            .child("data")
+            .child(communityName)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    // Handle data changes
+                    val currentCommunity: Community? = snapshot.getValue(Community::class.java)
+
+                    // Update your UI state or perform other actions
+                    _communityUIState.update { currentState -> currentState.copy(
+                        communityObject = currentCommunity!!
+                    ) }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle errors
+                    Log.e(ContentValues.TAG, "Error reading data: ${error.message}")
+                }
+            })
+    }
+    suspend fun fetchCommunitiesData(){
+        val response = networkCommunityRepository.fetchCommunityData()
+        if (response.isSuccessful){
+            _communityList.value = response.body()
+            Log.d("Fetching Community data","Fetched Community Data Successfully")
+            Log.d("Fetching Community data", communityList.value.toString())
+        }
+        else
+        {
+            Log.d("Fetching Community data","Failed To fetch Community Data")
+        }
+    }
     fun onEvent(event: CommunityUIEvent){
         when (event){
             is CommunityUIEvent.ContentChanged -> {
@@ -26,18 +95,31 @@ class CommunityViewModel: ViewModel() {
             is CommunityUIEvent.NewPostAdded -> {
 ////                Add this as value for the database of new post
 //                _communityUIState.value.newPostContent
-                Log.d(TAG, "New Post with Content as" + _communityUIState.value.toString())
+               postAndUpdateUserCommunityPost()
             }
         }
     }
 
     fun postAndUpdateUserCommunityPost(){
-        val tempUserPost = CommunityPost(
+        var tempUserPost = CommunityPost(
             postContent = communityUiState.value.newPostContent,
             postId = "default",
             userName = "Kaizoku",
-            userProfilepic =
+            userProfilepic ="https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6",
         )
+        viewModelScope.launch {
+            val response = networkCommunityRepository.postCommunityUserPost(userPost = tempUserPost)
+            val postID = response.body()!!.name
+            tempUserPost.postId = postID
+            val updateResponse = networkCommunityRepository.updatePost(postID = postID, communityPost = tempUserPost)
+
+            if (updateResponse.isSuccessful){
+                Log.d("Community Posts","CommunityPost Posted and Updated Successfully")
+            }
+            else{
+                Log.d("Community Posts","Failed to post or update Community Post")
+            }
+        }
     }
 
     private fun printState(){

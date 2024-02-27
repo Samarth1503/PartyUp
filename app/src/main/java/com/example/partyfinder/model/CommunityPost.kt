@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CommunityPost(
-    val postId:String,
+    var postId:String,
     val userName:String,
     val userProfilepic:String,
     val postContent:String

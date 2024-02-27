@@ -39,6 +39,7 @@ import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCall
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallContent
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallTopBar
 import com.example.partyfinder.ui.theme.HomeScreen
+import com.example.partyfinder.ui.theme.HomepageContent
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.LogInPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.RegisterPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.TermsAndConditons
@@ -55,6 +56,7 @@ import com.example.partyfinder.ui.theme.ProfileScreens.ProfileScreenBioWidget
 import com.example.partyfinder.ui.theme.ProfileScreens.ProfileScreenContent
 import com.example.partyfinder.ui.theme.ProfileScreens.ProfileUpdateStatus
 import com.example.partyfinder.ui.theme.SpecificCommunityScreen
+import com.example.partyfinder.ui.theme.ViewModels.CommunityViewModel
 import com.example.partyfinder.ui.theme.ViewModels.CreateGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.FilteredGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.GamerCallsViewModel
@@ -95,7 +97,8 @@ fun PartyFinderApp(
     registrationViewModel: RegistrationViewModel,
     gamersCallViewModel:GamerCallsViewModel = viewModel(),
     createGamerCallViewModel: CreateGamerCallsViewModel = viewModel(),
-    filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel()
+    filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel(),
+    communityViewModel:CommunityViewModel = viewModel()
 ){
 
     val profileUiState by profileViewModel.profileState.collectAsState()
@@ -104,6 +107,7 @@ fun PartyFinderApp(
     val gamerCallsUiState by gamersCallViewModel.GamerCallsUiState.collectAsState()
     val createGamerCallsUiState by createGamerCallViewModel.CreateGamerCallUiState.collectAsState()
     val filteredGamerCallsUiState by filterGamerCallsViewModel.FilteredGamerCallUiState.collectAsState()
+    val communityUIState by communityViewModel.communityUiState.collectAsState()
     val navController : NavHostController= rememberNavController()
 
     val localUserEmail = remember { mutableStateOf("") }
@@ -134,7 +138,8 @@ fun PartyFinderApp(
                 navigateToChats = {navController.navigate(PartyFinderScreen.ChatsScreen.name)},
                 navigateToPartyFinder = {navController.navigate(PartyFinderScreen.FindPartyScreen.name)},
                 navigateToGamerCalls = {navController.navigate(PartyFinderScreen.GamerCallsScreen.name)},
-                navigateToCommunities = {navController.navigate(PartyFinderScreen.SpecificCommunityScreen.name)}
+                navigateToCommunities = {navController.navigate(PartyFinderScreen.SpecificCommunityScreen.name)},
+                homepageContent = { HomepageContent(communitylist = communityUIState.communityList)}
 
             )
         }
@@ -164,7 +169,9 @@ fun PartyFinderApp(
             ) }
 
         composable(route = PartyFinderScreen.SpecificCommunityScreen.name){
-            SpecificCommunityScreen(navigateUp = {navController.navigateUp()})
+            SpecificCommunityScreen(navigateUp = {navController.navigateUp()},
+                communityViewModel = communityViewModel,
+                currentCommunityScreenName = communityUIState.communityName)
         }
 
         composable(route = PartyFinderScreen.GamerCallsScreen.name){

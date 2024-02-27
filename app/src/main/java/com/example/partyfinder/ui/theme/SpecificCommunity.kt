@@ -37,12 +37,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.partyfinder.R
 import com.example.partyfinder.model.uiEvent.CommunityUIEvent
 import com.example.partyfinder.model.uiEvent.PostUIEvent
@@ -53,13 +55,14 @@ import com.example.partyfinder.ui.theme.ViewModels.PostViewModel
 @Composable
 fun SpecificCommunityScreen(
     navigateUp:()->Unit,
-    communityViewModel: CommunityViewModel = viewModel()){
+    currentCommunityScreenName:String,
+    communityViewModel: CommunityViewModel){
     Surface(color= colorResource(id = R.color.black)){
         Box(modifier = Modifier
         ) {
             var newPostOverlay by remember {mutableStateOf(false)}
             Column {
-                SpecificCommunityTopBar(navigateUp = navigateUp)
+                SpecificCommunityTopBar(navigateUp = navigateUp, communityName = currentCommunityScreenName)
                 SpecificCommunityContent()
             }
 
@@ -110,10 +113,12 @@ fun SpecificCommunityScreen(
 
                         Row (
                             modifier = Modifier
-                                .padding(dimensionResource(id = R.dimen.main_padding),
+                                .padding(
+                                    dimensionResource(id = R.dimen.main_padding),
                                     0.dp,
                                     dimensionResource(id = R.dimen.main_padding),
-                                    12.dp)
+                                    12.dp
+                                )
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly) {
                             Button(
@@ -154,6 +159,7 @@ fun SpecificCommunityScreen(
 
 @Composable
 fun SpecificCommunityTopBar(
+    communityName:String,
     navigateUp:()->Unit,
     modifier: Modifier = Modifier) {
     Box(
@@ -173,7 +179,7 @@ fun SpecificCommunityTopBar(
                 .clickable { navigateUp() }
         )
         Text(
-            text = "Community",
+            text = communityName,
             style = MaterialTheme.typography.titleMedium,
             color = colorResource(id = R.color.primary)
         )
@@ -189,7 +195,8 @@ fun SpecificCommunityTopBar(
 }
 
 @Composable
-fun SpecificCommunityContent(modifier: Modifier = Modifier) {
+fun SpecificCommunityContent(modifier: Modifier = Modifier,
+                             ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -232,8 +239,9 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier) {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(2) {
-            CommunityPosts()
+       items(3){
+            CommunityPosts(
+                )
         }
     }
 }
@@ -241,7 +249,8 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier) {
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun CommunityPosts(modifier: Modifier = Modifier,
+fun CommunityPosts(
+    modifier: Modifier = Modifier,
                       postViewModel: PostViewModel = viewModel()) {
 
 //        Variable declaration for like
@@ -290,16 +299,20 @@ fun CommunityPosts(modifier: Modifier = Modifier,
                             .padding(0.dp, 4.dp, 0.dp, 0.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image (
-                            painter = painterResource(id = R.drawable.pp),
-                            contentDescription = "58008",
+                        AsyncImage(
                             modifier = Modifier
                                 .padding(8.dp, 0.dp, 10.dp, 0.dp)
                                 .size(45.dp)
-                                .clip(CircleShape)
-                        )
+                                .clip(CircleShape),
+                            model = ImageRequest.Builder(context = LocalContext.current)
+                                .data("https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6")
+                                .crossfade(true)
+                                .build() ,
+                            contentDescription = null,
+                            error= painterResource(id = R.drawable.close_blue),
+                            placeholder = painterResource(id = R.drawable.usericon_white))
                         Text(
-                            text = "58008_Rock",
+                            text = "Sam",
                             style = MaterialTheme.typography.bodyLarge,
                             color = colorResource(id = R.color.primary),
                             modifier = modifier
@@ -325,7 +338,7 @@ fun CommunityPosts(modifier: Modifier = Modifier,
                         Image(painter = painterResource(id = postImage), contentDescription = "Post's Image")
                     }
                     Text(
-                        text = "Need a 4 stack of cracked Valorant gamers for comp grind, And I mean Cracked(CRAZY) ",
+                        text = "Hello Everyone I am very Excited To be Part Of this Community and Lets play games",
                         style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.white),
                         modifier = modifier
@@ -436,12 +449,12 @@ fun CommunityPosts(modifier: Modifier = Modifier,
 }
 
 
-@Preview
-@Composable
-fun PreviewCommunity(){
-    PartyFinderTheme {
-        SpecificCommunityScreen(navigateUp = {})
-    }
-}
+//@Preview
+//@Composable
+//fun PreviewCommunity(){
+//    PartyFinderTheme {
+//        SpecificCommunityScreen(navigateUp = {}, communityViewModel = CommunityViewModel(),,)
+//    }
+//}
 
 

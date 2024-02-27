@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.partyfinder.R
+import com.example.partyfinder.model.CommunitiesList
 
 
 //Merger Comment
@@ -54,11 +55,12 @@ import com.example.partyfinder.R
     navigateToChats :()->Unit,
     navigateToPartyFinder:()->Unit,
     navigateToGamerCalls:()->Unit,
-    navigateToCommunities:()->Unit
+    navigateToCommunities:()->Unit,
+    homepageContent :@Composable () -> Unit
     ) {
     Box(modifier = modifier) {
 
-        HomepageContent()
+        homepageContent()
 
 
 //        NavigationBar
@@ -78,8 +80,10 @@ import com.example.partyfinder.R
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -113,8 +117,10 @@ import com.example.partyfinder.R
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -144,12 +150,14 @@ import com.example.partyfinder.R
 
             Column(modifier = modifier
                 .padding(top = 4.dp)
-                .clickable {navigateToPartyFinder() },
+                .clickable { navigateToPartyFinder() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -182,8 +190,10 @@ import com.example.partyfinder.R
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -218,8 +228,10 @@ import com.example.partyfinder.R
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = modifier
-                    .background(color = colorResource(id = R.color.black),
-                        shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .border(
                         width = 0.5.dp,
                         color = colorResource(id = R.color.CallWidgetBorder),
@@ -255,9 +267,11 @@ import com.example.partyfinder.R
 
 
 @Composable
-fun HomepageContent(modifier: Modifier = Modifier) {
+fun HomepageContent(
+    modifier: Modifier = Modifier,
+    communitylist:CommunitiesList?) {
     Column(modifier = Modifier
-        .verticalScroll(rememberScrollState(), true)
+        .verticalScroll(rememberScrollState())
         .fillMaxWidth()
         .fillMaxHeight()
         .background(color = colorResource(id = R.color.black))
@@ -424,35 +438,54 @@ fun HomepageContent(modifier: Modifier = Modifier) {
             modifier = modifier
                 .padding(dimensionResource(id = R.dimen.main_padding),16.dp)
         )
-        Column {
-            Row(modifier = modifier
-                .padding(24.dp, 4.dp)
-            ){
-                CommunityCard_Mini(gameName = "alorant")
-                Spacer(modifier = modifier.weight(1f))
-                CommunityCard_Mini(gameName = "Valorant")
-            }
-            Row(modifier = modifier
-                .padding(24.dp, 4.dp)
-            ){
-                CommunityCard_Mini(gameName = "aalorant")
-                Spacer(modifier = modifier.weight(1f))
-                CommunityCard_Mini(gameName = "Valorant")
+
+
+//            LazyVerticalGrid(
+//                columns = GridCells.Fixed(2),
+//                modifier = Modifier
+//                    .padding(24.dp, 4.dp)
+//                    .fillMaxWidth()
+//            ) {
+//                items(communitylist!!.communityList.keys.toList()) {
+//                    CommunityCard_Mini(gameName = it)
+//                }
+//            }
+        Column(
+            modifier = Modifier.padding(24.dp, 4.dp)
+        ) {
+            val keys = communitylist!!.communityList.keys.toList()
+
+            // Create rows with two items in each row
+            for (i in keys.indices step 2) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    if (i < keys.size) {
+                        CommunityCard_Mini(gameName = keys[i])
+                    }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    if (i + 1 < keys.size) {
+                        CommunityCard_Mini(gameName = keys[i + 1])
+                    }
+                }
             }
         }
+        Spacer(modifier = Modifier.height(60.dp))
+
     }
 }
 
 @Composable
-fun CommunityCard_Mini(modifier: Modifier = Modifier, gameName: String) {
+fun CommunityCard_Mini(modifier: Modifier = Modifier.padding(vertical = 10.dp), gameName: String) {
     val gameDrawable = when(gameName) {
-        "Valorant" -> R.drawable.valorant
-        "CS:GO" -> R.drawable.valorant
-        "Overwatch" -> R.drawable.valorant
-        "Albion" -> R.drawable.valorant
-        "COC" -> R.drawable.valorant
-        "WOW" -> R.drawable.valorant
-        "LOL" -> R.drawable.valorant
+        "Valorant" -> R.drawable.valorantimage2
+        "CS:GO" -> R.drawable.csgo
+        "Overwatch" -> R.drawable.overwatch
+        "Albion" -> R.drawable.albion
+        "COC" -> R.drawable.coc
+        "WOW" -> R.drawable.wow
+        "LOL" -> R.drawable.lol
         else -> R.drawable.default_community_filler
     }
 
@@ -476,15 +509,18 @@ fun CommunityCard_Mini(modifier: Modifier = Modifier, gameName: String) {
         Image(
             painter = painterResource(id = gameDrawable),
             contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .fillMaxWidth()
+                .matchParentSize()
+                .clip(RoundedCornerShape(15.dp))
+                .fillMaxHeight()
                 .align(Alignment.Center)
         )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.black).copy(alpha = 0.35f))
-        ) {}
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .background(colorResource(id = R.color.black).copy(alpha = 0.35f))
+//        ) {}
         Text(
             text = gameName,
             style = MaterialTheme.typography.titleMedium,
@@ -749,7 +785,8 @@ fun PreviewTF(){
             navigateToChats = {},
             navigateToPartyFinder = {},
             navigateToGamerCalls = {},
-            navigateToCommunities = {}
+            navigateToCommunities = {},
+            homepageContent = { HomepageContent(communitylist =CommunitiesList(emptyMap()))}
         )
     }
 }

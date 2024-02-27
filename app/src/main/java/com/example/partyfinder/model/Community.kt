@@ -1,9 +1,8 @@
 package com.example.partyfinder.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Community(
-    val communityID: Int,
-    val communityName: String,
-    val communityBannerImgLink: String,
-    val noOfPosts: Int,
-    val postsID: List<Int>
+    val communityPosts : Map<String,CommunityPost>
 )

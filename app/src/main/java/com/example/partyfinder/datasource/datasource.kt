@@ -3,6 +3,7 @@
 package com.example.partyfinder.datasource
 import com.example.partyfinder.R
 import com.example.partyfinder.model.ChatChannelList
+import com.example.partyfinder.model.CommunitiesList
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.UserAccount
 import com.google.gson.Gson
@@ -97,5 +98,118 @@ object datasource {
     """.trimIndent()
 
     val chatChannelList: ChatChannelList = gson.fromJson(ChatString, ChatChannelList::class.java)
+
+    val communityString = """
+        {
+          "Albion": {
+            "communityPosts": {
+              "-Nra0_t9cYsz6LdeuPmn": {
+                "postContent": "Hello I am Excited to Join this Community",
+                "postId": "-Nra0_t9cYsz6LdeuPmn",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              },
+              "-Nrb9T1XLXqgYYkeasnj": {
+                "postContent": "hii",
+                "postId": "-Nrb9T1XLXqgYYkeasnj",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              },
+              "-Nrb9TagBGFJ4ehKAhUJ": {
+                "postContent": "hii",
+                "postId": "-Nrb9TagBGFJ4ehKAhUJ",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              },
+              "-Nrb9ToruscH29YOTWBd": {
+                "postContent": "hii",
+                "postId": "-Nrb9ToruscH29YOTWBd",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              },
+              "-NroSAjJHRrvpDjOUCRx": {
+                "postContent": "Hello",
+                "postId": "-NroSAjJHRrvpDjOUCRx",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              }
+            }
+          },
+          "COC": {
+            "communityPosts": {
+              "-Nra0_t9cYsz6LdeuPmn": {
+                "postContent": "Hello I am Excited to Join this Community",
+                "postId": "-Nra0_t9cYsz6LdeuPmn",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              }
+            }
+          },
+          "CS:GO": {
+            "communityPosts": {
+              "-Nra0_t9cYsz6LdeuPmn": {
+                "postContent": "Hello I am Excited to Join this Community",
+                "postId": "-Nra0_t9cYsz6LdeuPmn",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              }
+            }
+          },
+          "LOL": {
+            "communityPosts": {
+              "-Nra0_t9cYsz6LdeuPmn": {
+                "postContent": "Hello I am Excited to Join this Community",
+                "postId": "-Nra0_t9cYsz6LdeuPmn",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              },
+              "-NroadUpvGGxK9AArzyJ": {
+                "postContent": "Are you excited for season 14?",
+                "postId": "-NroadUpvGGxK9AArzyJ",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              }
+            }
+          },
+          "Overwatch": {
+            "communityPosts": {
+              "-Nra0_t9cYsz6LdeuPmn": {
+                "postContent": "Hello I am Excited to Join this Community",
+                "postId": "-Nra0_t9cYsz6LdeuPmn",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              }
+            }
+          },
+          "Valorant": {
+            "communityPosts": {
+              "-Nra0_t9cYsz6LdeuPmn": {
+                "postContent": "Hello I am Excited to Join this Community",
+                "postId": "-Nra0_t9cYsz6LdeuPmn",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              },
+              "-Nro_KrpWtGYWB03zn6w": {
+                "postContent": "hello",
+                "postId": "-Nro_KrpWtGYWB03zn6w",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              }
+            }
+          },
+          "WOW": {
+            "communityPosts": {
+              "-Nra0_t9cYsz6LdeuPmn": {
+                "postContent": "Hello I am Excited to Join this Community",
+                "postId": "-Nra0_t9cYsz6LdeuPmn",
+                "userName": "Kaizoku",
+                "userProfilepic": "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6"
+              }
+            }
+          }
+        }
+    """.trimIndent()
+
+    val tempCommunityList: CommunitiesList = gson.fromJson(communityString, CommunitiesList::class.java)
 }
 

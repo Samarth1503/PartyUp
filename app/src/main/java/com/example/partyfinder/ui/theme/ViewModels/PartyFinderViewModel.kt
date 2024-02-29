@@ -11,13 +11,13 @@ import com.example.partyfinder.model.LiveGamerCall
 import com.example.partyfinder.model.LiveGamerCallRequest
 import com.example.partyfinder.model.LiveGamerCallSearchResult
 import com.example.partyfinder.model.uiState.PartyFinderUiState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.Timer
+import kotlin.concurrent.scheduleAtFixedRate
 
 class PartyFinderViewModel :ViewModel(){
     private val _partyFinderScreenUiState = MutableStateFlow(PartyFinderUiState())
@@ -27,15 +27,15 @@ class PartyFinderViewModel :ViewModel(){
     val liveGamerCallSearchResultList : LiveData<List<LiveGamerCallSearchResult>> get() = _liveGamerCallSearchResultList
 
     init {
-
-        viewModelScope.launch {
-            while (isActive) {
+        Timer().scheduleAtFixedRate(0, 1000) {
+            viewModelScope.launch {
                 partyFinderUiState.collect { currentState ->
                     if (currentState.isGamerCallLive == true) {
                         getLiveGamerCallResults(
                             gameName = currentState.gameNameSelectedValue,
                             NoOfPlayersRequired = currentState.noOfPlayerRequired,
-                            NoOfPlayersinParty = currentState.noOfPlayersInParty)
+                            NoOfPlayersinParty = currentState.noOfPlayersInParty
+                        )
                         Log.d("resultsetCoRoutine", currentState.liveGamerCallResultLits.toString())
                     } else {
                         Log.d("resultsetCoRoutine", "GamerCallNot Live")
@@ -49,6 +49,7 @@ class PartyFinderViewModel :ViewModel(){
             }
         }
     }
+
 
     suspend fun getLiveGamerCallResults(gameName:String,NoOfPlayersinParty:String,NoOfPlayersRequired:String){
        var resultList:List<LiveGamerCallSearchResult>
@@ -179,13 +180,12 @@ class PartyFinderViewModel :ViewModel(){
     }
 
     fun onSearchClick(){
-        viewModelScope.launch {
-            postLiveGamerCall()
-        }
         _partyFinderScreenUiState.update { currentState -> currentState.copy(
             isGamerCallLive = true
         ) }
-
+        viewModelScope.launch {
+            postLiveGamerCall()
+        }
     }
 
 

@@ -16,7 +16,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,7 +36,7 @@ class CommunityViewModel: ViewModel() {
     init {
         viewModelScope.launch {
             while (isActive) {
-//                retreiveCurrentCommunityData(communityUiState.value.communityName)
+                retreiveCurrentCommunityData(communityUiState.value.communityName)
                 fetchCommunitiesData()
                 communityList.observeForever { response ->
                     _communityUIState.update { currentState ->
@@ -46,8 +45,8 @@ class CommunityViewModel: ViewModel() {
                         )
                     }
                 }
+                Log.d("CommunityData",communityUiState.value.communityObject.toString())
 
-                delay(60000)
             }
         }
     }
@@ -108,10 +107,10 @@ class CommunityViewModel: ViewModel() {
             userProfilepic ="https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6",
         )
         viewModelScope.launch {
-            val response = networkCommunityRepository.postCommunityUserPost(userPost = tempUserPost)
+            val response = networkCommunityRepository.postCommunityUserPost(communityID = communityUiState.value.communityName,userPost = tempUserPost)
             val postID = response.body()!!.name
             tempUserPost.postId = postID
-            val updateResponse = networkCommunityRepository.updatePost(postID = postID, communityPost = tempUserPost)
+            val updateResponse = networkCommunityRepository.updatePost(communityID = communityUiState.value.communityName,postID = postID, communityPost = tempUserPost)
 
             if (updateResponse.isSuccessful){
                 Log.d("Community Posts","CommunityPost Posted and Updated Successfully")
@@ -122,6 +121,13 @@ class CommunityViewModel: ViewModel() {
         }
     }
 
+    fun updateCurrentCommunityName(name:String){
+        _communityUIState.update { currentState -> currentState.copy(
+            communityName = name
+        ) }
+
+        Log.d("CommunityData",communityUiState.value.communityName)
+    }
     private fun printState(){
         Log.d(TAG, "InsideStack")
         Log.d(TAG, _communityUIState.value.toString())

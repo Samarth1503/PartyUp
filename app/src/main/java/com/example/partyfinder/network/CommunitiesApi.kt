@@ -16,9 +16,14 @@ interface CommunitiesApi {
     @GET("communities.json")
     suspend fun fetchCommunityData():Response<CommunitiesList>
 
-    @POST("communities/data/Albion/communityPosts.json")
-    suspend fun postCommunityUserPost(@Body userPost: CommunityPost): Response<FirebaseResponse>
+    @POST("communities/data/{communityID}/communityPosts.json")
+    suspend fun postCommunityUserPost(
+        @Path("communityID") communityID:String,
+        @Body userPost: CommunityPost): Response<FirebaseResponse>
 
-    @PUT("communities/data/Albion/communityPosts/{CommunityPostID}.json")
-    suspend fun updateCommunityPost(@Path("CommunityPostID") communityPostId:String,@Body communityPost:CommunityPost):Response<ResponseBody>
+    @PUT("communities/data/{communityID}/communityPosts/{CommunityPostID}.json")
+    suspend fun updateCommunityPost(
+        @Path("communityID") communityID:String,
+        @Path("CommunityPostID") communityPostId:String,
+        @Body communityPost:CommunityPost):Response<ResponseBody>
 }

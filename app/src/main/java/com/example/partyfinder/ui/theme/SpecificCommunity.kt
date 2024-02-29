@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -46,6 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.partyfinder.R
+import com.example.partyfinder.model.Community
 import com.example.partyfinder.model.uiEvent.CommunityUIEvent
 import com.example.partyfinder.model.uiEvent.PostUIEvent
 import com.example.partyfinder.ui.theme.ViewModels.CommunityViewModel
@@ -56,6 +59,7 @@ import com.example.partyfinder.ui.theme.ViewModels.PostViewModel
 fun SpecificCommunityScreen(
     navigateUp:()->Unit,
     currentCommunityScreenName:String,
+    currentCommunityObject:Community,
     communityViewModel: CommunityViewModel){
     Surface(color= colorResource(id = R.color.black)){
         Box(modifier = Modifier
@@ -63,7 +67,7 @@ fun SpecificCommunityScreen(
             var newPostOverlay by remember {mutableStateOf(false)}
             Column {
                 SpecificCommunityTopBar(navigateUp = navigateUp, communityName = currentCommunityScreenName)
-                SpecificCommunityContent()
+                SpecificCommunityContent(currentCommunity = currentCommunityObject, currentCommunityName = currentCommunityScreenName)
             }
 
 //            To add a new post
@@ -187,6 +191,7 @@ fun SpecificCommunityTopBar(
             painter = painterResource(id = (R.drawable.close_white)),
             contentDescription = "BackIcon",
             modifier = modifier
+                .clickable { navigateUp() }
                 .padding(25.dp, 2.dp, 16.dp, 0.dp)
                 .size(20.dp)
                 .align(Alignment.CenterEnd)
@@ -195,8 +200,10 @@ fun SpecificCommunityTopBar(
 }
 
 @Composable
-fun SpecificCommunityContent(modifier: Modifier = Modifier,
-                             ) {
+fun SpecificCommunityContent(
+    modifier: Modifier = Modifier,
+    currentCommunity: Community?,
+    currentCommunityName:String) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -205,26 +212,38 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier,
 //                shape = RoundedCornerShape(15.dp)
             )
     ) {
+        val gameDrawable = when(currentCommunityName) {
+            "Valorant" -> R.drawable.valorantimage2
+            "CS:GO" -> R.drawable.csgo
+            "Overwatch" -> R.drawable.overwatch
+            "Albion" -> R.drawable.albion
+            "COC" -> R.drawable.coc
+            "WOW" -> R.drawable.wow
+            "LOL" -> R.drawable.lol
+            else -> R.drawable.default_community_filler
+        }
         Image(
-            painter = painterResource(id = (R.drawable.valorant)),
+            painter = painterResource(id = (gameDrawable)),
             contentDescription = "BackIcon",
+            contentScale = ContentScale.Crop,
             modifier = modifier
-                .height(120.dp)
+                .height(200.dp)
                 .background(color = colorResource(id = R.color.black))
                 .fillMaxWidth()
+
         )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp) // Change this to adjust the border thickness
-                .background(Color.Red)
+                .background(Color.Cyan)
                 .align(Alignment.TopCenter)
         )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp) // Change this to adjust the border thickness
-                .background(Color.Red)
+                .background(Color.Cyan)
                 .align(Alignment.BottomCenter)
         )
     }
@@ -239,9 +258,8 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier,
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-       items(3){
-            CommunityPosts(
-                )
+       items(currentCommunity!!.communityPosts.values.toList()){
+                CommunityPosts(userName = it.userName, userProfilePic = it.userProfilepic, postContent =it.postContent )
         }
     }
 }
@@ -251,7 +269,10 @@ fun SpecificCommunityContent(modifier: Modifier = Modifier,
 @Composable
 fun CommunityPosts(
     modifier: Modifier = Modifier,
-                      postViewModel: PostViewModel = viewModel()) {
+    userName: String,
+    userProfilePic:String,
+    postContent:String,
+    postViewModel: PostViewModel = viewModel()) {
 
 //        Variable declaration for like
     var likes = "1k"
@@ -305,14 +326,14 @@ fun CommunityPosts(
                                 .size(45.dp)
                                 .clip(CircleShape),
                             model = ImageRequest.Builder(context = LocalContext.current)
-                                .data("https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6")
+                                .data(userProfilePic)
                                 .crossfade(true)
                                 .build() ,
                             contentDescription = null,
                             error= painterResource(id = R.drawable.close_blue),
                             placeholder = painterResource(id = R.drawable.usericon_white))
                         Text(
-                            text = "Sam",
+                            text = userName,
                             style = MaterialTheme.typography.bodyLarge,
                             color = colorResource(id = R.color.primary),
                             modifier = modifier
@@ -338,7 +359,7 @@ fun CommunityPosts(
                         Image(painter = painterResource(id = postImage), contentDescription = "Post's Image")
                     }
                     Text(
-                        text = "Hello Everyone I am very Excited To be Part Of this Community and Lets play games",
+                        text = postContent,
                         style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.white),
                         modifier = modifier

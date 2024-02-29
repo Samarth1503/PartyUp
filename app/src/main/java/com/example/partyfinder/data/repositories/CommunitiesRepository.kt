@@ -7,17 +7,17 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 
 interface CommunitiesRepository {
-    suspend fun postCommunityUserPost(userPost:CommunityPost):Response<FirebaseResponse>
+    suspend fun postCommunityUserPost(communityID:String,userPost:CommunityPost):Response<FirebaseResponse>
 
     suspend fun fetchCommunityData():Response<CommunitiesList>
 
-    suspend fun updatePost(postID:String,communityPost:CommunityPost):Response<ResponseBody>
+    suspend fun updatePost(communityID:String,postID:String,communityPost:CommunityPost):Response<ResponseBody>
 }
 
 object networkCommunityRepository:CommunitiesRepository{
 
-    override suspend fun postCommunityUserPost(userPost: CommunityPost): Response<FirebaseResponse> {
-        val response =CommunityApiService.postCommunityUserPost(userPost = userPost)
+    override suspend fun postCommunityUserPost(communityID:String,userPost: CommunityPost): Response<FirebaseResponse> {
+        val response =CommunityApiService.postCommunityUserPost(communityID =communityID ,userPost = userPost)
         return response
     }
 
@@ -27,11 +27,13 @@ object networkCommunityRepository:CommunitiesRepository{
         return response
     }
 
+
     override suspend fun updatePost(
+        communityID:String,
         postID: String,
         communityPost: CommunityPost
     ): Response<ResponseBody> {
-        val response = CommunityApiService.updateCommunityPost(communityPostId = postID, communityPost = communityPost)
+        val response = CommunityApiService.updateCommunityPost(communityID = communityID,communityPostId = postID, communityPost = communityPost)
         return response
     }
 }

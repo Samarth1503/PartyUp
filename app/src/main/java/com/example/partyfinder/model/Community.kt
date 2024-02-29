@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Community(
-    val communityPosts : Map<String,CommunityPost>
+    val communityPosts: Map<String, CommunityPost> = mapOf()
 )

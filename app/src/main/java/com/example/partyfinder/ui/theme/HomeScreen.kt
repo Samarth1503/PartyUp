@@ -47,6 +47,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.partyfinder.PartyFinderScreen
 import com.example.partyfinder.R
 import com.example.partyfinder.model.CommunitiesList
 import kotlinx.coroutines.delay
@@ -273,7 +276,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomepageContent(
     modifier: Modifier = Modifier,
-    communitylist:CommunitiesList?) {
+    communitylist:CommunitiesList?,
+    navController: NavHostController) {
     Column(modifier = Modifier
         .verticalScroll(rememberScrollState())
         .fillMaxWidth()
@@ -290,18 +294,20 @@ fun HomepageContent(
             )
         ) {
 //            Carousel Section
-            val images = listOf(
-                R.drawable.default_community_filler,
-                R.drawable.valorant,R.drawable.default_community_filler, R.drawable.valorant_three,
-                R.drawable.valorant, R.drawable.valorant_three,R.drawable.default_community_filler,R.drawable.valorant, R.drawable.valorant_three,R.drawable.valorant, R.drawable.valorant_three
-            )
+
+            val images = listOf(R.drawable.valorantimage2,
+                R.drawable.albion,R.drawable.overwatch,
+                R.drawable.coc,R.drawable.wow,
+                R.drawable.lol,R.drawable.csgo,
+                R.drawable.valorant_three,
+                R.drawable.default_community_filler,)
             ImageCarousel(images = images, modifier = Modifier
                 .fillMaxWidth())
             Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp) // Change this to adjust the border thickness
-                    .background(colorResource(id = R.color.primary))
-                    .align(Alignment.TopCenter))
+                .fillMaxWidth()
+                .height(1.dp) // Change this to adjust the border thickness
+                .background(colorResource(id = R.color.primary))
+                .align(Alignment.TopCenter))
             Box(modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp) // Change this to adjust the border thickness
@@ -348,6 +354,7 @@ fun HomepageContent(
 
             Spacer(modifier = modifier.weight(1f))
             Row(modifier = modifier
+                .clickable { navController.navigate(PartyFinderScreen.ProfileScreen.name) }
                 .padding(end = 10.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(colorResource(id = R.color.tertiary))
@@ -409,6 +416,7 @@ fun HomepageContent(
                 )
                 Spacer(modifier = modifier.weight(1f))
                 Row(modifier = modifier
+                    .clickable { navController.navigate(PartyFinderScreen.CreateGamerCallsScreen.name) }
                     .padding(end = 10.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(colorResource(id = R.color.tertiary))
@@ -462,11 +470,15 @@ fun HomepageContent(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     if (i < keys.size) {
-                        CommunityCard_Mini(gameName = keys[i])
+                        CommunityCard_Mini(gameName = keys[i], modifier = Modifier
+                            .clickable { navController.navigate("SpecificCommunityScreen/${keys[i]}") }
+                            .padding(vertical = 10.dp))
                     }
                         Spacer(modifier = Modifier.width(8.dp))
                     if (i + 1 < keys.size) {
-                        CommunityCard_Mini(gameName = keys[i + 1])
+                        CommunityCard_Mini(gameName = keys[i + 1], modifier = Modifier
+                            .clickable { navController.navigate("SpecificCommunityScreen/${keys[i+1]}") }
+                            .padding(vertical = 10.dp))
                     }
                 }
             }
@@ -477,7 +489,10 @@ fun HomepageContent(
 }
 
 @Composable
-fun CommunityCard_Mini(modifier: Modifier = Modifier.padding(vertical = 10.dp), gameName: String) {
+fun CommunityCard_Mini(
+    modifier: Modifier,
+    gameName: String,
+    ) {
     val gameDrawable = when(gameName) {
         "Valorant" -> R.drawable.valorantimage2
         "CS:GO" -> R.drawable.csgo
@@ -505,6 +520,7 @@ fun CommunityCard_Mini(modifier: Modifier = Modifier.padding(vertical = 10.dp), 
                 color = colorResource(id = R.color.CallWidgetBorder),
                 shape = RoundedCornerShape(10.dp)
             )
+
     ) {
         Image(
             painter = painterResource(id = gameDrawable),
@@ -818,7 +834,7 @@ fun PreviewTF(){
             navigateToPartyFinder = {},
             navigateToGamerCalls = {},
             navigateToCommunities = {},
-            homepageContent = { HomepageContent(communitylist =CommunitiesList(emptyMap()))}
+            homepageContent = { HomepageContent(communitylist =CommunitiesList(emptyMap()), navController = rememberNavController() )}
         )
     }
 }

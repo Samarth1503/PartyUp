@@ -120,7 +120,8 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-        startDestination = if (localUserEmail.value == "") PartyFinderScreen.EditProfileScreen.name else PartyFinderScreen.HomeScreen.name
+        startDestination =PartyFinderScreen.HomeScreen.name
+//        if (localUserEmail.value == "") PartyFinderScreen.LoginScreen.name else PartyFinderScreen.HomeScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -128,8 +129,8 @@ fun PartyFinderApp(
                 navigateToChats = {navController.navigate(PartyFinderScreen.ChatsScreen.name)},
                 navigateToPartyFinder = {navController.navigate(PartyFinderScreen.FindPartyScreen.name)},
                 navigateToGamerCalls = {navController.navigate(PartyFinderScreen.GamerCallsScreen.name)},
-                navigateToCommunities = {navController.navigate(PartyFinderScreen.SpecificCommunityScreen.name)},
-                homepageContent = { HomepageContent(communitylist = communityUIState.communityList)}
+                navigateToCommunities = {navController.navigate("SpecificCommunityScreen/${communityUIState.communityName}")},
+                homepageContent = { HomepageContent(communitylist = communityUIState.communityList, navController = navController)}
 
             )
         }
@@ -162,10 +163,13 @@ fun PartyFinderApp(
                 }
             ) }
 
-        composable(route = PartyFinderScreen.SpecificCommunityScreen.name){
+        composable(route = "SpecificCommunityScreen/{communityName}",arguments = listOf(navArgument("communityName"){type= NavType.StringType})){
+                backStackEntry ->
+                communityViewModel.updateCurrentCommunityName(backStackEntry.arguments!!.getString("communityName")!!)
             SpecificCommunityScreen(navigateUp = {navController.navigateUp()},
                 communityViewModel = communityViewModel,
-                currentCommunityScreenName = communityUIState.communityName)
+                currentCommunityScreenName = communityUIState.communityName,
+                currentCommunityObject = communityUIState.communityObject)
         }
 
         composable(route = PartyFinderScreen.GamerCallsScreen.name){

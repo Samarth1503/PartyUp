@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CommunitiesList(
     @SerializedName("data")
-    val communityList:Map<String,Community>
+    val communityList: Map<String, Community> = mapOf()
 )

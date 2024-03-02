@@ -11,13 +11,14 @@ import com.example.partyfinder.model.uiState.LoginUIState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val userRepository: LocalUserRepository?) : ViewModel() {
+class LoginViewModel(private val userRepository: LocalUserRepository) : ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
 
@@ -31,11 +32,15 @@ class LoginViewModel(private val userRepository: LocalUserRepository?) : ViewMod
     var loginIsSuccessful = mutableStateOf(false)
 
     init {
-        val userEmail = userRepository?.getUserEmail().toString()
-        if (userEmail != "null"){
-            _loginUIState.update { currentState -> currentState.copy(
-                email = userEmail
-            ) }
+        viewModelScope.launch(Dispatchers.IO) {
+            val userEmail = userRepository.getUserEmail()
+            if (userEmail != "null") {
+                _loginUIState.update { currentState ->
+                    currentState.copy(
+                        email = userEmail
+                    )
+                }
+            }
         }
     }
 
@@ -128,7 +133,7 @@ class LoginViewModel(private val userRepository: LocalUserRepository?) : ViewMod
             }
         if (loginIsSuccessful.value){
             viewModelScope.launch {
-                userRepository?.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+                userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
             }
         }
     }

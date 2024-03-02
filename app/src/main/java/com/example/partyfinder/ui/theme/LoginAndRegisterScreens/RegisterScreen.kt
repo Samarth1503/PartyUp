@@ -167,11 +167,12 @@ fun RegisterPage(
             }
 
 //        showing in-progress circle
-            if(registrationViewModel.registrationInProgress.value) {
+            if(registrationViewModel.registrationInProgress.value || registrationViewModel.registrationSuccessful.value) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
                     color = colorResource(id = R.color.primary) )
             }
+
 //        for prompting acc creation
             LaunchedEffect(key1 = registrationViewModel.registrationSuccessful.value, key2 = registrationViewModel.registrationFailed.value) {
                 if (registrationViewModel.registrationSuccessful.value) {

@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                 ){
                     var retrievedUserUID by remember { mutableStateOf<String?>(null) }
                     var dataRetrievalInProcess by remember { mutableStateOf(true) }
-                    var userRepository: LocalUserRepository? = null
+                    var userRepository by remember { mutableStateOf<LocalUserRepository?>(null) }
 
                     LaunchedEffect(Unit){
                         launch(Dispatchers.IO){
@@ -79,28 +79,32 @@ class MainActivity : ComponentActivity() {
                     if(dataRetrievalInProcess){
                         LoadingIndicator()
                     } else {
-                        Log.d("MainActivity Debug", "Before running PartyFinderApp")
-                        val registrationViewModel = RegistrationViewModel(userRepository)
-                        val loginViewModel = LoginViewModel(userRepository)
-                        val ChatScreenViewModel = chatScreenViewModel()
+                        userRepository?.let { nonNullUserRepository ->
+                            Log.d("MainActivity Debug", "Before running PartyFinderApp")
+                            val registrationViewModel = RegistrationViewModel(nonNullUserRepository)
+                            val loginViewModel = LoginViewModel(nonNullUserRepository)
+                            val ChatScreenViewModel = chatScreenViewModel()
 
-                        Log.d("MainActivity LocalUserData TestCase 2", retrievedUserUID.toString())
+                            Log.d("MainActivity LocalUserData TestCase 2", retrievedUserUID.toString())
 
-                        PartyFinderApp(
-                            localDBUserUID = retrievedUserUID,
-                            userViewModel = userViewModel,
-                            profileViewModel = ProfileViewModel(userViewModel),
-                            registrationViewModel = registrationViewModel,
-                            loginViewModel = loginViewModel,
-                            chatScreenViewModel = ChatScreenViewModel
-                        )
-                        Log.d("MainActivity Debug", "After running PartyFinderApp")
+                            PartyFinderApp(
+                                localDBUserUID = retrievedUserUID,
+                                userViewModel = userViewModel,
+                                profileViewModel = ProfileViewModel(userViewModel),
+                                registrationViewModel = registrationViewModel,
+                                loginViewModel = loginViewModel,
+                                chatScreenViewModel = ChatScreenViewModel
+                            )
+                            Log.d("MainActivity Debug", "After running PartyFinderApp")
+                        }
+                        Log.d("MainActivity Debug", "Outside .let{}")
                     }
                 }
             }
         }
     }
 }
+
 
 
 

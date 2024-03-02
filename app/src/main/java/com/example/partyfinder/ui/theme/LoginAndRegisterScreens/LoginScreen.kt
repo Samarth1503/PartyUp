@@ -24,6 +24,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -57,6 +58,7 @@ fun LogInPage( registrationViewModel : RegistrationViewModel,
     loginViewModel: LoginViewModel,
     navigateToRegisterScreen: () -> Unit,
     onLogInClicked: () -> Unit,
+    navigateToHomeScreen:()->Unit
 ) {
     val emailState = remember { mutableStateOf(TextFieldValue()) }
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
@@ -157,11 +159,16 @@ fun LogInPage( registrationViewModel : RegistrationViewModel,
                 )
             }
 
-            // For prompting acc creation
+            // For prompting login
             LaunchedEffect(key1 = loginViewModel.loginIsSuccessful.value) {
                 if (loginViewModel.loginIsSuccessful.value) {
                     Log.d(ContentValues.TAG, "Snackbar Prompted")
-                    snackbarHostState.showSnackbar("Signed In!")
+                    snackbarHostState.showSnackbar("Signed In!", duration = SnackbarDuration.Short)
+                    navigateToHomeScreen()
+                }
+                if (loginViewModel.loginFailed.value){
+                    Log.d(ContentValues.TAG, "Snackbar Prompted")
+                    snackbarHostState.showSnackbar("Login Failed!, Retry")
                 }
             }
         }
@@ -178,7 +185,8 @@ fun Preview(){
             loginViewModel = viewModel(),
             navigateToRegisterScreen = {},
             onLogInClicked = {},
-            registrationViewModel = viewModel()
+            registrationViewModel = viewModel(),
+            navigateToHomeScreen = {}
         )
     }
 }

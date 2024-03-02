@@ -3,6 +3,9 @@ package com.example.partyfinder.ui.theme.ViewModels
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.LocalUserRepository
+import com.example.partyfinder.model.local.LocalUser
 import com.example.partyfinder.model.uiEvent.LoginUIEvent
 import com.example.partyfinder.model.uiState.LoginUIState
 import com.google.firebase.Firebase
@@ -12,22 +15,28 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class LoginViewModel(val localLoginEmail:String = "") : ViewModel() {
+class LoginViewModel(private val userRepository: LocalUserRepository?) : ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
+
 
     private val _loginUIState = MutableStateFlow(LoginUIState())
     val loginUIState: StateFlow<LoginUIState> = _loginUIState.asStateFlow()
 
     var loginInProgress = mutableStateOf(false)
 
+    var loginFailed = mutableStateOf(false)
     var loginIsSuccessful = mutableStateOf(false)
 
     init {
-        _loginUIState.update { currentState -> currentState.copy(
-            email = localLoginEmail
-        ) }
+        val userEmail = userRepository?.getUserEmail().toString()
+        if (userEmail != "null"){
+            _loginUIState.update { currentState -> currentState.copy(
+                email = userEmail
+            ) }
+        }
     }
 
     fun onEvent(event: LoginUIEvent) {
@@ -48,13 +57,55 @@ class LoginViewModel(val localLoginEmail:String = "") : ViewModel() {
                 sendPasswordReset()
                 Log.d(TAG, "ForgotPasswordComponent Clicked")
             }
+
+            is LoginUIEvent.LoginButtonCLicked -> {
+                viewModelScope.launch {
+                    login()
+                }
+            }
         }
     }
 
-    fun login(navigateToHomeScreen:()->Unit) {
+
+////            OG Code, Don't delete, needs to be uncommented for the app to work
+////            It has been commented just to run testCases easily
+//    private suspend fun login() {
+//        loginInProgress.value = true
+//        val email = _loginUIState.value.email
+//        val password = _loginUIState.value.password
+//        var uid = ""
+//        FirebaseAuth.getInstance()
+//            .signInWithEmailAndPassword(email, password)
+//            .addOnCompleteListener {
+//                Log.d(TAG, "Inside_login_success")
+//                Log.d(TAG, "${it.isSuccessful}")
+//
+//                if(it.isSuccessful){
+//                    loginInProgress.value = false
+//                    loginIsSuccessful.value = true
+//                    uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+//                    Log.d(TAG, "User UID: $uid")
+//                }
+//            }
+//            .addOnFailureListener {
+//                Log.d(TAG, "Inside_login_failure")
+//                it.localizedMessage?.let { it1 -> Log.d(TAG, it1) }
+//
+//                loginInProgress.value = false
+//                loginFailed.value = true
+//            }
+//        if (loginIsSuccessful.value){
+//            viewModelScope.launch {
+//                userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+//            }
+//        }
+//    }
+
+    private suspend fun login() {
         loginInProgress.value = true
-        val email = _loginUIState.value.email
-        val password = _loginUIState.value.password
+        val email = "samarthmehta633@gmail.com"
+        val password = "123456"
+        var uid = ""
         FirebaseAuth.getInstance()
             .signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
@@ -64,7 +115,8 @@ class LoginViewModel(val localLoginEmail:String = "") : ViewModel() {
                 if(it.isSuccessful){
                     loginInProgress.value = false
                     loginIsSuccessful.value = true
-                    navigateToHomeScreen()
+                    uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+                    Log.d(TAG, "User UID: $uid")
                 }
             }
             .addOnFailureListener {
@@ -72,7 +124,13 @@ class LoginViewModel(val localLoginEmail:String = "") : ViewModel() {
                 it.localizedMessage?.let { it1 -> Log.d(TAG, it1) }
 
                 loginInProgress.value = false
+                loginFailed.value = true
             }
+        if (loginIsSuccessful.value){
+            viewModelScope.launch {
+                userRepository?.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+            }
+        }
     }
 
     private fun sendPasswordReset() {

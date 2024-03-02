@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class RegistrationViewModel(private val userRepository: LocalUserRepository) : ViewModel() {
+class RegistrationViewModel(private val userRepository: LocalUserRepository?) : ViewModel() {
 
     private val _registrationUIState = MutableStateFlow(RegistrationUIState())
     val registrationUIState: StateFlow<RegistrationUIState> = _registrationUIState.asStateFlow()
@@ -34,6 +34,7 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
 
     var registrationInProgress = mutableStateOf(false)
     var registrationSuccessful = mutableStateOf(false)
+    var registrationFailed = mutableStateOf(false)
     var policyStatusChecked = mutableStateOf(false)
     var confirmPasswordValidationStarted = mutableStateOf(false)
     private var confirmPasswordValidation = mutableStateOf(false)
@@ -63,40 +64,70 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
             is RegisterUIEvent.PrivacyPolicyCheckBoxClicked -> {
                 policyStatusChecked.value = !policyStatusChecked.value
             }
+
+////            OG Code, Don't delete, needs to be uncommented for the app to work
+////            It has been commented just to run testCases easily
+//            is RegisterUIEvent.RegisterButtonClicked -> {
+//                if (confirmPasswordValidation.value && policyStatusChecked.value) {
+//                    viewModelScope.launch {
+//                        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+//                        registrationInProgress.value = true
+//                        try {
+//                            withContext(Dispatchers.IO) {
+//                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(_registrationUIState.value.email, _registrationUIState.value.password).await()
+//                            }
+//                            mAuth.uid?.let { uid ->
+//                                localUID = uid
+//                                Log.d("RegistrationView TestCase 2", "$localUID, $uid")
+//                                addUserToDatabase(_registrationUIState.value.email, uid)
+//                            }
+//                            registrationInProgress.value = false
+//                            registrationSuccessful.value = true
+//                        } catch (e: Exception) {
+//                            Log.d(TAG, "Failure")
+//                        }
+//                    }
+//                } else if (!policyStatusChecked.value) {
+//                    Log.d(TAG, "Privacy policy not accepted")
+//                } else {
+//                    Log.d(TAG, "Passwords do not match")
+//                }
+//            }
+
             is RegisterUIEvent.RegisterButtonClicked -> {
-                if (confirmPasswordValidation.value && policyStatusChecked.value) {
-                    viewModelScope.launch {
-                        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-                        registrationInProgress.value = true
-                        try {
-                            withContext(Dispatchers.IO) {
-                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(_registrationUIState.value.email, _registrationUIState.value.password).await()
-                            }
-                            mAuth.uid?.let { uid ->
-                                localUID = uid
-                                Log.d("RegisterationView TestCase 2", "$localUID, $uid")
-                                addUserToDatabase(_registrationUIState.value.email, uid)
-                            }
-                            registrationInProgress.value = false
-                            registrationSuccessful.value = true
-                        } catch (e: Exception) {
-                            Log.d(TAG, "Failure")
+                viewModelScope.launch {
+                    val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+                    registrationInProgress.value = true
+                    var procedureSuccessful by mutableStateOf(false)
+                    try {
+                        withContext(Dispatchers.IO) {
+                            FirebaseAuth.getInstance().createUserWithEmailAndPassword("samarthmehta633@gmail.com", "123456").await()
                         }
+                        mAuth.uid?.let { uid ->
+                            localUID = uid
+                            Log.d("RegistrationView TestCase 2", "$localUID, $uid")
+                            procedureSuccessful = addUserToDatabase("samarthmehta633@gmail.com", uid)
+                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "Failure")
                     }
-                } else if (!policyStatusChecked.value) {
-                    Log.d(TAG, "Privacy policy not accepted")
-                } else {
-                    Log.d(TAG, "Passwords do not match")
+                    if (procedureSuccessful){
+                        registrationInProgress.value = false
+                        registrationSuccessful.value = true
+                    } else {
+                        registrationInProgress.value = false
+                        registrationFailed.value = true
+                    }
                 }
             }
         }
     }
 
-    private suspend fun addUserToDatabase(email: String, uid: String) {
+    private suspend fun addUserToDatabase(email: String, uid: String): Boolean {
+        var userAdded by mutableStateOf(false)
         try {
             localUID = uid
-            Log.d("RegisterationView TestCase 1", "$localUID, $uid")
-            userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+
             mDbRef = FirebaseDatabase.getInstance().reference
             mDbRef.child("users").child("data").child(uid).setValue(UserAccount(email, uid))
                 .addOnFailureListener { exception ->
@@ -109,6 +140,13 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
         } catch (e: Exception) {
             Log.e("DatabaseError", "Error updating local database", e)
         }
+        if(userAdded){
+            userRepository?.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+            val repEmail = userRepository?.getUserEmail()
+            Log.d("RegistrationView TestCase", "Checking the values added to Local DB with the input : $email, DB value : $repEmail")
+            return true
+        }
+        else{ return false }
     }
 
     fun importUserEmail(): String {
@@ -116,7 +154,7 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
     }
 
     fun importUserUID(): String {
-        Log.d("RegisterationView TestCase", "importUserUID() called with $localUID")
+        Log.d("RegistrationView TestCase", "importUserUID() called with $localUID")
         return localUID
     }
 

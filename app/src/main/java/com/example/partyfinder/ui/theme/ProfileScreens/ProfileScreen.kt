@@ -340,8 +340,6 @@ fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userG
                         }
                     }
                 }
-
-
         }
     }
 }

@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.uiEvent.LoginUIEvent
 import com.example.partyfinder.model.uiEvent.RegisterUIEvent
 import com.example.partyfinder.ui.theme.ChatScreens.ChatMenu
 import com.example.partyfinder.ui.theme.ChatScreens.ChatTopBar
@@ -87,6 +88,7 @@ private fun navigateBack(navController: NavController) {
 
 @Composable
 fun PartyFinderApp(
+    localDBUserUID: String?,
     userViewModel: UserViewModel,
     profileViewModel: ProfileViewModel,
     chatScreenViewModel: chatScreenViewModel,
@@ -108,15 +110,22 @@ fun PartyFinderApp(
     val localUserEmail = remember { mutableStateOf("") }
     val localUserUID = remember { mutableStateOf("") }
 
+    if (localDBUserUID != null){
+        localUserUID.value = localDBUserUID
+    }
+
     // Use LaunchedEffect to call getUserEmail()
     LaunchedEffect(key1 = registrationViewModel) {
         localUserEmail.value = registrationViewModel.importUserEmail()
-        Log.d("App-TestCase", localUserEmail.value)
+        Log.d("PartyFinderApp TestCase", localUserEmail.value)
     }
+
+
 
     NavHost(
         navController = navController,
-        startDestination = if (localUserEmail.value == "") PartyFinderScreen.EditProfileScreen.name else PartyFinderScreen.HomeScreen.name
+//        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
+        startDestination = PartyFinderScreen.LoginScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -133,10 +142,9 @@ fun PartyFinderApp(
                 registrationViewModel = registrationViewModel,
                 loginViewModel = loginViewModel,
                 navigateToRegisterScreen = { navController.navigate(PartyFinderScreen.RegisterScreen.name) },
-                onLogInClicked = { loginViewModel.login(navigateToHomeScreen = {
-                        navController.navigate(PartyFinderScreen.HomeScreen.name)
-                    })
-                } )
+                onLogInClicked = { loginViewModel.onEvent(LoginUIEvent.LoginButtonCLicked) } ,
+                navigateToHomeScreen = { navController.navigate(PartyFinderScreen.HomeScreen.name) }
+            )
         }
 
         composable(route = PartyFinderScreen.TermsAndConditionsScreen.name ){
@@ -148,10 +156,11 @@ fun PartyFinderApp(
                 registrationViewModel = registrationViewModel,
                 navigateToTermsAndConditions = {navController.navigate(PartyFinderScreen.TermsAndConditionsScreen.name)},
                 navigateToLoginScreen = {navController.navigate(PartyFinderScreen.LoginScreen.name)},
-                onRegisterButtonClicked = {registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
+                navigateToEditProfileScreen = {navController.navigate(PartyFinderScreen.EditProfileScreen.name)},
+                onRegisterButtonClicked = {
+                    registrationViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
                     if (registrationViewModel.registrationSuccessful.value) {
                         localUserUID.value = registrationViewModel.importUserUID()
-                        navController.navigate(PartyFinderScreen.EditProfileScreen.name)
                     }
                 }
             ) }

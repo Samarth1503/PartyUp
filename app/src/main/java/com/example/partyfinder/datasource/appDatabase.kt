@@ -59,6 +59,8 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-    suspend fun updateAll() {
+    suspend fun getDatabase(){
+
     }
 }
+

@@ -165,7 +165,7 @@ class ProfileViewModel(userViewModel: UserViewModel) : ViewModel() {
         db.child("data").child(localUID).get().addOnSuccessListener { dataSnapshot ->
             val profileData = dataSnapshot.getValue(ProfileUiState::class.java)
             if (profileData != null) {
-                Log.d("FetchDataTrial TestCase", profileData.toString())
+                Log.d("ProfileVM FetchDataTrial TestCase", profileData.toString())
                 runBlocking {
                     updatingFetchedData()
                 }

@@ -30,7 +30,7 @@ class LocalUserRepository(private val localUserDao: LocalUserDao) {
         localUserDao.delete(user)
     }
 
-    fun getUser(): String {
+    fun getUserEmail(): String {
         return localUserDao.getUser()
     }
 

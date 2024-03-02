@@ -57,6 +57,7 @@ fun RegisterPage(
     registrationViewModel: RegistrationViewModel,
     navigateToTermsAndConditions: () -> Unit,
     navigateToLoginScreen: () -> Unit,
+    navigateToEditProfileScreen: () -> Unit,
     onRegisterButtonClicked: () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -172,10 +173,15 @@ fun RegisterPage(
                     color = colorResource(id = R.color.primary) )
             }
 //        for prompting acc creation
-            LaunchedEffect(key1 = registrationViewModel.registrationSuccessful.value) {
+            LaunchedEffect(key1 = registrationViewModel.registrationSuccessful.value, key2 = registrationViewModel.registrationFailed.value) {
                 if (registrationViewModel.registrationSuccessful.value) {
                     Log.d(ContentValues.TAG, "Snackbar Prompted")
                     snackbarHostState.showSnackbar("Registered Successfully!")
+                    navigateToEditProfileScreen()
+                }
+                if (registrationViewModel.registrationFailed.value) {
+                    Log.d(ContentValues.TAG, "Snackbar Prompted")
+                    snackbarHostState.showSnackbar("Registration Unsuccessfully!, Try another email")
                 }
             }
         }
@@ -192,7 +198,8 @@ fun PreviewRegisterPage(){
             registrationViewModel = viewModel(),
             navigateToTermsAndConditions = {},
             navigateToLoginScreen = {},
-            onRegisterButtonClicked = {}
+            onRegisterButtonClicked = {},
+            navigateToEditProfileScreen = {}
         )
     }
 }

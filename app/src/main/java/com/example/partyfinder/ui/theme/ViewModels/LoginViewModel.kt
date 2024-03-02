@@ -71,45 +71,10 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
         }
     }
 
-
-////            OG Code, Don't delete, needs to be uncommented for the app to work
-////            It has been commented just to run testCases easily
-//    private suspend fun login() {
-//        loginInProgress.value = true
-//        val email = _loginUIState.value.email
-//        val password = _loginUIState.value.password
-//        var uid = ""
-//        FirebaseAuth.getInstance()
-//            .signInWithEmailAndPassword(email, password)
-//            .addOnCompleteListener {
-//                Log.d(TAG, "Inside_login_success")
-//                Log.d(TAG, "${it.isSuccessful}")
-//
-//                if(it.isSuccessful){
-//                    loginInProgress.value = false
-//                    loginIsSuccessful.value = true
-//                    uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
-//                    Log.d(TAG, "User UID: $uid")
-//                }
-//            }
-//            .addOnFailureListener {
-//                Log.d(TAG, "Inside_login_failure")
-//                it.localizedMessage?.let { it1 -> Log.d(TAG, it1) }
-//
-//                loginInProgress.value = false
-//                loginFailed.value = true
-//            }
-//        if (loginIsSuccessful.value){
-//            viewModelScope.launch {
-//                userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
-//            }
-//        }
-//    }
-
     private suspend fun login() {
         loginInProgress.value = true
-        val email = "samarthmehta633@gmail.com"
-        val password = "123456"
+        val email = _loginUIState.value.email
+        val password = _loginUIState.value.password
         var uid = ""
         FirebaseAuth.getInstance()
             .signInWithEmailAndPassword(email, password)
@@ -137,6 +102,39 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
             }
         }
     }
+
+////    It is to run testCases easily
+//    private suspend fun login() {
+//        loginInProgress.value = true
+//        val email = "samarthmehta633@gmail.com"
+//        val password = "123456"
+//        var uid = ""
+//        FirebaseAuth.getInstance()
+//            .signInWithEmailAndPassword(email, password)
+//            .addOnCompleteListener {
+//                Log.d(TAG, "Inside_login_success")
+//                Log.d(TAG, "${it.isSuccessful}")
+//
+//                if(it.isSuccessful){
+//                    loginInProgress.value = false
+//                    loginIsSuccessful.value = true
+//                    uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+//                    Log.d(TAG, "User UID: $uid")
+//                }
+//            }
+//            .addOnFailureListener {
+//                Log.d(TAG, "Inside_login_failure")
+//                it.localizedMessage?.let { it1 -> Log.d(TAG, it1) }
+//
+//                loginInProgress.value = false
+//                loginFailed.value = true
+//            }
+//        if (loginIsSuccessful.value){
+//            viewModelScope.launch {
+//                userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+//            }
+//        }
+//    }
 
     private fun sendPasswordReset() {
         val email = _loginUIState.value.email

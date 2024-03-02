@@ -94,7 +94,7 @@ fun PartyFinderApp(
     userViewModel: UserViewModel,
     profileViewModel: ProfileViewModel,
     chatScreenViewModel: chatScreenViewModel,
-    partyFinderScreenViewModel: PartyFinderViewModel = viewModel(),
+    partyFinderScreenViewModel: PartyFinderViewModel = PartyFinderViewModel(localDBUserUID),
     loginViewModel: LoginViewModel,
     registrationViewModel: RegistrationViewModel,
     gamersCallViewModel:GamerCallsViewModel = viewModel(),
@@ -128,8 +128,8 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-//        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-        startDestination = PartyFinderScreen.LoginScreen.name
+        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
+//        startDestination = PartyFinderScreen.LoginScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(

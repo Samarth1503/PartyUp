@@ -168,7 +168,7 @@ fun LogInPage( registrationViewModel : RegistrationViewModel,
                 }
                 if (loginViewModel.loginFailed.value){
                     Log.d(ContentValues.TAG, "Snackbar Prompted")
-                    snackbarHostState.showSnackbar("Login Failed!, Retry")
+                    snackbarHostState.showSnackbar("Login Failed!, Retry or Register if new user")
                 }
             }
         }

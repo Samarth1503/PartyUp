@@ -11,15 +11,17 @@ import com.example.partyfinder.model.LiveGamerCall
 import com.example.partyfinder.model.LiveGamerCallRequest
 import com.example.partyfinder.model.LiveGamerCallSearchResult
 import com.example.partyfinder.model.uiState.PartyFinderUiState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Timer
 import kotlin.concurrent.scheduleAtFixedRate
 
-class PartyFinderViewModel :ViewModel(){
+class PartyFinderViewModel (val userUID:String?):ViewModel(){
     private val _partyFinderScreenUiState = MutableStateFlow(PartyFinderUiState())
     val partyFinderUiState:StateFlow<PartyFinderUiState> = _partyFinderScreenUiState.asStateFlow()
 
@@ -27,6 +29,18 @@ class PartyFinderViewModel :ViewModel(){
     val liveGamerCallSearchResultList : LiveData<List<LiveGamerCallSearchResult>> get() = _liveGamerCallSearchResultList
 
     init {
+        viewModelScope.launch {
+            while (isActive) {
+                if (userUID != null) {
+                    Log.d("Debugging User ID", userUID)
+                } else {
+                    Log.d("Debugging User ID", "User ID is null")
+                }
+                delay(2000)
+            }
+        }
+
+
         Timer().scheduleAtFixedRate(0, 1000) {
             viewModelScope.launch {
                 partyFinderUiState.collect { currentState ->

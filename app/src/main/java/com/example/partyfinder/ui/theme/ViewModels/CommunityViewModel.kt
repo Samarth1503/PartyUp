@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.data.repositories.networkCommunityRepository
 import com.example.partyfinder.model.CommunitiesList
 import com.example.partyfinder.model.Community
@@ -23,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class CommunityViewModel: ViewModel() {
+class CommunityViewModel(userRepository: LocalUserRepository): ViewModel() {
     private val TAG = CommunityViewModel::class.simpleName
 
     private val _communityUIState = MutableStateFlow(CommunityUIState())

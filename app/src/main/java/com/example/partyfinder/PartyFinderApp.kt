@@ -91,13 +91,12 @@ private fun navigateBack(navController: NavController) {
 @Composable
 fun PartyFinderApp(
     localDBUserUID: String?,
-    userViewModel: UserViewModel,
     profileViewModel: ProfileViewModel,
     chatScreenViewModel: chatScreenViewModel,
-    partyFinderScreenViewModel: PartyFinderViewModel = PartyFinderViewModel(localDBUserUID),
+    partyFinderScreenViewModel: PartyFinderViewModel,
     loginViewModel: LoginViewModel,
     registrationViewModel: RegistrationViewModel,
-    gamersCallViewModel:GamerCallsViewModel = viewModel(),
+    gamersCallViewModel:GamerCallsViewModel,
     createGamerCallViewModel: CreateGamerCallsViewModel = viewModel(),
     filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel(),
     communityViewModel:CommunityViewModel = viewModel()

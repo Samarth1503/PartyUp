@@ -2,6 +2,7 @@ package com.example.partyfinder.ui.theme.ViewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.model.uiState.CreateGamerCallsUiState
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class CreateGamerCallsViewModel :ViewModel() {
+class CreateGamerCallsViewModel(userRepository: LocalUserRepository) :ViewModel() {
     private val _CreateGamerCallsUiState = MutableStateFlow(CreateGamerCallsUiState())
     val CreateGamerCallUiState:StateFlow<CreateGamerCallsUiState> = _CreateGamerCallsUiState.asStateFlow()
 

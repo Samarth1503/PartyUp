@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.partyfinder.UserViewModel
+import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.uiState.ProfileUiState
@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 
 
 @Suppress("NAME_SHADOWING")
-class ProfileViewModel(userViewModel: UserViewModel) : ViewModel() {
+class ProfileViewModel(userRepository: LocalUserRepository) : ViewModel() {
 
 //    val userUID = "dtU0UnHSqgaM5BMsdsVqyQwaHW22"
 

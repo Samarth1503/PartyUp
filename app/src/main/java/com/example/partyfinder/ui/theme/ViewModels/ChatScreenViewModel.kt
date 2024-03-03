@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.R
+import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.data.repositories.networkChatChannelRepository
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.ChatChannelList
@@ -31,7 +32,7 @@ import retrofit2.Response
 import java.time.LocalDateTime
 
 
-class chatScreenViewModel : ViewModel(){
+class chatScreenViewModel(val userRepository: LocalUserRepository) : ViewModel(){
 
 
 

@@ -110,7 +110,7 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
             Log.d("RegisterationView TestCase 1", "$localUID, $uid")
 
             withContext(Dispatchers.IO) {
-                userRepository!!.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+                userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
             }
 
             mDbRef = FirebaseDatabase.getInstance().reference

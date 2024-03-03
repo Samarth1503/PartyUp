@@ -34,10 +34,17 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val userEmail = userRepository.getUserEmail()
-            if (userEmail != "null") {
+            if (userEmail != null) {
                 _loginUIState.update { currentState ->
                     currentState.copy(
                         email = userEmail
+                    )
+                }
+            }
+            else{
+                _loginUIState.update { currentState ->
+                    currentState.copy(
+                        email = ""
                     )
                 }
             }

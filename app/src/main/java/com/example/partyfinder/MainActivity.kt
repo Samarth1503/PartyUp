@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
                             PartyFinderApp(
                                 localDBUserUID = retrievedUserUID,
                                 userViewModel = userViewModel,
-                                profileViewModel = ProfileViewModel(userViewModel),
+                                profileViewModel = ProfileViewModel(),
                                 registrationViewModel = registrationViewModel,
                                 loginViewModel = loginViewModel,
                                 chatScreenViewModel = ChatScreenViewModel

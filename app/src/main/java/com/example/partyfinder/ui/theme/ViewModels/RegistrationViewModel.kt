@@ -107,10 +107,10 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
         var procedureSuccessful = false
         try {
             localUID = uid
-            Log.d("RegisterationView TestCase 1", "$localUID, $uid")
+            Log.d("RegistrationView TestCase 1", "$localUID, $uid")
 
             withContext(Dispatchers.IO) {
-                userRepository!!.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+                userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
             }
 
             mDbRef = FirebaseDatabase.getInstance().reference

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class GamerCallsViewModel (userRepository: LocalUserRepository): ViewModel() {
+class GamerCallsViewModel (val userRepository: LocalUserRepository): ViewModel() {
     private val _GamerCallsUiState = MutableStateFlow(GamersCallUiState())
     val GamerCallsUiState:StateFlow<GamersCallUiState> =_GamerCallsUiState.asStateFlow()
 

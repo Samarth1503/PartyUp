@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class CommunityViewModel(userRepository: LocalUserRepository): ViewModel() {
+class CommunityViewModel(val userRepository: LocalUserRepository): ViewModel() {
     private val TAG = CommunityViewModel::class.simpleName
 
     private val _communityUIState = MutableStateFlow(CommunityUIState())

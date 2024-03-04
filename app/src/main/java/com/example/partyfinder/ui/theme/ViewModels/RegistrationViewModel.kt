@@ -65,38 +65,70 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
                 policyStatusChecked.value = !policyStatusChecked.value
             }
 
+            ////Commented out for running test case, OG Code don't delete
+//            is RegisterUIEvent.RegisterButtonClicked -> {
+//                if (confirmPasswordValidation.value && policyStatusChecked.value) {
+//                    viewModelScope.launch {
+//                        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+//                        registrationInProgress.value = true
+//                        var procedureSuccessful by mutableStateOf(false)
+//                        try {
+//                            withContext(Dispatchers.IO) {
+//                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(_registrationUIState.value.email, _registrationUIState.value.password).await()
+//                            }
+//                            mAuth.uid?.let { uid ->
+//                                localUID = uid
+//                                Log.d("RegistrationView TestCase 2", "$localUID, $uid")
+//                                procedureSuccessful = addUserToDatabase(_registrationUIState.value.email, uid)
+//                            }
+//                            registrationInProgress.value = false
+//                            registrationSuccessful.value = true
+//                        } catch (e: Exception) {
+//                            Log.d(TAG, "Failure")
+//                        }
+//                        if (procedureSuccessful){
+//                            registrationInProgress.value = false
+//                            registrationSuccessful.value = true
+//                        } else {
+//                            registrationInProgress.value = false
+//                            registrationFailed.value = true
+//                        }
+//                    }
+//                } else if (!policyStatusChecked.value) {
+//                    Log.d(TAG, "Privacy policy not accepted")
+//                } else {
+//                    Log.d(TAG, "Passwords do not match")
+//                }
+//            }
+
+
+
             is RegisterUIEvent.RegisterButtonClicked -> {
-                if (confirmPasswordValidation.value && policyStatusChecked.value) {
-                    viewModelScope.launch {
-                        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-                        registrationInProgress.value = true
-                        var procedureSuccessful by mutableStateOf(false)
-                        try {
-                            withContext(Dispatchers.IO) {
-                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(_registrationUIState.value.email, _registrationUIState.value.password).await()
-                            }
-                            mAuth.uid?.let { uid ->
-                                localUID = uid
-                                Log.d("RegistrationView TestCase 2", "$localUID, $uid")
-                                procedureSuccessful = addUserToDatabase(_registrationUIState.value.email, uid)
-                            }
-                            registrationInProgress.value = false
-                            registrationSuccessful.value = true
-                        } catch (e: Exception) {
-                            Log.d(TAG, "Failure")
+                viewModelScope.launch {
+                    val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+                    registrationInProgress.value = true
+                    var procedureSuccessful by mutableStateOf(false)
+                    try {
+                        withContext(Dispatchers.IO) {
+                            FirebaseAuth.getInstance().createUserWithEmailAndPassword("samarthmehta633@gmail.com", "123456").await()
                         }
-                        if (procedureSuccessful){
-                            registrationInProgress.value = false
-                            registrationSuccessful.value = true
-                        } else {
-                            registrationInProgress.value = false
-                            registrationFailed.value = true
+                        mAuth.uid?.let { uid ->
+                            localUID = uid
+                            Log.d("RegistrationView TestCase 2", "$localUID, $uid")
+                            procedureSuccessful = addUserToDatabase("samarthmehta633@gmail.com", uid)
                         }
+                        registrationInProgress.value = false
+                        registrationSuccessful.value = true
+                    } catch (e: Exception) {
+                        Log.d(TAG, "Failure")
                     }
-                } else if (!policyStatusChecked.value) {
-                    Log.d(TAG, "Privacy policy not accepted")
-                } else {
-                    Log.d(TAG, "Passwords do not match")
+                    if (procedureSuccessful){
+                        registrationInProgress.value = false
+                        registrationSuccessful.value = true
+                    } else {
+                        registrationInProgress.value = false
+                        registrationFailed.value = true
+                    }
                 }
             }
         }

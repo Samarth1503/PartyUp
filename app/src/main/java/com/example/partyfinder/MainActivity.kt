@@ -19,6 +19,9 @@ import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.datasource.AppDatabase
 import com.example.partyfinder.ui.theme.LoadingIndicator
 import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.ui.theme.ViewModels.CommunityViewModel
+import com.example.partyfinder.ui.theme.ViewModels.CreateGamerCallsViewModel
+import com.example.partyfinder.ui.theme.ViewModels.FilteredGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.GamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.LoginViewModel
 import com.example.partyfinder.ui.theme.ViewModels.PartyFinderViewModel
@@ -76,6 +79,9 @@ class MainActivity : ComponentActivity() {
                             val partyFinderViewModel = PartyFinderViewModel(nonNullUserRepository)
                             val gamersCallViewModel = GamerCallsViewModel(nonNullUserRepository)
                             val profileViewModel = ProfileViewModel(nonNullUserRepository)
+                            val createGamerCallsViewModel = CreateGamerCallsViewModel(nonNullUserRepository)
+                            val filterGamerCallsViewModel = FilteredGamerCallsViewModel(nonNullUserRepository)
+                            val communityViewModel = CommunityViewModel(nonNullUserRepository)
 
                             Log.d("MainActivity LocalUserData TestCase 2", retrievedUserUID.toString())
 
@@ -86,7 +92,11 @@ class MainActivity : ComponentActivity() {
                                 loginViewModel = loginViewModel,
                                 chatScreenViewModel = chatScreenViewModel,
                                 partyFinderScreenViewModel = partyFinderViewModel,
-                                gamersCallViewModel = gamersCallViewModel
+                                gamersCallViewModel = gamersCallViewModel,
+                                createGamerCallViewModel = createGamerCallsViewModel,
+                                filterGamerCallsViewModel = filterGamerCallsViewModel,
+                                communityViewModel = communityViewModel,
+                                userRepository = nonNullUserRepository
                             )
                             Log.d("MainActivity Debug", "After running PartyFinderApp")
                         }

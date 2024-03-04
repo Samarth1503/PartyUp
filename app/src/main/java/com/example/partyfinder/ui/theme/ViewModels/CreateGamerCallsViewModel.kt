@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class CreateGamerCallsViewModel(userRepository: LocalUserRepository) :ViewModel() {
+class CreateGamerCallsViewModel(val userRepository: LocalUserRepository) :ViewModel() {
     private val _CreateGamerCallsUiState = MutableStateFlow(CreateGamerCallsUiState())
     val CreateGamerCallUiState:StateFlow<CreateGamerCallsUiState> = _CreateGamerCallsUiState.asStateFlow()
 

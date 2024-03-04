@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,8 +50,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
+import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.ui.theme.LoadingIndicator
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 //@Preview(showBackground = true)
 //@Composable
@@ -65,24 +69,33 @@ import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
 
 @Composable
 fun EditProfileScreen(
-    modifier: Modifier=Modifier.fillMaxSize(),
+    modifier: Modifier = Modifier.fillMaxSize(),
     viewModel: ProfileViewModel,
     navigateBack: () -> Unit,
     navigateToHomeScreen: () -> Unit,
-    userUID: String
+    userUID: String,
+    userRepository: LocalUserRepository
     ){
     val uiState by viewModel.profileState.collectAsState()
-    var isLoading by remember { mutableStateOf(true) }
 
-    try {
-        viewModel.fetchUID(userUID)
-        Log.d("EditProfile TestCase","UID: $userUID")
-        viewModel.fetchData()
-        isLoading = false
-    } catch (_: Exception){}
+    var dataRetrievalInProcess by remember { mutableStateOf(true) }
+    val localUserUID = remember { mutableStateOf("") }
 
-    if (!isLoading) {
-        Column(modifier = modifier
+    LaunchedEffect(key1 = userRepository) {
+        launch(Dispatchers.IO){
+            localUserUID.value = userRepository.getUserUID()
+            Log.d("EditProfile TestCase 2", localUserUID.value)
+            viewModel.fetchUID(localUserUID.value)
+            viewModel.fetchData()
+            dataRetrievalInProcess = false
+        }
+        Log.d("EditProfile TestCase 3", localUserUID.value)
+    }
+
+    if (dataRetrievalInProcess){
+        LoadingIndicator()
+    } else {
+        Column ( modifier = modifier
             .background(color = colorResource(id = R.color.black))
             .verticalScroll(
                 rememberScrollState()
@@ -222,9 +235,6 @@ fun EditProfileScreen(
             }
 //        SnackbarHost(hostState = scaffoldState)
         }
-    }
-    else{
-        LoadingIndicator()
     }
 }
 

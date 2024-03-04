@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 
-class PostViewModel(userRepository: LocalUserRepository): ViewModel(){
+class PostViewModel(val userRepository: LocalUserRepository): ViewModel(){
     private val TAG = PostViewModel::class.simpleName
 
     private val _postUIState = MutableStateFlow(PostUIState())

@@ -97,9 +97,9 @@ fun PartyFinderApp(
     loginViewModel: LoginViewModel,
     registrationViewModel: RegistrationViewModel,
     gamersCallViewModel:GamerCallsViewModel,
-    createGamerCallViewModel: CreateGamerCallsViewModel = viewModel(),
-    filterGamerCallsViewModel:FilteredGamerCallsViewModel = viewModel(),
-    communityViewModel:CommunityViewModel = viewModel()
+    createGamerCallViewModel: CreateGamerCallsViewModel,
+    filterGamerCallsViewModel:FilteredGamerCallsViewModel,
+    communityViewModel:CommunityViewModel
 ){
     val profileUiState by profileViewModel.profileState.collectAsState()
     val chatScreenUiState by chatScreenViewModel.chatsScreenUiState.collectAsState()

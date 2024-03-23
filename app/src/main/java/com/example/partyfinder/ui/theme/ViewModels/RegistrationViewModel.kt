@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class RegistrationViewModel(private val userRepository: LocalUserRepository) : ViewModel() {
+class RegistrationViewModel(private val userRepository: LocalUserRepository,val userUIDSharedViewModel : UserUIDSharedViewModel) : ViewModel() {
 
     private val _registrationUIState = MutableStateFlow(RegistrationUIState())
     val registrationUIState: StateFlow<RegistrationUIState> = _registrationUIState.asStateFlow()
@@ -88,6 +88,7 @@ class RegistrationViewModel(private val userRepository: LocalUserRepository) : V
                         if (procedureSuccessful){
                             registrationInProgress.value = false
                             registrationSuccessful.value = true
+                            userUIDSharedViewModel.updateCurrentUserUID(localUID)
                         } else {
                             registrationInProgress.value = false
                             registrationFailed.value = true

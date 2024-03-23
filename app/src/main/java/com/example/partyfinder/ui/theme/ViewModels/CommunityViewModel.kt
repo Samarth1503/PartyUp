@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class CommunityViewModel(userRepository: LocalUserRepository): ViewModel() {
+class CommunityViewModel(val userRepository: LocalUserRepository): ViewModel() {
     private val TAG = CommunityViewModel::class.simpleName
 
     private val _communityUIState = MutableStateFlow(CommunityUIState())
@@ -46,7 +46,7 @@ class CommunityViewModel(userRepository: LocalUserRepository): ViewModel() {
                         )
                     }
                 }
-                Log.d("CommunityData",communityUiState.value.communityObject.toString())
+//                Log.d("CommunityData",communityUiState.value.communityObject.toString())
 
             }
         }
@@ -78,7 +78,7 @@ class CommunityViewModel(userRepository: LocalUserRepository): ViewModel() {
         if (response.isSuccessful){
             _communityList.value = response.body()
             Log.d("Fetching Community data","Fetched Community Data Successfully")
-            Log.d("Fetching Community data", communityList.value.toString())
+//            Log.d("Fetching Community data", communityList.value.toString())
         }
         else
         {

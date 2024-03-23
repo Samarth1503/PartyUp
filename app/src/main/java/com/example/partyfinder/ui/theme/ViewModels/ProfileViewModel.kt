@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 
 
 @Suppress("NAME_SHADOWING")
-class ProfileViewModel(userRepository: LocalUserRepository) : ViewModel() {
+class ProfileViewModel( val userRepository: LocalUserRepository) : ViewModel() {
 
 //    val userUID = "dtU0UnHSqgaM5BMsdsVqyQwaHW22"
 
@@ -51,7 +51,7 @@ class ProfileViewModel(userRepository: LocalUserRepository) : ViewModel() {
         viewModelScope.launch {
             while(isActive){
                     backGroundGetGamerCall()
-                    delay(10000000000000)
+                    delay(1000)
             }
         }
     }

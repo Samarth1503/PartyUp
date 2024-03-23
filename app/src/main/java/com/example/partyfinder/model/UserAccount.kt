@@ -19,8 +19,9 @@ class UserAccount(
     var rank3GameRank:String = "",
     var status: Pair<Int, Int> = Pair(NULL, NULL),
     var liveGamerCallID: String = "",
-//    var chatChannelList:List<String> ,
-//    var userGamerCallsList:List<String>
+    var chatChannelList:List<String> = listOf("defaultObject"),
+    var userGamerCallsList:List<String> = listOf("defaultObject"),
+    var friendList:List<String> = listOf("defaultObject")
 ) {
     init {
         if (uid.isNotEmpty()) {

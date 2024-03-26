@@ -12,10 +12,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
+import com.example.partyfinder.model.Status
 import com.example.partyfinder.model.uiState.ProfileUiState
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 
 @Suppress("NAME_SHADOWING")
@@ -42,8 +45,9 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     val snackbarMessage: LiveData<String> get() = _snackbarMessage
 
 
+    val dataLoadingProcess = mutableStateOf(true)
 
-    var selectedStatus by mutableStateOf(Pair(0,0))
+    var selectedStatus by mutableStateOf(Status())
 
     private var _gamerCallList = MutableLiveData<GamerCallsList>()
     val gamerCallList: LiveData<GamerCallsList> get() = _gamerCallList
@@ -76,22 +80,40 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     }
 
 
-    fun uploadTheProfileImage(ProfilePicUri : Uri){
+    fun uploadImage(picUri : Uri, type : String){
+        Log.d("UploadImage", "Starting image upload process for $type picture")
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("UserProfileImages/")
-        val uploadTask = storageRef.putFile(ProfilePicUri)
+        Log.d("UploadImage", "FirebaseStorage instance obtained")
+
+        val storageRef = storage.reference.child("UserProfileImages/").child(_currentUserUID.value!!).child(type)
+        Log.d("UploadImage", "Storage reference created")
+
+        val uploadTask = storageRef.putFile(picUri)
+        Log.d("UploadImage", "Upload task created")
+
         uploadTask.addOnSuccessListener {
+            Log.d("UploadImage", "Upload task succeeded")
             storageRef.downloadUrl.addOnSuccessListener { uri ->
                 val downloadUrl = uri.toString()
-                _profileUiState.update { currentState -> currentState.copy(
-                    profileImageLink = downloadUrl
-                ) }
+                Log.d("UploadImage", "Download URL obtained: $downloadUrl")
+
+                if(type == "profile"){
+                    _profileUiState.update { currentState -> currentState.copy(
+                        profileImageLink = downloadUrl
+                    ) }
+                } else {
+                    _profileUiState.update { currentState -> currentState.copy(
+                        coverImageLink = downloadUrl
+                    ) }
+                }
+                Log.d("UploadImage", "Profile UI state updated")
             }
         }.addOnFailureListener {
+            Log.d("UploadImage", "Upload task failed", it)
             // Handle unsuccessful uploads
         }
-
     }
+
     suspend fun backGroundGetGamerCall() {
         _gamerCallList.value = networkGamerCallsRepository.getGamerCalls().value
         val response = _gamerCallList.value
@@ -151,9 +173,10 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
         if (currentUserUID.value != "") {
             val db = FirebaseDatabase.getInstance().getReference("users")
 
-            db.child("data").child(currentUserUID.value!! ).child("gameID").setValue(_profileUiState.value.gamerID)
+            db.child("data").child(currentUserUID.value!! ).child("gamerID").setValue(_profileUiState.value.gamerID)
             db.child("data").child(currentUserUID.value!! ).child("bio").setValue(_profileUiState.value.bio)
             db.child("data").child(currentUserUID.value!! ).child("profilePic").setValue(_profileUiState.value.profileImageLink)
+            db.child("data").child(currentUserUID.value!! ).child("bannerPic").setValue(_profileUiState.value.coverImageLink)
             db.child("data").child(currentUserUID.value!! ).child("rank1GameName").setValue(_profileUiState.value.rank1GameName)
             db.child("data").child(currentUserUID.value!! ).child("rank1GameRank").setValue(_profileUiState.value.rank1GameRank)
             db.child("data").child(currentUserUID.value!! ).child("rank2GameName").setValue(_profileUiState.value.rank2GameName)
@@ -172,13 +195,13 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     }
 
 
-    fun updateStatus(changedStatus: Pair<Int, Int>) {
+    fun updateStatus(changedStatus: Status) {
         _profileUiState.update { currentState -> currentState.copy(
             status = changedStatus
         )}
     }
 
-    fun onChangeStatusClicked(isExpanded: Boolean, selectedStatus: Pair<Int, Int>) {
+    fun onChangeStatusClicked(isExpanded: Boolean, selectedStatus: Status) {
         if (isExpanded) {
             _profileUiState.update { currentState -> currentState.copy(
                 status = selectedStatus,
@@ -193,23 +216,57 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
 
 
 
-    fun fetchData() {
+    suspend fun fetchData() = withContext(Dispatchers.IO) {
         Log.d("ProfileViewModel TestCase","FetchData() called")
+
         val db = FirebaseDatabase.getInstance().getReference("users")
-        db.child("data").child(currentUserUID.value!! ).get().addOnSuccessListener { dataSnapshot ->
-            val profileData = dataSnapshot.getValue(ProfileUiState::class.java)
-            if (profileData != null) {
-                Log.d("ProfileVM FetchDataTrial TestCase", profileData.toString())
-                runBlocking {
-                    updatingFetchedData()
+        if (currentUserUID.value == null) {
+            Log.e("ProfileVM FetchDataTrial TestCase", "currentUserUID is null")
+            dataLoadingProcess.value = false
+            return@withContext
+        }
+
+        val dataFetchTask = db.child("data").child(currentUserUID.value!!).get()
+
+        try {
+            val dataSnapshot = Tasks.await(dataFetchTask)
+            val firebaseProfileData = dataSnapshot.getValue(ProfileUiState::class.java)
+            if (firebaseProfileData != null) {
+                Log.d("ProfileVM FetchDataTrial TestCase", firebaseProfileData.toString())
+                // Convert FirebaseProfileUiState to ProfileUiState
+                withContext(Dispatchers.Main) {
+                    _profileUiState.update { currentState -> currentState.copy(
+                        gamerID = firebaseProfileData.gamerID,
+                        gamerTag = firebaseProfileData.gamerTag,
+
+                        status = firebaseProfileData.status,
+
+                        bio = firebaseProfileData.bio,
+                        profileImageLink = firebaseProfileData.profileImageLink,
+                        UserGamerCalls = firebaseProfileData.UserGamerCalls
+                    )}
                 }
+                Log.d("ProfileVM FetchDataTrial TestCase", "Returning true")
+                dataLoadingProcess.value = false
+                true
             } else {
                 Log.e("FetchDataTrial TestCase","No data available")
+                Log.d("ProfileVM FetchDataTrial TestCase", "Returning false")
+                dataLoadingProcess.value = false
+                false
             }
-        }.addOnFailureListener {
-            Log.e("FetchDataTrial TestCase","Error fetching data")
+        } catch (e: Exception) {
+            Log.e("FetchDataTrial TestCase","Error fetching data", e)
+            Log.d("ProfileVM FetchDataTrial TestCase", "Returning false")
+            dataLoadingProcess.value = false
+            false
         }
     }
+
+
+
+
+
 
 
 

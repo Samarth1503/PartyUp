@@ -5,6 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GamerCallsList(
-
     @SerializedName("data") val gamerCalls: Map<String,GamerCalls>
 )

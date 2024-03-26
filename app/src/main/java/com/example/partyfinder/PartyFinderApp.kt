@@ -126,8 +126,8 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-//        startDestination = PartyFinderScreen.LoginScreen.name
+//        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
+        startDestination = PartyFinderScreen.ProfileScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -356,21 +356,20 @@ fun PartyFinderApp(
 
         composable(route= PartyFinderScreen.ProfileScreen.name){
             ProfileScreen(
-                profileBannerWidget = { ProfileBannerWidget(onEditProfileClick = { navController.navigate(
-                    PartyFinderScreen.EditProfileScreen.name) }) },
+                profileBannerWidget = { ProfileBannerWidget(onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name) }) },
                 profileScreenContent = {
                     ProfileScreenContent(
                         profileDataWidget = { ProfileDataWidget(
                             gamerID = profileUiState.gamerID,
                             gamerTag = profileUiState.gamerTag,
-                            userStatus =profileUiState.status,
+                            userStatus = profileUiState.status,
                             isChangeStatusExapanded = profileUiState.isChangeStatusExpanded,
                             onChangeStatusClick = {profileViewModel.onChangeStatusClicked(profileUiState.isChangeStatusExpanded,profileViewModel.selectedStatus)},
                             profileUpdateStatus = {
                                 ProfileUpdateStatus(
                                     selectedStatusOption = profileViewModel.selectedStatus,
                                     onSelectionChanged = { profileViewModel.updateStatus(it)},
-                                    options =datasource.userStatusOption
+                                    options = datasource.userStatusOption
                                 )
                             }
 
@@ -379,7 +378,7 @@ fun PartyFinderApp(
                         profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = profileUiState.bio) },
                         profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { navController.navigate(
                             PartyFinderScreen.UpdateRanksScreen.name)}) },
-                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls =profileUiState.UserGamerCalls) })
+                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = profileUiState.UserGamerCalls) })
                 }
             )
 

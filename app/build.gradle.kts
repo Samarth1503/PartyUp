@@ -54,10 +54,8 @@ android {
 
 
 dependencies {
-    // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 
-    // Add the dependency for the Firebase Authentication library, When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-auth")
 
     implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
@@ -72,10 +70,7 @@ dependencies {
     implementation("androidx.compose.material:material:1.6.2")
     implementation("androidx.compose.material:material-icons-extended-android:1.6.1")
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
@@ -89,9 +84,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 

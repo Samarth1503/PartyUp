@@ -34,60 +34,61 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.partyfinder.R
-import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.GamerCallsList
+import com.example.partyfinder.model.Status
 import com.example.partyfinder.ui.theme.GamersCallScreens.G_Calls
-import com.example.partyfinder.ui.theme.PartyFinderTheme
 
-//creating other screens
+//@Preview
+//@Composable
+//fun PreviewProfileScreen(){
+//    PartyFinderTheme{
+//        ProfileScreen(
+//            viewModel = ProfileViewModel(retrievedUserUID = "", userUIDSharedViewModel = Unit),
+//            profileBannerWidget = { ProfileBannerWidget(onEditProfileClick = {}) },
+//            profileScreenContent = { ProfileScreenContent(
+//                profileDataWidget = { ProfileDataWidget(
+//                    gamerID ="Kaizoku",
+//                    gamerTag ="#2342" ,
+//                    isChangeStatusExapanded = false,
+//                    onChangeStatusClick ={},
+//                    profileUpdateStatus = {
+//                        ProfileUpdateStatus(
+//                            selectedStatusOption = datasource.userStatusOption.get(0),
+//                            onSelectionChanged = { /*TODO*/ },
+//                            options = datasource.userStatusOption
+//                        )
+//                    },
+//                    userStatus =datasource.userStatusOption.get(0) )
+//                },
+//                profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = "") },
+//                profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { /*TODO*/ }) },
+//                profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = datasource.gamerCallsList) }) }
+//        )
+//
+//    }
+//}
 
 
 @Composable
 fun ProfileScreen(
-    profileBannerWidget:@Composable () -> Unit,
-    profileScreenContent:@Composable () ->Unit,
-    modifier:Modifier=Modifier
-    ){
-    Surface(color= colorResource(id = R.color.black), modifier = modifier){
-        Column(modifier = Modifier.verticalScroll(rememberScrollState(),true)) {
+    profileBannerWidget: @Composable () -> Unit,
+    profileScreenContent: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(color = colorResource(id = R.color.black), modifier = modifier) {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState(), true)) {
             profileBannerWidget()
             profileScreenContent()
         }
     }
 }
 
-@Preview
-@Composable
-fun PreviewProfileScreen(){
-    PartyFinderTheme{
-        ProfileScreen(
-            profileBannerWidget = { ProfileBannerWidget(onEditProfileClick = {}) },
-            profileScreenContent = { ProfileScreenContent(
-                profileDataWidget = { ProfileDataWidget(
-                    gamerID ="Kaizoku",
-                    gamerTag ="#2342" ,
-                    isChangeStatusExapanded = false,
-                    onChangeStatusClick ={},
-                    profileUpdateStatus = {
-                        ProfileUpdateStatus(
-                            selectedStatusOption = datasource.userStatusOption.get(0),
-                            onSelectionChanged = { /*TODO*/ },
-                            options = datasource.userStatusOption
-                        )
-                    },
-                    userStatus =datasource.userStatusOption.get(0) )
-                },
-                profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = "") },
-                profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { /*TODO*/ }) },
-                profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = datasource.gamerCallsList) }) }
-            )
 
-    }
-}
+
+
 
 @Composable
 fun ProfileBannerWidget(
@@ -157,8 +158,14 @@ fun ProfileDataWidget(
     gamerTag:String,
     isChangeStatusExapanded:Boolean,
     onChangeStatusClick:()->Unit,
-    userStatus:Pair<Int,Int>,
+    userStatus: Status,
     ){
+
+    if (userStatus.first == 0){
+        userStatus.first = R.string.ONLINE
+        userStatus.second = R.drawable.user_online_logo
+    }
+
 
     Card(
         modifier=modifier.fillMaxWidth(),
@@ -166,15 +173,16 @@ fun ProfileDataWidget(
     ) {
         Column(modifier= Modifier.padding(16.dp)) {
             Text(
-//                text = gamerID,
-                text = "Kaizoku",
+                text = if (gamerID == "" || gamerID == null){ "GamerID" } else { gamerID },
                 color = colorResource(id = R.color.primary),
                 style=MaterialTheme.typography.headlineSmall
             )
             Text(text = gamerTag, color = colorResource(id = R.color.primary))
 
             Row (verticalAlignment = Alignment.CenterVertically){
+
                Image(painter = painterResource(userStatus.second) , contentDescription = null)
+
                 Text(
                     text = stringResource(id = userStatus.first),
                     color = colorResource(id = R.color.white),
@@ -203,11 +211,8 @@ fun ProfileDataWidget(
                 }
             }
             if(isChangeStatusExapanded){
-
                 profileUpdateStatus()
             }
-
-
         }
     }
 }
@@ -218,7 +223,7 @@ fun ProfileScreenBioWidget(
     gamerBio:String,
 ){
     Card(
-        modifier=modifier
+        modifier= modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 100.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))) {
@@ -226,7 +231,8 @@ fun ProfileScreenBioWidget(
             Text(text = "Bio", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
             Text(color = colorResource(id = R.color.white),
                 style = MaterialTheme.typography.bodyLarge,
-                text = if(gamerBio=="")"    // Edit Profile to enter your Bio" else gamerBio)
+                text = if(gamerBio=="")"Edit Profile to enter your Bio" else gamerBio
+            )
         }
     }
 }
@@ -236,10 +242,8 @@ fun ProfileRanksWidget(onUpdateRanksClick: () -> Unit,
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp)){
-    Card(modifier=modifier.wrapContentHeight(), colors = CardDefaults.cardColors(containerColor = colorResource(
-        id = R.color.neutral_10
-    )
-    )) {
+    Card(modifier=modifier.wrapContentHeight(), colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
+    ) {
         Column(modifier= Modifier.padding(16.dp)) {
             Row(modifier= Modifier, verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -283,7 +287,6 @@ fun ProfileRankDisplay(modifier: Modifier = Modifier
             Text(text = "Gold", color = colorResource(id = R.color.white), style = MaterialTheme.typography.bodyMedium)
         }
     }
-
 }
 
 
@@ -346,16 +349,26 @@ fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userG
 
 @Composable
 fun ProfileUpdateStatus(
-    selectedStatusOption:Pair<Int,Int>,
-    onSelectionChanged:(Pair<Int,Int>)->Unit,
-    modifier:Modifier=Modifier,
-    options:List<Pair<Int,Int>>
-){
-    Column(modifier=Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
-        options.forEach{ item ->
-            Row(modifier=Modifier.selectable(selected = selectedStatusOption.first == item.first , onClick ={onSelectionChanged(item)}), verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(colors = RadioButtonDefaults.colors(selectedColor = colorResource(id = R.color.primary)),selected = selectedStatusOption.first == item.first , onClick ={onSelectionChanged(item)})
-                    Text(text = stringResource(id = item.first), color = colorResource(id = R.color.primary))
+    selectedStatusOption: Status,
+    onSelectionChanged: (Status) -> Unit,
+    modifier: Modifier = Modifier,
+    options: List<Status>
+) {
+    Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding))) {
+        options.forEach { item ->
+            Row(
+                modifier = Modifier.selectable(
+                    selected = (item.first == selectedStatusOption.first),
+                    onClick = { onSelectionChanged(item) }
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    colors = RadioButtonDefaults.colors(selectedColor = colorResource(id = R.color.primary)),
+                    selected = (item.first == selectedStatusOption.first),
+                    onClick = { onSelectionChanged(item) }
+                )
+                Text(text = stringResource(id = item.first), color = colorResource(id = R.color.primary))
             }
         }
     }

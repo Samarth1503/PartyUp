@@ -86,17 +86,21 @@ fun EditProfileScreen(
 
     val coverPhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
-    ) {
-        coverPicImageUri = it
+    ) { uri ->
+        coverPicImageUri = uri
+        if (uri != null) {
+            viewModel.uploadImage(uri, type = "cover")
+        }
     }
+
     val profilePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
-    ) {
-        profilePicImageUri = it
+    ) { uri ->
+        profilePicImageUri = uri
+        if (uri != null) {
+            viewModel.uploadImage(uri, type = "profile")
+        }
     }
-
-
-
 
         Column(modifier = modifier
             .background(color = colorResource(id = R.color.black))

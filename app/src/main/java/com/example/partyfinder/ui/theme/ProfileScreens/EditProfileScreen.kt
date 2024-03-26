@@ -1,6 +1,9 @@
 package com.example.partyfinder.ui.theme.ProfileScreens
 
-import android.util.Log
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,7 +35,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,11 +52,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
-import com.example.partyfinder.data.repositories.LocalUserRepository
-import com.example.partyfinder.ui.theme.LoadingIndicator
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 //@Preview(showBackground = true)
 //@Composable
@@ -69,33 +67,38 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun EditProfileScreen(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier=Modifier.fillMaxSize(),
     viewModel: ProfileViewModel,
+    profilePic:String,
     navigateBack: () -> Unit,
     navigateToHomeScreen: () -> Unit,
-    userUID: String,
-    userRepository: LocalUserRepository
+    userUID: String
     ){
     val uiState by viewModel.profileState.collectAsState()
 
-    var dataRetrievalInProcess by remember { mutableStateOf(true) }
-    val localUserUID = remember { mutableStateOf("") }
-
-    LaunchedEffect(key1 = userRepository) {
-        launch(Dispatchers.IO){
-            localUserUID.value = userRepository.getUserUID()
-            Log.d("EditProfile TestCase 2", localUserUID.value)
-            viewModel.fetchUID(localUserUID.value)
-            viewModel.fetchData()
-            dataRetrievalInProcess = false
-        }
-        Log.d("EditProfile TestCase 3", localUserUID.value)
+    var coverPicImageUri by remember {
+    mutableStateOf<Uri?>(null)
     }
 
-    if (dataRetrievalInProcess){
-        LoadingIndicator()
-    } else {
-        Column ( modifier = modifier
+    var profilePicImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val coverPhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) {
+        coverPicImageUri = it
+    }
+    val profilePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) {
+        profilePicImageUri = it
+    }
+
+
+
+
+        Column(modifier = modifier
             .background(color = colorResource(id = R.color.black))
             .verticalScroll(
                 rememberScrollState()
@@ -123,8 +126,11 @@ fun EditProfileScreen(
                 {
                     Image(
                         painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
-                        contentDescription =null,
-                        modifier=Modifier.padding(bottom = 4.dp, start = 1.dp))
+                        contentDescription ="edit profile",
+                        modifier = Modifier.clickable {
+                            coverPhotoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        }
+                        )
                 }
                 Box(modifier=Modifier.align(Alignment.BottomStart)
                 ) {
@@ -152,7 +158,9 @@ fun EditProfileScreen(
                             contentDescription =null,
                             modifier= Modifier
                                 .padding(bottom = 4.dp, start = 1.dp)
-                                .clickable {},
+                                .clickable {
+                                    profilePhotoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                                },
                         )
                     }
                 }
@@ -235,7 +243,7 @@ fun EditProfileScreen(
             }
 //        SnackbarHost(hostState = scaffoldState)
         }
-    }
+
 }
 
 @Composable

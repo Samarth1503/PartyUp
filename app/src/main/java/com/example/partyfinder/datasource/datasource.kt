@@ -5,7 +5,6 @@ import com.example.partyfinder.R
 import com.example.partyfinder.model.ChatChannelList
 import com.example.partyfinder.model.CommunitiesList
 import com.example.partyfinder.model.GamerCallsList
-import com.example.partyfinder.model.UserAccount
 import com.google.gson.Gson
 
 object datasource {
@@ -23,15 +22,15 @@ object datasource {
 
 
 
-
-    val UserAccounts:List<UserAccount> = listOf(
-        UserAccount(gamerID = "Unknown", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
-        UserAccount(gamerID ="Sam", gamerTag = "5", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
-        UserAccount(gamerID = "Ichigo", gamerTag = "6", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
-        UserAccount(gamerID = "Kurama", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
-        UserAccount(gamerID = "GRoman", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
-        UserAccount(gamerID = "Kaizoku", gamerTag = "3", bio = "My Bio", profilePic = R.drawable.luffy, status = userStatusOption[0]),
-    )
+//
+//    val UserAccounts:List<UserAccount> = listOf(
+//        UserAccount(gamerID = "Unknown", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
+//        UserAccount(gamerID ="Sam", gamerTag = "5", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
+//        UserAccount(gamerID = "Ichigo", gamerTag = "6", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
+//        UserAccount(gamerID = "Kurama", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
+//        UserAccount(gamerID = "GRoman", bio = "My Bio", profilePic = R.drawable.pp, status = userStatusOption[0]),
+//        UserAccount(gamerID = "Kaizoku", gamerTag = "3", bio = "My Bio", profilePic = R.drawable.luffy, status = userStatusOption[0]),
+//    )
 
 
 

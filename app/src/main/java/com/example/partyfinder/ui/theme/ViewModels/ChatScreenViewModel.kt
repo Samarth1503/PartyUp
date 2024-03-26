@@ -10,11 +10,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.R
-import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.data.repositories.networkChatChannelRepository
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.ChatChannelList
 import com.example.partyfinder.model.ChatItem
+import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.model.local.SortType
 import com.example.partyfinder.model.uiState.ChatScreenUiState
 import com.google.firebase.database.DataSnapshot
@@ -30,11 +30,13 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.time.LocalDateTime
+import java.util.concurrent.CountDownLatch
 
 
-class chatScreenViewModel(val userRepository: LocalUserRepository) : ViewModel(){
+class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, val retrievedUserUID:String?) : ViewModel(){
 
-
+    val _currentUserUID = MutableLiveData<String>()
+    val currentUserUID :LiveData<String> get() = _currentUserUID
 
     private val _chatsScreenUiState = MutableStateFlow(ChatScreenUiState())
     val chatsScreenUiState:StateFlow<ChatScreenUiState> =_chatsScreenUiState.asStateFlow()
@@ -49,7 +51,22 @@ class chatScreenViewModel(val userRepository: LocalUserRepository) : ViewModel()
 
     val dbref = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app").reference
     init {
+
+
        viewModelScope.launch {
+           if (retrievedUserUID == null){
+               viewModelScope.launch {
+                   while (isActive){
+                       _currentUserUID.value = userUIDSharedViewModel.currentUserUID.value
+                       delay(1000)
+                   }
+               }
+           }
+           else{
+               _currentUserUID.value = retrievedUserUID!!
+           }
+
+
            while (isActive){
                currentChannelObject.observeForever { response ->
                    _chatsScreenUiState.update { currentState -> currentState.copy(
@@ -70,7 +87,7 @@ class chatScreenViewModel(val userRepository: LocalUserRepository) : ViewModel()
                else{
                    Log.d(TAG,"Error fetching data")
                }
-               delay(100000000000000000)
+               delay(1000)
            }
 
        }
@@ -109,7 +126,7 @@ class chatScreenViewModel(val userRepository: LocalUserRepository) : ViewModel()
                     ChatItem("kaizoku",content="Hello",timeStamp = LocalDateTime.now().toString()),
                     ChatItem("Sam",content="Sup",timeStamp = LocalDateTime.now().toString())),
 
-                memberTags = listOf("Sam","Kurama","Ichigo")
+                memberTags = listOf(currentUserUID.value.toString(),"xEw4m8meVfWSbfAALUIP8T7zOfz2")
 
             )
 
@@ -180,11 +197,40 @@ class chatScreenViewModel(val userRepository: LocalUserRepository) : ViewModel()
 //    }
 
 
-    suspend fun retrieveChatChannelList():Response<ChatChannelList>{
+    suspend fun retrieveChatChannelList(): Response<ChatChannelList> {
         val response = networkChatChannelRepository.getAllChatChannels()
         _chatChannelList.value = response.body()
         return response
     }
+
+
+    fun retrieveUserAccount(UserUid: String): UserAccount {
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("/users/data/")
+        var userAccount = UserAccount()
+
+        val latch = CountDownLatch(1)
+
+        myRef.child(UserUid).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val value = dataSnapshot.getValue(UserAccount::class.java)
+                if (value != null) {
+                    userAccount = value
+                }
+                latch.countDown()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("Fetching User Account", "Request Cancelled")
+                latch.countDown()
+            }
+        })
+
+        latch.await()
+
+        return userAccount
+    }
+
 
 
     fun onMessageValueChanged(changedMsg:String){

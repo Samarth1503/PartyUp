@@ -40,7 +40,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -48,7 +47,6 @@ import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.UserAccount
-import com.example.partyfinder.ui.theme.PartyFinderTheme
 
 
 @Composable
@@ -415,25 +413,25 @@ fun DmChatInput(
 //}
 
 
-@Preview
-@Composable
-fun PreviewDmScreen(){
-    PartyFinderTheme {
-        DmScreen(
-
-            currentChatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
-            UserTag = "Kaizoku",
-            dmTopBar = { DmTopBar(
-                navigateBack = {},
-                onMenuItemClicked = {},
-                isMenuClicked = true,
-            currentChatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
-            onMenuClicked = { /*TODO*/ },
-            retreivedGamerAccount = datasource.UserAccounts.get(0),
-        )
-            },
-            dmChatInput = {DmChatInput(onSendButtonClick = {}, message = "", onMessageChange = {})})
-    }
-}
+//@Preview
+//@Composable
+//fun PreviewDmScreen(){
+//    PartyFinderTheme {
+//        DmScreen(
+//
+//            currentChatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
+//            UserTag = "Kaizoku",
+//            dmTopBar = { DmTopBar(
+//                navigateBack = {},
+//                onMenuItemClicked = {},
+//                isMenuClicked = true,
+//            currentChatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
+//            onMenuClicked = { /*TODO*/ },
+//            retreivedGamerAccount = datasource.UserAccounts.get(0),
+//        )
+//            },
+//            dmChatInput = {DmChatInput(onSendButtonClick = {}, message = "", onMessageChange = {})})
+//    }
+//}
 
 

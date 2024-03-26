@@ -9,7 +9,7 @@ class UserAccount(
     var gamerID: String = "",
     var gamerTag: String = "",
     var bio: String = "",
-    var profilePic: Int=0,
+    var profilePic: String= "",
     var profileBanner: String = "",
     var rank1GameName :String = "",
     var rank1GameRank:String = "",

@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.colorResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,7 +18,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.uiEvent.LoginUIEvent
 import com.example.partyfinder.model.uiEvent.RegisterUIEvent
@@ -65,8 +65,6 @@ import com.example.partyfinder.ui.theme.ViewModels.PartyFinderViewModel
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
 import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 enum class PartyFinderScreen{
@@ -100,9 +98,8 @@ fun PartyFinderApp(
     registrationViewModel: RegistrationViewModel,
     gamersCallViewModel:GamerCallsViewModel,
     createGamerCallViewModel: CreateGamerCallsViewModel,
-    filterGamerCallsViewModel: FilteredGamerCallsViewModel,
-    communityViewModel:CommunityViewModel,
-    userRepository: LocalUserRepository
+    filterGamerCallsViewModel:FilteredGamerCallsViewModel,
+    communityViewModel:CommunityViewModel
 ){
     val profileUiState by profileViewModel.profileState.collectAsState()
     val chatScreenUiState by chatScreenViewModel.chatsScreenUiState.collectAsState()
@@ -125,20 +122,13 @@ fun PartyFinderApp(
         localUserEmail.value = registrationViewModel.importUserEmail()
         Log.d("PartyFinderApp TestCase", localUserEmail.value)
     }
-    LaunchedEffect(key1 = userRepository) {
-        launch(Dispatchers.IO){
-            localUserUID.value = userRepository.getUserUID()
-            Log.d("PartyFinderApp TestCase 2", localUserUID.value)
-        }
-        Log.d("PartyFinderApp TestCase 3", localUserUID.value)
-    }
 
 
 
     NavHost(
         navController = navController,
-//        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-        startDestination = PartyFinderScreen.EditProfileScreen.name
+        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
+//        startDestination = PartyFinderScreen.LoginScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -396,8 +386,7 @@ fun PartyFinderApp(
                 viewModel = profileViewModel,
                 navigateBack = { navigateBack(navController) },
                 navigateToHomeScreen = {navController.navigate(PartyFinderScreen.HomeScreen.name)},
-                userUID = localUserUID.value,
-                userRepository = userRepository
+                userUID = localUserUID.value
             )
         }
     }

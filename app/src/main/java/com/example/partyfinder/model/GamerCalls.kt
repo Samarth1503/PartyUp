@@ -7,7 +7,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity
 data class GamerCalls(
-    val gamerCallID:String,
+    var gamerCallID:String,
+    val userUID:String,
     @PrimaryKey val gamerID:String = "",
     val gamerTag:String,
     val partySize:Int,

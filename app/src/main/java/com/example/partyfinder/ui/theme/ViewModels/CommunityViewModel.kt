@@ -46,7 +46,7 @@ class CommunityViewModel(val userRepository: LocalUserRepository): ViewModel() {
                         )
                     }
                 }
-                Log.d("CommunityData",communityUiState.value.communityObject.toString())
+//                Log.d("CommunityData",communityUiState.value.communityObject.toString())
 
             }
         }
@@ -78,7 +78,7 @@ class CommunityViewModel(val userRepository: LocalUserRepository): ViewModel() {
         if (response.isSuccessful){
             _communityList.value = response.body()
             Log.d("Fetching Community data","Fetched Community Data Successfully")
-            Log.d("Fetching Community data", communityList.value.toString())
+//            Log.d("Fetching Community data", communityList.value.toString())
         }
         else
         {

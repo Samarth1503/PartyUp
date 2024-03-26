@@ -2,7 +2,6 @@ package com.example.partyfinder.ui.theme.ViewModels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.model.uiEvent.PostUIEvent
 import com.example.partyfinder.model.uiState.PostUIState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 
-class PostViewModel(val userRepository: LocalUserRepository): ViewModel(){
+class PostViewModel(): ViewModel(){
     private val TAG = PostViewModel::class.simpleName
 
     private val _postUIState = MutableStateFlow(PostUIState())

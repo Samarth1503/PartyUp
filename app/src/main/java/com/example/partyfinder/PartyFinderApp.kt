@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.colorResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -246,6 +245,7 @@ fun PartyFinderApp(
 
         composable(route = PartyFinderScreen.ChatsScreen.name){
             ChatsScreen(
+
                 chatTopBar = { ChatTopBar(
                     isMenuClicked = chatScreenUiState.isMenuClicked,
                     navigateBack = { navigateBack(navController) },
@@ -259,12 +259,14 @@ fun PartyFinderApp(
                 ) },
                 chats = { Chats(
                     chatChannelList = chatScreenUiState.channelList,
-                    userAccountList =datasource.UserAccounts,
                     navController = navController,
-                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked()}
+                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked()},
+                    chatScreenViewModel = chatScreenViewModel
+
                     )
                 },
                 isMenuClicked = chatScreenUiState.isMenuClicked,
+
             )
         }
 
@@ -281,8 +283,10 @@ fun PartyFinderApp(
                         currentChatChannel = chatScreenUiState.currentChannelObject!!,
                         onMenuClicked = {chatScreenViewModel.onDmScreenMenuClicked()},
                         navigateBack = { navigateBack(navController) },
-                        retreivedGamerAccount =datasource.UserAccounts.get(2))
-                },
+                        retreivedGamerAccount =chatScreenViewModel.retrieveUserAccount(
+                            chatScreenUiState.currentChannelObject!!.memberTags.get(1))
+                    )
+                          },
                 dmChatInput ={
                     DmChatInput(onSendButtonClick =   {
                         chatScreenViewModel.sendChatButtonClick(
@@ -386,7 +390,8 @@ fun PartyFinderApp(
                 viewModel = profileViewModel,
                 navigateBack = { navigateBack(navController) },
                 navigateToHomeScreen = {navController.navigate(PartyFinderScreen.HomeScreen.name)},
-                userUID = localUserUID.value
+                userUID = localUserUID.value,
+                profilePic = profileUiState.profileImageLink
             )
         }
     }

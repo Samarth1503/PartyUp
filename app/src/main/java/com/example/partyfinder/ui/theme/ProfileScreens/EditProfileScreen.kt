@@ -1,6 +1,9 @@
 package com.example.partyfinder.ui.theme.ProfileScreens
 
-import android.util.Log
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -49,7 +52,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
-import com.example.partyfinder.ui.theme.LoadingIndicator
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
 
 //@Preview(showBackground = true)
@@ -67,21 +69,35 @@ import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
 fun EditProfileScreen(
     modifier: Modifier=Modifier.fillMaxSize(),
     viewModel: ProfileViewModel,
+    profilePic:String,
     navigateBack: () -> Unit,
     navigateToHomeScreen: () -> Unit,
     userUID: String
     ){
     val uiState by viewModel.profileState.collectAsState()
-    var isLoading by remember { mutableStateOf(true) }
 
-    try {
-        viewModel.fetchUID(userUID)
-        Log.d("EditProfile TestCase","UID: $userUID")
-        viewModel.fetchData()
-        isLoading = false
-    } catch (_: Exception){}
+    var coverPicImageUri by remember {
+    mutableStateOf<Uri?>(null)
+    }
 
-    if (!isLoading) {
+    var profilePicImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val coverPhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) {
+        coverPicImageUri = it
+    }
+    val profilePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) {
+        profilePicImageUri = it
+    }
+
+
+
+
         Column(modifier = modifier
             .background(color = colorResource(id = R.color.black))
             .verticalScroll(
@@ -110,8 +126,11 @@ fun EditProfileScreen(
                 {
                     Image(
                         painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
-                        contentDescription =null,
-                        modifier=Modifier.padding(bottom = 4.dp, start = 1.dp))
+                        contentDescription ="edit profile",
+                        modifier = Modifier.clickable {
+                            coverPhotoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        }
+                        )
                 }
                 Box(modifier=Modifier.align(Alignment.BottomStart)
                 ) {
@@ -139,7 +158,9 @@ fun EditProfileScreen(
                             contentDescription =null,
                             modifier= Modifier
                                 .padding(bottom = 4.dp, start = 1.dp)
-                                .clickable {},
+                                .clickable {
+                                    profilePhotoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                                },
                         )
                     }
                 }
@@ -222,10 +243,7 @@ fun EditProfileScreen(
             }
 //        SnackbarHost(hostState = scaffoldState)
         }
-    }
-    else{
-        LoadingIndicator()
-    }
+
 }
 
 @Composable

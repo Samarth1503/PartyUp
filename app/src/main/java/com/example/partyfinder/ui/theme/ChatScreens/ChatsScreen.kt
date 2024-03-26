@@ -31,18 +31,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.ChatChannelList
 import com.example.partyfinder.model.UserAccount
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 
 
 //creating other screens
@@ -75,23 +77,23 @@ fun ChatsScreen(
     }
 }
 
-@Preview
-@Composable
-fun PreviewChatsScreen(){
-    PartyFinderTheme {
-        ChatsScreen(
-            chatTopBar ={ ChatTopBar(isMenuClicked = false, onMenuClick = {}, navigateBack = {}) },
-            chatMenu = { ChatMenu(isMenuClicked = true, onMenuClicked = {}, onMenuItemClicked = {}) },
-            isMenuClicked = false,
-            chats = { Chat(
-                chatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
-                userAccount = datasource.UserAccounts.get(0),
-                onClick = {})
-            }
-
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun PreviewChatsScreen(){
+//    PartyFinderTheme {
+//        ChatsScreen(
+//            chatTopBar ={ ChatTopBar(isMenuClicked = false, onMenuClick = {}, navigateBack = {}) },
+//            chatMenu = { ChatMenu(isMenuClicked = true, onMenuClicked = {}, onMenuItemClicked = {}) },
+//            isMenuClicked = false,
+//            chats = { Chat(
+//                chatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
+//                userAccount = datasource.UserAccounts.get(0),
+//                onClick = {})
+//            }
+//
+//        )
+//    }
+//}
 
 @Composable
 fun ChatTopBar(modifier: Modifier = Modifier,
@@ -229,7 +231,7 @@ fun ChatMenu(
 fun Chats(
     modifier: Modifier = Modifier,
     chatChannelList:ChatChannelList?,
-    userAccountList:List<UserAccount>,
+    chatScreenViewModel: chatScreenViewModel,
     navController:NavHostController,
     onNewChatClicked: () -> Unit
 ) {
@@ -243,11 +245,11 @@ fun Chats(
                 if(it.second.isGroupChat){
 
                     Chat( onClick =  {
-                        navController.navigate("DMScreen/${it.first}") },chatChannel = it.second, userAccount = datasource.UserAccounts.get(0))
+                        navController.navigate("DMScreen/${it.first}") },chatChannel = it.second, userAccount = chatScreenViewModel.retrieveUserAccount(it.second.gamerTag))
                         Log.d(TAG,it.second.channelID.toString())
                 }
                 else{
-                    Chat(onClick = { navController.navigate("DMScreen/${it.first}") }, chatChannel =it.second , userAccount = datasource.UserAccounts.get(1))
+                    Chat(onClick = { navController.navigate("DMScreen/${it.first}") }, chatChannel =it.second , userAccount = chatScreenViewModel.retrieveUserAccount(it.second.memberTags.get(1)))
                 }
 
 
@@ -280,14 +282,13 @@ fun Chat(
             .fillMaxWidth()
             .height(75.dp)
     ) {
-        Image(
-            painter = painterResource(
-                if (chatChannel.isGroupChat) {
-                    chatChannel.channelProfile
-                } else {
-                    userAccount.profilePic
-                }
-            ),
+
+
+        AsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(if (chatChannel.isGroupChat){ chatChannel.channelProfile}else{userAccount.profilePic})
+                .crossfade(true)
+                .build(),
             contentDescription = null,
             modifier = Modifier
                 .padding(20.dp, 0.dp, 10.dp, 0.dp)
@@ -295,8 +296,14 @@ fun Chat(
                 .border(
                     (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
                     RoundedCornerShape(50.dp)
-                )
+                ),
+            error= painterResource(id = R.drawable.close_blue),
+            placeholder = painterResource(id = R.drawable.usericon_white)
+
+
         )
+
+
         // Separate modifier for the Column
         Column(modifier = Modifier.padding(5.dp, 0.dp, 0.dp, 0.dp)) {
             Text(

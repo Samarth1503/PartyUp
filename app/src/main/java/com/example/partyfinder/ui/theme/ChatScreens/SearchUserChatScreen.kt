@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -53,8 +54,14 @@ fun SearchUserChatScreen(
     searchUserChatTopBar: @Composable () -> Unit,
     searchUserChatContent: @Composable () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()){
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(color = colorResource(id = R.color.black))
+    ){
         searchUserChatTopBar()
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         searchUserChatContent()
     }
 }
@@ -68,7 +75,7 @@ fun SearchUserChatTopBar(
         modifier = modifier
             .height(dimensionResource(id = (R.dimen.top_bar_height)))
             .fillMaxWidth()
-            .background(color = colorResource(id = R.color.DarkBG)),
+            .background(color = colorResource(id = R.color.black)),
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -101,7 +108,7 @@ fun SearchUserChatContent(viewModel: chatScreenViewModel, modifier: Modifier = M
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(color = colorResource(id = R.color.DarkBG))
+        .background(color = colorResource(id = R.color.black))
     ) {
         val mainPadding = dimensionResource(id = R.dimen.main_padding)
         SearchView(textState, mainPadding)
@@ -115,7 +122,7 @@ fun SearchUserChatContent(viewModel: chatScreenViewModel, modifier: Modifier = M
 fun SearchView(state: MutableState<TextFieldValue>, mainPadding : Dp) {
     Row(
         modifier = Modifier
-            .background(color = colorResource(id = R.color.DarkBG)),
+            .background(color = colorResource(id = R.color.black)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -143,15 +150,18 @@ fun SearchView(state: MutableState<TextFieldValue>, mainPadding : Dp) {
             ),
             modifier = Modifier
                 .padding(mainPadding, 0.dp)
-                .weight(1f)
+                .weight(1f),
+            trailingIcon = {
+                Image(
+                    painter = painterResource(id = R.drawable.search_icon_blue),
+                    contentDescription = "SearchIcon",
+                    modifier = Modifier
+                        .padding(end = mainPadding/2)
+                        .size(25.dp)
+                )
+            }
         )
-        Image(
-            painter = painterResource(id = R.drawable.search_icon_blue),
-            contentDescription = "SearchIcon",
-            modifier = Modifier
-                .padding(end = mainPadding)
-                .size(25.dp)
-        )
+
 
     }
 }
@@ -177,7 +187,7 @@ fun ItemList(userListState: MutableState<List<UserAccount>>, textState: MutableS
         style = MaterialTheme.typography.titleMedium,
         color = colorResource(id = R.color.primary),
         modifier = Modifier
-            .padding(start = mainPadding * 2, top = mainPadding * 2, bottom = mainPadding)
+            .padding(start = mainPadding * 2, top = mainPadding + 8.dp, bottom = mainPadding)
     )
 
     LazyColumn(modifier = Modifier
@@ -186,9 +196,9 @@ fun ItemList(userListState: MutableState<List<UserAccount>>, textState: MutableS
     ) {
         items(filteredItems) { user ->
             ItemListItem(
+                userID = user.gamerID,
+                userTag = user.gamerTag,
                 userProfilePic = user.profilePic,
-                userText = user.gamerTag,
-                userTag = user.gamerID,
                 onItemClick = { /* Click event code needs to be implemented */ }
             )
         }
@@ -199,9 +209,9 @@ fun ItemList(userListState: MutableState<List<UserAccount>>, textState: MutableS
 
 @Composable
 fun ItemListItem(
-    userProfilePic:String,
-    userText: String,
+    userID: String,
     userTag: String,
+    userProfilePic:String,
     onItemClick: () -> Unit)
 {
     Row(
@@ -211,42 +221,45 @@ fun ItemListItem(
             .padding(0.dp, 8.dp)
             .background(
                 color = colorResource(id = R.color.DarkBG),
-                shape = RoundedCornerShape(15.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .fillMaxWidth()
-            .height(68.dp)
-            .border(1.dp, colorResource(id = R.color.primary), shape = RoundedCornerShape(4.dp))
+            .height(72.dp)
+            .border(
+                1.dp,
+                colorResource(id = R.color.transparentBackdrop),
+                shape = RoundedCornerShape(8.dp)
+            )
     ) {
 
-        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.main_padding)))
+        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.main_padding) + 6.dp))
 
         AsyncImage(
             model = ImageRequest.Builder(context = LocalContext.current)
                 .data(userProfilePic)
                 .crossfade(true)
                 .build(),
-            contentDescription = null,
+            contentDescription = "Profile Picture",
             modifier = Modifier
-                .padding(20.dp, 0.dp, 10.dp, 0.dp)
                 .size(45.dp)
+                .clip(RoundedCornerShape(50.dp))
                 .border(
-                    (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
+                    (BorderStroke(1.4.dp, colorResource(id = R.color.primary))),
                     RoundedCornerShape(50.dp)
                 ),
-            error= painterResource(id = R.drawable.close_blue),
+            error = painterResource(id = R.drawable.close_blue),
             placeholder = painterResource(id = R.drawable.usericon_white)
-
-
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
+
+        Spacer(modifier = Modifier.width(16.dp))
 
         // Separate modifier for the Column
         Row(modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = userText,
+                text = userID,
                 style = MaterialTheme.typography.bodyLarge,
                 color = colorResource(id = R.color.white)
             )

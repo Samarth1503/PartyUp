@@ -308,8 +308,6 @@ fun Chat(
                 ).clip(RoundedCornerShape(50.dp)),
             error= painterResource(id = R.drawable.close_blue),
             placeholder = painterResource(id = R.drawable.usericon_white)
-
-
         )
 
 

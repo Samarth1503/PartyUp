@@ -20,3 +20,9 @@ data class ProfileUiState(
     val isChangeStatusExpanded:Boolean = false,
     val UserGamerCalls: GamerCallsList?= datasource.gamerCallsList
 )
+
+data class Ranks(
+    val gameNumber: Int,
+    val gameName: String,
+    val gameRank: String
+)

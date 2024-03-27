@@ -86,12 +86,16 @@ class MainActivity : ComponentActivity() {
                             val chatScreenViewModel = chatScreenViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
                             val partyFinderViewModel = PartyFinderViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
                             val gamersCallViewModel = GamerCallsViewModel(nonNullUserRepository)
-                                val profileViewModel = ProfileViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
+                            val profileViewModel = ProfileViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
                             val createGamerCallViewModel = CreateGamerCallsViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
                             val filterGamerCallsViewModel = FilteredGamerCallsViewModel(nonNullUserRepository)
                             val communityViewModel = CommunityViewModel(nonNullUserRepository)
 
-//                            Log.d("MainActivity LocalUserData TestCase 2", retrievedUserUID.toString())
+                            if(retrievedUserUID != null || retrievedUserUID != ""){
+                                Log.d("MainActivity LocalUserData TestCase 2", " $retrievedUserUID")
+                            } else{
+                                Log.d("MainActivity LocalUserData TestCase 2", "retrievedUserUID is null")
+                            }
 
                             PartyFinderApp(
                                 localDBUserUID = retrievedUserUID,

@@ -1,5 +1,6 @@
 package com.example.partyfinder
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -77,7 +78,6 @@ enum class PartyFinderScreen{
     ProfileScreen,
     EditProfileScreen,
     FindPartyScreen,
-    UpdateRanksScreen,
     SpecificCommunityScreen,
     GamerCallsScreen,
     CreateGamerCallsScreen,
@@ -94,6 +94,7 @@ private fun navigateBack(navController: NavController) {
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun PartyFinderApp(
     localDBUserUID: String?,
@@ -133,8 +134,8 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-//        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-        startDestination = PartyFinderScreen.HomeScreen.name
+        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
+//        startDestination = PartyFinderScreen.ProfileScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -381,7 +382,12 @@ fun PartyFinderApp(
 
         composable(route= PartyFinderScreen.ProfileScreen.name){
             ProfileScreen(
-                profileBannerWidget = { ProfileBannerWidget(onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name) }) },
+                profileBannerWidget = {
+                    ProfileBannerWidget(
+                        onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name) },
+                        profilePic = profileViewModel._profileUiState.value.profileImageLink,
+                        coverImage = profileViewModel._profileUiState.value.coverImageLink
+                    ) },
                 profileScreenContent = {
                     ProfileScreenContent(
                         profileDataWidget = { ProfileDataWidget(
@@ -397,12 +403,14 @@ fun PartyFinderApp(
                                     options = datasource.userStatusOption
                                 )
                             }
-
                         )
                         },
                         profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = profileUiState.bio) },
-                        profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { navController.navigate(
-                            PartyFinderScreen.UpdateRanksScreen.name)}) },
+                        profileRanksWidget = {
+                            ProfileRanksWidget(
+                                onUpdateRanksClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name)},
+                                ranks = profileViewModel.getProfileRanks()
+                            ) },
                         profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = profileUiState.UserGamerCalls) })
                 }
             )

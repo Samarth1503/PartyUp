@@ -4,21 +4,24 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,21 +39,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.partyfinder.R
 import com.example.partyfinder.ui.theme.PartyFinderTheme
-
-@Composable
-fun CreateGamerCallScreen(
-    modifier: Modifier=Modifier,
-    createGamerCallContent:@Composable ()->Unit,
-    createGamerCallScreenTopBar:@Composable ()->Unit,){
-        Surface(
-            modifier=modifier.fillMaxSize(),
-            color = colorResource(id = R.color.black)) {
-            Column(modifier=Modifier) {
-                        createGamerCallScreenTopBar()
-                        createGamerCallContent()
-            }
-        }
-}
 
 @Preview
 @Composable
@@ -80,26 +68,45 @@ fun PreviewCreateGamerCallScreen(){
 
 
 
+
+@Composable
+fun CreateGamerCallScreen(
+    modifier: Modifier=Modifier,
+    createGamerCallContent:@Composable ()->Unit,
+    createGamerCallScreenTopBar:@Composable ()->Unit,){
+    Surface(
+        modifier=modifier.fillMaxSize(),
+        color = colorResource(id = R.color.black)) {
+        Column(modifier=Modifier) {
+            createGamerCallScreenTopBar()
+            Divider(modifier = Modifier
+                .height(1.dp)
+                .background(color = colorResource(id = R.color.primary))
+            )
+            createGamerCallContent()
+        }
+    }
+}
+
 @Composable
 fun CreateGamerCallScreenTopBar(
     onCloseButtonClick:()->Unit,
     modifier:Modifier=Modifier
         .height(dimensionResource(id = R.dimen.top_bar_height))){
-    Row (modifier= modifier
-        .background(color = colorResource(id = R.color.DarkBG))
+    Box (modifier= modifier
+        .background(color = colorResource(id = R.color.black))
         .fillMaxWidth()
         .padding(
             start = dimensionResource(id = R.dimen.main_padding),
             end = dimensionResource(id = R.dimen.main_padding)
         ),
-        verticalAlignment = Alignment.CenterVertically
     ){
         Text(
             text = "New Gamer Call",
             color= colorResource(id = R.color.primary),
-            style = MaterialTheme.typography.titleMedium )
-
-        Spacer(modifier = Modifier.weight(1f))
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.align(Alignment.Center)
+        )
         Image(
             painter = painterResource(id = R.drawable.remove_icon),
             contentDescription = null,
@@ -107,6 +114,7 @@ fun CreateGamerCallScreenTopBar(
                 .height(dimensionResource(id = R.dimen.top_bar_back_icon_size))
                 .width(dimensionResource(id = R.dimen.top_bar_back_icon_size))
                 .clickable { onCloseButtonClick() }
+                .align(Alignment.CenterEnd)
             )
     }
 }
@@ -124,21 +132,65 @@ fun CreateGamerCallContent(
     onCallDescriptionValueChange:(String)->Unit,
     onCallDurationValueChange:(String)->Unit,
     onPostButtonClick:()->Unit,
-    ){
+){
 
-    Column(modifier = modifier.padding(dimensionResource(id = R.dimen.main_padding))) {
-            Row(modifier= Modifier
-                .fillMaxWidth()
-                .padding(bottom = 32.dp, top = 32.dp), horizontalArrangement = Arrangement.Center) {
-                Text(
-                    text = "Enter Details",
-                    color = colorResource(id = R.color.primary),
-                    style = MaterialTheme.typography.titleLarge)
-            }
+    val mainPadding = dimensionResource(id = R.dimen.main_padding)
+    // Add this line to store the selected duration
+    val selectedDuration = remember { mutableStateOf(CallDuration) }
+
+    Column(modifier = modifier.padding(mainPadding)) {
+        Row(modifier= Modifier
+            .fillMaxWidth()
+            .padding(bottom = 32.dp, top = 32.dp), horizontalArrangement = Arrangement.Center) {
+            Text(
+                text = "Enter Details",
+                color = colorResource(id = R.color.primary),
+                style = MaterialTheme.typography.titleLarge)
+        }
         CreateCallTextField(value = GameName, onValueChanged = onGameNameValueChange, label ="Game Name" , isLastField =false )
-        CreateCallTextField(value =NoOfGamers , onValueChanged = onNoOfGamersValueChange, label ="No of Gamers" , isLastField =false )
+        CreateCallTextField(value = NoOfGamers , onValueChanged = onNoOfGamersValueChange, label ="No of Gamers" , isLastField =false )
         CreateCallTextField(value = CallDescription, onValueChanged = onCallDescriptionValueChange, label ="Call of Description" , isLastField =false )
-        CreateCallTextField(value = CallDuration, onValueChanged = onCallDurationValueChange, label ="Call Duration" , isLastField =true)
+
+        // Replace TextField with RadioButton group
+        Column {
+            Text(
+                text = "Select Call Duration",
+                color = colorResource(id = R.color.primary),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(
+                    16.dp, mainPadding, 0.dp, mainPadding/2
+                )
+            )
+            Row {
+                listOf("1hr", "2hrs", "3hrs").forEach { duration ->
+                    Row(Modifier
+                        .padding(end = 8.dp)
+                        .selectable(
+                            selected = (duration == selectedDuration.value),
+                            onClick = {
+                                selectedDuration.value = duration
+                                onCallDurationValueChange(duration.filter { it.isDigit() }) // Send only the numeric part
+                            }
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (duration == selectedDuration.value),
+                            onClick = {
+                                selectedDuration.value = duration
+                                onCallDurationValueChange(duration.filter { it.isDigit() }) // Send only the numeric part
+                            }
+                        )
+                        Text(
+                            text = duration,
+                            color = colorResource(id = R.color.primary),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    }
+                }
+            }
+        }
 
         Row(modifier= Modifier
             .fillMaxWidth()
@@ -153,27 +205,29 @@ fun CreateGamerCallContent(
                     .width(124.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.on_tertiary))
             ) {
-                    Text(text = "Post", style = MaterialTheme.typography.titleSmall)
+                Text(text = "Post", style = MaterialTheme.typography.titleSmall)
             }
         }
     }
 }
 
+
 @Composable
 fun CreateCallTextField(value:String,onValueChanged:(String)->Unit,label:String,isLastField:Boolean,modifier:Modifier=Modifier){
 
-    if (isLastField){
         OutlinedTextField(
         value = value,
-        onValueChange =onValueChanged,
+        onValueChange = onValueChanged,
         label = { Text(text = label, style = MaterialTheme.typography.bodyMedium)},
         modifier= Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Next
-        ),
-        colors= OutlinedTextFieldDefaults.colors(
+        keyboardOptions = if(isLastField) {
+            KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
+        } else {
+            KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+        },
+        colors = OutlinedTextFieldDefaults.colors(
             unfocusedLabelColor = colorResource(id = R.color.primary),
             focusedTextColor = colorResource(id = R.color.primary),
             unfocusedTextColor = colorResource(id = R.color.primary),
@@ -181,26 +235,5 @@ fun CreateCallTextField(value:String,onValueChanged:(String)->Unit,label:String,
             focusedBorderColor = colorResource(id = R.color.primary)
         )
     )
-    }
-    else{
-        OutlinedTextField(
-            value = value,
-            onValueChange =onValueChanged,
-            label = { Text(text = label, style = MaterialTheme.typography.bodyMedium)},
-            modifier= Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
-            ),
-            colors=OutlinedTextFieldDefaults.colors(
-                unfocusedLabelColor = colorResource(id = R.color.primary),
-                focusedTextColor = colorResource(id = R.color.primary),
-                unfocusedTextColor = colorResource(id = R.color.primary),
-                focusedLabelColor = colorResource(id = R.color.primary),
-                focusedBorderColor = colorResource(id = R.color.primary)
-            )
-        )
-    }
 
 }

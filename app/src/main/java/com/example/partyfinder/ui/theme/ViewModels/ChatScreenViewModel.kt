@@ -83,7 +83,7 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
 
                val response = retrieveChatChannelList()
                if (response.isSuccessful){
-                   Log.d("retriveChatChannelList TestCase",response.body().toString())
+                   Log.d("retriveChatChannelList",response.body().toString())
                    _chatsScreenUiState.update { currentState -> currentState.copy(
                        channelList = response.body()
                    ) }
@@ -292,11 +292,13 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
         for (userSnapshot in snapshot.children) {
             val user = userSnapshot.getValue(UserAccount::class.java)
             user?.let {
-                userList.add(UserAccount(it.gamerID, it.gamerTag, it.profilePic))
+                userList.add(UserAccount(gamerID = it.gamerID, gamerTag =  it.gamerTag, profilePic =  it.profilePic))
             }
         }
         return userList
     }
+
+
 
 }
 

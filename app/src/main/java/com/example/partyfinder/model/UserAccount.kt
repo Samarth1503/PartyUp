@@ -1,7 +1,6 @@
 package com.example.partyfinder.model
 
 import kotlinx.serialization.Serializable
-import java.sql.Types.NULL
 @Serializable
 class UserAccount(
     var email: String = "",
@@ -17,7 +16,7 @@ class UserAccount(
     var rank2GameRank:String = "",
     var rank3GameName :String = "",
     var rank3GameRank:String = "",
-    var status: Pair<Int, Int> = Pair(NULL, NULL),
+    var status: Status = Status(),
     var liveGamerCallID: String = "",
     var chatChannelList:List<String> = listOf("defaultObject"),
     var userGamerCallsList:List<String> = listOf("defaultObject"),

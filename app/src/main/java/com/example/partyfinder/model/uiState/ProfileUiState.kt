@@ -6,7 +6,7 @@ import com.example.partyfinder.model.Status
 
 data class ProfileUiState(
     val gamerID:String = "GamerID",
-    val gamerTag:String = "#GamerTAG",
+    val gamerTag:String = "#TAG",
     val status: Status = Status(),
     val bio:String = "Hey,I like to play games",
     val profileImageLink: String = "",

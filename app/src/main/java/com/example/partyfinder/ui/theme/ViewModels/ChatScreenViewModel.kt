@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import java.time.LocalDateTime
 import java.util.concurrent.CountDownLatch
@@ -40,6 +41,7 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
 
     private val _chatsScreenUiState = MutableStateFlow(ChatScreenUiState())
     val chatsScreenUiState:StateFlow<ChatScreenUiState> =_chatsScreenUiState.asStateFlow()
+
     var isMenuClicked by mutableStateOf(false)
     var isDmScreenMenuClicked by mutableStateOf(false)
     private val _sortType = MutableStateFlow(SortType.MOST_RECENT)
@@ -205,8 +207,10 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
 
 
     fun retrieveUserAccount(UserUid: String): UserAccount {
+
+        Log.d("ChatsScreen TestCase", UserUid)
         val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("/users/data/")
+        val myRef = database.getReference("users").child("data")
         var userAccount = UserAccount()
 
         val latch = CountDownLatch(1)
@@ -271,6 +275,20 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
 
             }
         }
+    }
+
+
+    suspend fun searchUserDataInFirebase(): List<UserAccount> {
+        val snapshot = FirebaseDatabase.getInstance().getReference("users").child("data").get().await()
+        val userList = mutableListOf<UserAccount>()
+
+        for (userSnapshot in snapshot.children) {
+            val user = userSnapshot.getValue(UserAccount::class.java)
+            user?.let {
+                userList.add(UserAccount(it.gamerID, it.gamerTag, it.profilePic))
+            }
+        }
+        return userList
     }
 
 }

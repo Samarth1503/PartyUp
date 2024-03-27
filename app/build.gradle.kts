@@ -55,9 +55,7 @@ android {
 
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-
-    implementation("com.google.firebase:firebase-auth")
-
+    implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -72,7 +70,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("com.google.firebase:firebase-common-ktx:20.4.2")
     implementation("com.google.firebase:firebase-database-ktx:20.3.0")
@@ -86,6 +83,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha02")
 
     //coil dependencies
     implementation("io.coil-kt:coil-compose:2.5.0")
@@ -104,11 +103,4 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
     implementation("com.github.leonardoxh:retrofit2-livedata-adapter:1.1.2")
-
-
-
-    //coil dependencies
-    implementation("io.coil-kt:coil-compose:2.5.0")
-
-
 }

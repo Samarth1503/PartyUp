@@ -179,7 +179,9 @@ fun EditProfileScreen(
             ) {
                 EditProfileDataWidget(
                     gamerID = uiState.gamerID,
-                    onValueChanged = { viewModel.onGamerIDChanged(it) },
+                    gamerTAG = uiState.gamerTag,
+                    onIDChanged = { viewModel.onGamerIDChanged(it) },
+                    onTagChanged = { viewModel.onGamerTagChanged(it) },
                     bio = uiState.bio,
                     onBioValueChanged = { viewModel.onBioChanged(it) }
                 )
@@ -284,7 +286,9 @@ fun EditProfileScreenTopBar(modifier:Modifier=Modifier,navigateBack:()->Unit){
 @Composable
 fun EditProfileDataWidget(
     gamerID:String,
-    onValueChanged:(String)-> Unit,
+    gamerTAG: String,
+    onIDChanged:(String)-> Unit,
+    onTagChanged:(String)-> Unit,
     bio:String,
     onBioValueChanged:(String)->Unit,
     modifier : Modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
@@ -293,7 +297,7 @@ fun EditProfileDataWidget(
 
     OutlinedTextField(
         value = gamerID,
-        onValueChange =onValueChanged,
+        onValueChange = onIDChanged,
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Next
         ),
@@ -301,6 +305,30 @@ fun EditProfileDataWidget(
             .padding(horizontal = dimensionResource(id = R.dimen.main_padding))
             .fillMaxWidth(),
         label = { Text(text = "Gamer_ID")},
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            cursorColor = colorResource(id = R.color.primary),
+            focusedTextColor = colorResource(id = R.color.primary),
+            unfocusedTextColor = colorResource(id = R.color.primary),
+            focusedLabelColor = colorResource(id = R.color.primary),
+            unfocusedLabelColor = colorResource(id = R.color.primary),
+            containerColor = colorResource(id = R.color.DarkBG),
+            focusedBorderColor = colorResource(id = R.color.DarkBG),
+            unfocusedBorderColor = colorResource(id = R.color.DarkBG))
+    )
+
+    Spacer(modifier = Modifier.height(30.dp))
+
+//    TextField For GamerTAG
+    OutlinedTextField(
+        value = gamerTAG,
+        onValueChange = onTagChanged,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Next
+        ),
+        modifier= Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.main_padding))
+            .fillMaxWidth(),
+        label = { Text(text = "#TAG")},
         colors = TextFieldDefaults.outlinedTextFieldColors(
             cursorColor = colorResource(id = R.color.primary),
             focusedTextColor = colorResource(id = R.color.primary),

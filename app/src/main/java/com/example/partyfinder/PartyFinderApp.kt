@@ -27,6 +27,9 @@ import com.example.partyfinder.ui.theme.ChatScreens.ChatsScreen
 import com.example.partyfinder.ui.theme.ChatScreens.DmChatInput
 import com.example.partyfinder.ui.theme.ChatScreens.DmScreen
 import com.example.partyfinder.ui.theme.ChatScreens.DmTopBar
+import com.example.partyfinder.ui.theme.ChatScreens.SearchUserChatContent
+import com.example.partyfinder.ui.theme.ChatScreens.SearchUserChatScreen
+import com.example.partyfinder.ui.theme.ChatScreens.SearchUserChatTopBar
 import com.example.partyfinder.ui.theme.CustomExposedDropDownMenu
 import com.example.partyfinder.ui.theme.GamersCallScreens.CreateGamerCallContent
 import com.example.partyfinder.ui.theme.GamersCallScreens.CreateGamerCallScreen
@@ -79,7 +82,8 @@ enum class PartyFinderScreen{
     ChatsScreen,
     LoginScreen,
     RegisterScreen,
-    TermsAndConditionsScreen
+    TermsAndConditionsScreen,
+    SearchUserChatScreen
 }
 
 private fun navigateBack(navController: NavController) {
@@ -127,7 +131,7 @@ fun PartyFinderApp(
     NavHost(
         navController = navController,
 //        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-        startDestination = PartyFinderScreen.ProfileScreen.name
+        startDestination = PartyFinderScreen.HomeScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -283,7 +287,7 @@ fun PartyFinderApp(
                         currentChatChannel = chatScreenUiState.currentChannelObject!!,
                         onMenuClicked = {chatScreenViewModel.onDmScreenMenuClicked()},
                         navigateBack = { navigateBack(navController) },
-                        retreivedGamerAccount =chatScreenViewModel.retrieveUserAccount(
+                        retreivedGamerAccount = chatScreenViewModel.retrieveUserAccount(
                             chatScreenUiState.currentChannelObject!!.memberTags.get(1))
                     )
                           },
@@ -391,6 +395,12 @@ fun PartyFinderApp(
                 navigateToHomeScreen = {navController.navigate(PartyFinderScreen.HomeScreen.name)},
                 userUID = localUserUID.value,
                 profilePic = profileUiState.profileImageLink
+            )
+        }
+
+        composable(route = PartyFinderScreen.SearchUserChatScreen.name){
+            SearchUserChatScreen(searchUserChatTopBar = { SearchUserChatTopBar(navigateUp = { navigateBack(navController)})},
+                searchUserChatContent = { SearchUserChatContent(viewModel = chatScreenViewModel)}
             )
         }
     }

@@ -263,7 +263,7 @@ fun PartyFinderApp(
                 chats = { Chats(
                     chatChannelList = chatScreenUiState.channelList,
                     navController = navController,
-                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked(currentUserGamerID = profileUiState.gamerID, currentUserGamerTag = profileUiState.gamerTag, isGroupChatpara = false, user2UUID = "Ff45eF8a0HUAoDDk1eR5fx7xASm1")},
+                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked(currentUserGamerID = profileUiState.gamerID, isGroupChatpara = false, user2UUID = "Ff45eF8a0HUAoDDk1eR5fx7xASm1")},
                     chatScreenViewModel = chatScreenViewModel
 
                     )
@@ -292,7 +292,7 @@ fun PartyFinderApp(
             if (userAccount != null) {
                 DmScreen(
                     currentChatChannel = chatScreenUiState.currentChannelObject!!,
-                    UserTag = "kaizoku",
+                    UserTag = profileUiState.gamerID,
                     dmTopBar ={
                         DmTopBar(
                             isMenuClicked = chatScreenViewModel.isDmScreenMenuClicked,
@@ -306,6 +306,7 @@ fun PartyFinderApp(
                     dmChatInput ={
                         DmChatInput(onSendButtonClick =   {
                             chatScreenViewModel.sendChatButtonClick(
+                                author = profileUiState.gamerID,
                                 fireBaseUniqueID = chatScreenUiState.currentChannel,
                                 message = chatScreenUiState.message)
                         },

@@ -19,7 +19,7 @@ class UserAccount(
     var rank3GameRank:String = "",
     var status: Status = Status(),
     var liveGamerCallID: String = "",
-    var chatChannelList:List<String> = listOf("defaultObject"),
+    var chatChannelList:List<String> = emptyList(),
     var userGamerCallsList:List<String> = listOf("defaultObject"),
     var friendList:List<String> = listOf("defaultObject")
 ) {

@@ -120,10 +120,10 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
 //    fun createChatChannelFromLiveGamerCall(user1:UserAccount,user2:UserAccount){
 //        onNewChatClicked()
 //    }
-    fun onNewChatClicked(currentUserGamerTag:String, currentUserGamerID:String ,user2UUID:String,isGroupChatpara:Boolean){
+    fun onNewChatClicked(currentUserGamerID:String ,user2UUID:String,isGroupChatpara:Boolean){
             val chatChannel = ChatChannel(
                 channelID = "",
-                channelName = if (isGroupChatpara){"Group Chat"} else{"Another User"},
+                channelName = if (isGroupChatpara){"Group Chat"} else{currentUserGamerID},
                 isGroupChat = isGroupChatpara,
                 channelProfile ="https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/icons8-people-skin-type-7-24.png?alt=media&token=f7f50143-01b0-436a-91a7-fbeab5d92f43",
                 content = emptyList(),
@@ -247,8 +247,8 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
             message = changedMsg
         )} }
 
-    fun sendChatButtonClick(fireBaseUniqueID: String, message: String) {
-        val chatItem = ChatItem(author = "kaizoku", content = message, timeStamp = LocalDateTime.now().toString())
+    fun sendChatButtonClick(author:String,fireBaseUniqueID: String, message: String) {
+        val chatItem = ChatItem(author = author, content = message, timeStamp = LocalDateTime.now().toString())
         viewModelScope.launch {
             var localCurrentChannel = chatsScreenUiState.value.currentChannelObject
 

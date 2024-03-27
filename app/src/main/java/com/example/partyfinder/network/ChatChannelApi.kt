@@ -3,6 +3,7 @@ package com.example.partyfinder.network
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.ChatChannelList
 import com.example.partyfinder.model.ChatItem
+import com.example.partyfinder.model.FirebaseResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -12,7 +13,7 @@ import retrofit2.http.Path
 
 interface ChatChannelApi {
     @POST("chatChannels/data.json")
-    suspend fun postChatChannel(@Body chatChannel: ChatChannel)
+    suspend fun postChatChannel(@Body chatChannel: ChatChannel):Response<FirebaseResponse>
 
     @GET("chatChannels.json")
     suspend fun getAllChatChannels():Response<ChatChannelList>
@@ -22,4 +23,7 @@ interface ChatChannelApi {
 
     @PUT("chatChannels/data/{uniqueID}/content.json")
     suspend fun addChatItem(@Path("uniqueID")firebaseID:String , @Body content:List<ChatItem>)
+
+    @PUT("chatChannels/data/{uniqueID}.json")
+    suspend fun updateChatChannel(@Path("uniqueID")firebaseID:String, @Body content: ChatChannel):Response<FirebaseResponse>
 }

@@ -4,14 +4,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ChatChannel(
-    val channelID: Int,
+    var channelID: String,
     val channelName: String,
-    val channelProfile: Int,
+    val channelProfile: String,
     var content: List<ChatItem>,
     val isGroupChat: Boolean,
-    val gamerTag: String,
     val memberTags: List<String>
 ) {
     // No-argument constructor for Firebase
-    constructor() : this(0, "", 0, emptyList(), false, "", emptyList())
+    constructor() : this("", "", "", emptyList(), false, emptyList())
 }

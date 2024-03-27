@@ -41,8 +41,6 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     private val _snackbarMessage = MutableLiveData<String>()
     val snackbarMessage: LiveData<String> get() = _snackbarMessage
 
-    val dataLoadingProcess = mutableStateOf(true)
-
     var selectedStatus by mutableStateOf(Status())
 
     private var _gamerCallList = MutableLiveData<GamerCallsList>()
@@ -54,8 +52,12 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     init {
         if (retrievedUserUID == null){
             viewModelScope.launch {
-                while (isActive){
-                    _currentUserUID.value = userUIDSharedViewModel.currentUserUID.value
+                while(isActive){
+                    if (userUIDSharedViewModel.currentUserUID.value != null) {
+                        _currentUserUID.value = userUIDSharedViewModel.currentUserUID.value!!
+                    } else {
+                        _currentUserUID.value = ""
+                    }
                     delay(1000)
                 }
             }
@@ -194,6 +196,7 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
         } else {
             Log.d(TAG, "No local UID found")
         }
+
         navigateToHomeScreen()
     }
 

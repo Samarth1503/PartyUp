@@ -10,6 +10,7 @@ class UserAccount(
     var bio: String = "",
     var profilePic: String= "",
     var profileBanner: String = "",
+    val coverImageLink: String = "",
     var rank1GameName :String = "",
     var rank1GameRank:String = "",
     var rank2GameName :String = "",
@@ -18,7 +19,7 @@ class UserAccount(
     var rank3GameRank:String = "",
     var status: Status = Status(),
     var liveGamerCallID: String = "",
-    var chatChannelList:List<String> = listOf("defaultObject"),
+    var chatChannelList:List<String> = emptyList(),
     var userGamerCallsList:List<String> = listOf("defaultObject"),
     var friendList:List<String> = listOf("defaultObject")
 ) {

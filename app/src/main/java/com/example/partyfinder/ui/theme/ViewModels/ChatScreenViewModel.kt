@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.partyfinder.R
 import com.example.partyfinder.data.repositories.networkChatChannelRepository
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.ChatChannelList
@@ -21,6 +20,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,10 +28,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import java.time.LocalDateTime
-import java.util.concurrent.CountDownLatch
+import kotlin.coroutines.resume
 
 
 class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, val retrievedUserUID:String?) : ViewModel(){
@@ -81,7 +83,7 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
 
                val response = retrieveChatChannelList()
                if (response.isSuccessful){
-                   Log.d(TAG,response.body().toString())
+                   Log.d("retriveChatChannelList TestCase",response.body().toString())
                    _chatsScreenUiState.update { currentState -> currentState.copy(
                        channelList = response.body()
                    ) }
@@ -117,24 +119,37 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
             })
     }
 
-    fun onNewChatClicked(){
-            val ChatChannel = ChatChannel(
-                channelID = 2,
-                channelName = "Trial Chat 3",
-                isGroupChat = true,
-                channelProfile = R.drawable.pp,
-                gamerTag = "#1342",
-                content = listOf(
-                    ChatItem("kaizoku",content="Hello",timeStamp = LocalDateTime.now().toString()),
-                    ChatItem("Sam",content="Sup",timeStamp = LocalDateTime.now().toString())),
+//    fun createChatChannelFromLiveGamerCall(user1:UserAccount,user2:UserAccount){
+//        onNewChatClicked()
+//    }
+    fun onNewChatClicked(currentUserGamerID:String ,user2UUID:String,isGroupChatpara:Boolean){
+            val chatChannel = ChatChannel(
+                channelID = "",
+                channelName = if (isGroupChatpara){"Group Chat"} else{currentUserGamerID},
+                isGroupChat = isGroupChatpara,
+                channelProfile ="https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/icons8-people-skin-type-7-24.png?alt=media&token=f7f50143-01b0-436a-91a7-fbeab5d92f43",
+                content = emptyList(),
 
-                memberTags = listOf(currentUserUID.value.toString(),"xEw4m8meVfWSbfAALUIP8T7zOfz2")
+                memberTags = listOf(currentUserUID.value.toString(),user2UUID)
 
             )
 
         viewModelScope.launch {
 
-            networkChatChannelRepository.postChatChannel(ChatChannel)
+            val response = networkChatChannelRepository.postChatChannel(chatChannel)
+            if (response.isSuccessful){
+                val chatChannelFBID =response.body()!!.name
+                chatChannel.channelID = chatChannelFBID
+                val updateResponse = networkChatChannelRepository.updateChatChannel(chatChannelFBID,chatChannel)
+
+                if (updateResponse.isSuccessful){
+                    Log.d("NewChatChannel TestCase" , "ChatChannel Updated Successfully")
+                }
+                else{
+                    Log.d("NewChatChannel TestCase" , "ChatChannel Update failed")
+                }
+            }
+
         }
         Log.d(TAG,"Chat channel posted")
     }
@@ -206,33 +221,25 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
     }
 
 
-    fun retrieveUserAccount(UserUid: String): UserAccount {
-
-        Log.d("ChatsScreen TestCase", UserUid)
+    suspend fun retrieveUserAccount(UserUid: String): UserAccount? {
         val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("users").child("data")
-        var userAccount = UserAccount()
+        val myRef = database.getReference("/users/data/")
 
-        val latch = CountDownLatch(1)
+        return withContext(Dispatchers.IO) {
+            suspendCancellableCoroutine<UserAccount?> { continuation ->
+                myRef.child(UserUid).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val value = dataSnapshot.getValue(UserAccount::class.java)
+                        continuation.resume(value)
+                    }
 
-        myRef.child(UserUid).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val value = dataSnapshot.getValue(UserAccount::class.java)
-                if (value != null) {
-                    userAccount = value
-                }
-                latch.countDown()
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.d("Fetching User Account", "Request Cancelled")
+                        continuation.resume(null)
+                    }
+                })
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.d("Fetching User Account", "Request Cancelled")
-                latch.countDown()
-            }
-        })
-
-        latch.await()
-
-        return userAccount
+        }
     }
 
 
@@ -242,8 +249,8 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
             message = changedMsg
         )} }
 
-    fun sendChatButtonClick(fireBaseUniqueID: String, message: String) {
-        val chatItem = ChatItem(author = "kaizoku", content = message, timeStamp = LocalDateTime.now().toString())
+    fun sendChatButtonClick(author:String,fireBaseUniqueID: String, message: String) {
+        val chatItem = ChatItem(author = author, content = message, timeStamp = LocalDateTime.now().toString())
         viewModelScope.launch {
             var localCurrentChannel = chatsScreenUiState.value.currentChannelObject
 

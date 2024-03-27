@@ -134,7 +134,7 @@ fun PartyFinderApp(
     NavHost(
         navController = navController,
 //        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-        startDestination = PartyFinderScreen.HomeScreen.name
+        startDestination = PartyFinderScreen.SearchUserChatScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -267,7 +267,7 @@ fun PartyFinderApp(
                 chats = { Chats(
                     chatChannelList = chatScreenUiState.channelList,
                     navController = navController,
-                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked(currentUserGamerID = profileUiState.gamerID, isGroupChatpara = false, user2UUID = "Ff45eF8a0HUAoDDk1eR5fx7xASm1")},
+                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked(currentUserGamerID = profileUiState.gamerID, isGroupChatpara = false, user2UUID = "37aqDckIbyM8GJKtB7Kh0AW8nZR2")},
                     chatScreenViewModel = chatScreenViewModel
 
                     )
@@ -307,14 +307,14 @@ fun PartyFinderApp(
                             retreivedGamerAccount = userAccount
                         )
                     },
-                    dmChatInput ={
+                    dmChatInput = {
                         DmChatInput(onSendButtonClick =   {
                             chatScreenViewModel.sendChatButtonClick(
                                 author = profileUiState.gamerID,
                                 fireBaseUniqueID = chatScreenUiState.currentChannel,
                                 message = chatScreenUiState.message)
                         },
-                            message =chatScreenUiState.message,
+                            message = chatScreenUiState.message,
                             onMessageChange = { it -> chatScreenViewModel.onMessageValueChanged(it)})
                     }
                 )

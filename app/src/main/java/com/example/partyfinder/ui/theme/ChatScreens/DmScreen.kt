@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -71,7 +72,9 @@ fun DmScreen(
             .background(color = colorResource(id = R.color.black))
         ) {
 
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(modifier = Modifier.weight(1f)
+                .padding(bottom = 8.dp),
+                verticalArrangement = Arrangement.Bottom) {
                items(currentChatChannel.content.toList()){
                     if (it.author == UserTag){
                         SenderDM(content=it.content)

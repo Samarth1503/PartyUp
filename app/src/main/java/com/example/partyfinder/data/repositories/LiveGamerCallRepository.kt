@@ -85,20 +85,16 @@ object networkLiveGamerCallRepository : LiveGamerCallRepository{
                     if (userAccountResponse.isSuccessful) {
 
                         val userAccount = UserAccount(
-                            email = userAccountResponse.body()!!.email,
                             uid = userAccountResponse.body()!!.uid,
                             gamerID = userAccountResponse.body()!!.gamerID,
                             gamerTag = userAccountResponse.body()!!.gamerTag,
-                            bio = userAccountResponse.body()!!.bio,
                             profilePic = userAccountResponse.body()!!.profilePic,
-                            profileBanner = userAccountResponse.body()!!.profileBanner,
                             rank1GameName = userAccountResponse.body()!!.rank1GameName,
                             rank1GameRank = userAccountResponse.body()!!.rank1GameRank,
                             rank2GameName = userAccountResponse.body()!!.rank2GameName,
                             rank2GameRank = userAccountResponse.body()!!.rank2GameRank,
                             rank3GameName = userAccountResponse.body()!!.rank3GameName,
                             rank3GameRank = userAccountResponse.body()!!.rank3GameRank,
-                            status = userAccountResponse.body()!!.status,
                             liveGamerCallID = userAccountResponse.body()!!.liveGamerCallID
                         )
                         if (userAccount != null) {

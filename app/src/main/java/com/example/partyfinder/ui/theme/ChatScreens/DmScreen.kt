@@ -37,12 +37,15 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.ChatChannel
@@ -93,7 +96,7 @@ fun DmTopBar(
     currentChatChannel: ChatChannel,
     navigateBack:() -> Unit,
     onMenuClicked:()->Unit,
-    retreivedGamerAccount: UserAccount
+    retreivedGamerAccount: UserAccount?
 ) {
 
     Box(modifier = modifier
@@ -143,28 +146,31 @@ fun DmTopBar(
                     .size(24.dp)
                     .clickable { navigateBack() }
             )
-            Image (
-                painter = if (currentChatChannel.isGroupChat){
-                    painterResource(id = currentChatChannel.channelProfile)
-                }
-                else{
-                    painterResource(id = R.drawable.pp)
-                },
-                contentDescription = "58008",
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(if (currentChatChannel.isGroupChat){currentChatChannel.channelProfile}else{
+                        retreivedGamerAccount!!.profilePic})
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
                 modifier = Modifier
                     .padding(20.dp, 0.dp, 10.dp, 0.dp)
                     .size(40.dp)
                     .border(
                         (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
                         RoundedCornerShape(50.dp)
-                    )
+                    ).clip(RoundedCornerShape(50.dp)),
+                error= painterResource(id = R.drawable.close_blue),
+                placeholder = painterResource(id = R.drawable.usericon_white)
+
+
             )
             Text(
                 text = if(currentChatChannel.isGroupChat){
                     currentChatChannel.channelName
                 }else
                 {
-                    retreivedGamerAccount.gamerID
+                    retreivedGamerAccount!!.gamerID
                 },
                 style = MaterialTheme.typography.titleSmall,
                 color = colorResource(id = R.color.primary)

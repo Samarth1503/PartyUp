@@ -5,10 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.ChatChannelList
 import com.example.partyfinder.model.ChatItem
+import com.example.partyfinder.model.FirebaseResponse
 import retrofit2.Response
 
 interface ChatChannelRepository{
-    suspend fun postChatChannel(chatChannel: ChatChannel)
+    suspend fun postChatChannel(chatChannel: ChatChannel):Response<FirebaseResponse>
 
 
     suspend fun getAllChatChannels():Response<ChatChannelList>
@@ -16,14 +17,17 @@ interface ChatChannelRepository{
     suspend fun postDmContent(Id:String,content:List<ChatItem>)
 
     suspend fun retreiveCurrentChannel(Id: String):Response<ChatChannel>
+
+    suspend fun updateChatChannel(Id:String,updatedChatChannel:ChatChannel):Response<FirebaseResponse>
 }
 
 object networkChatChannelRepository : ChatChannelRepository{
     val data = MutableLiveData<ChatChannelList>()
     val liveChatChannelList :LiveData<ChatChannelList>
         get() = data
-    override suspend fun postChatChannel(chatChannel: ChatChannel) {
-        ChatChannelApiService.postChatChannel(chatChannel)
+    override suspend fun postChatChannel(chatChannel: ChatChannel):Response<FirebaseResponse> {
+        val response = ChatChannelApiService.postChatChannel(chatChannel)
+        return response
     }
 
 
@@ -41,5 +45,10 @@ object networkChatChannelRepository : ChatChannelRepository{
         return ChatChannelApiService.retreiveCurrentChannel(firebaseID = Id)
     }
 
-
+    override suspend fun updateChatChannel(
+        Id: String,
+        updatedChatChannel: ChatChannel
+    ): Response<FirebaseResponse> {
+        return ChatChannelApiService.updateChatChannel(Id,updatedChatChannel)
+    }
 }

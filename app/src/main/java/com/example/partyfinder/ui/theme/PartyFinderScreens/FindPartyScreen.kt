@@ -44,12 +44,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.LiveGamerCall
@@ -369,7 +373,7 @@ fun PartyFinderLiveCallsResult(
     userAccountObject:UserAccount,
     modifier:Modifier=Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp)
 ){
-    var requestSent by remember { mutableStateOf(false) }
+
     var showRanks by remember { mutableStateOf(false) }
     Card(
         modifier = modifier
@@ -382,16 +386,22 @@ fun PartyFinderLiveCallsResult(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Image(
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(userAccountObject.profilePic)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
                 modifier= Modifier
                     .padding(end = 4.dp)
                     .size(dimensionResource(id = R.dimen.small_profile_pic_dim))
                     .border(
                         (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
                         RoundedCornerShape(50.dp)
-                    ),
-                painter = painterResource(id = R.drawable.pp),
-                contentDescription ="pp" )
+                    ).clip(RoundedCornerShape(50.dp)),
+                error= painterResource(id = R.drawable.close_blue),
+                placeholder = painterResource(id = R.drawable.usericon_white)
+            )
             Text(
                 text = userAccountObject.gamerID,
                 color = colorResource(id = R.color.primary),
@@ -411,15 +421,10 @@ fun PartyFinderLiveCallsResult(
                     .width(120.dp)
                     .padding(end = 20.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.neutral_20)),
-                onClick = { requestSent = !requestSent }) {
-                if (!requestSent){
-                    Text(text = "Request")}
-                else
-                {
-                    Text(text = "Sent",
-                        color= colorResource(id = R.color.primary)
-                    )
-                }
+                onClick = {  }) {
+
+                    Text(text = "Join")
+
             }
         }
         Row(
@@ -470,34 +475,34 @@ fun PartyFinderLiveCallsResult(
             if (showRanks){
                 Row(modifier=Modifier.padding(start = 10.dp, top = 4.dp)) {
                     Text(
-                        text = "Valorant",
+                        text = userAccountObject.rank1GameName,
                         color = colorResource(id = R.color.primary),
                         style =MaterialTheme.typography.bodyMedium)
                     Spacer(modifier = Modifier.width(20.dp))
                     Text(
-                        text = "Gold",
+                        text = userAccountObject.rank1GameRank,
                         color = colorResource(id = R.color.primary),
                         style =MaterialTheme.typography.bodyMedium)
                 }
                 Row(modifier=Modifier.padding(start = 10.dp, top = 4.dp)) {
                     Text(
-                        text = "Valorant",
+                        text = userAccountObject.rank2GameName,
                         color = colorResource(id = R.color.primary),
                         style =MaterialTheme.typography.bodyMedium)
                     Spacer(modifier = Modifier.width(20.dp))
                     Text(
-                        text = "Gold",
+                        text = userAccountObject.rank2GameRank,
                         color = colorResource(id = R.color.primary),
                         style =MaterialTheme.typography.bodyMedium)
                 }
                 Row(modifier=Modifier.padding(start = 10.dp, top = 4.dp)) {
                     Text(
-                        text = "Valorant",
+                        text = userAccountObject.rank3GameName,
                         color = colorResource(id = R.color.primary),
                         style =MaterialTheme.typography.bodyMedium)
                     Spacer(modifier = Modifier.width(20.dp))
                     Text(
-                        text = "Gold",
+                        text = userAccountObject.rank3GameRank,
                         color = colorResource(id = R.color.primary),
                         style =MaterialTheme.typography.bodyMedium)
                 }

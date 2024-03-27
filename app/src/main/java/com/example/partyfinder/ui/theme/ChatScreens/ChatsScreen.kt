@@ -1,6 +1,5 @@
 package com.example.partyfinder.ui.theme.ChatScreens
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -28,8 +27,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -226,7 +231,6 @@ fun ChatMenu(
     }
 }
 
-
 @Composable
 fun Chats(
     modifier: Modifier = Modifier,
@@ -241,27 +245,32 @@ fun Chats(
         LazyColumn(
             modifier = modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)
         ) {
-            items(chatChannelList!!.chatChannels.toList()){
-                if(it.second.isGroupChat){
+            items(chatChannelList!!.chatChannels.toList()){ chatChannel ->
+                var userAccount by remember { mutableStateOf<UserAccount?>(null) }
 
-                    Chat( onClick =  {
-                        navController.navigate("DMScreen/${it.first}") },chatChannel = it.second, userAccount = chatScreenViewModel.retrieveUserAccount(it.second.gamerTag))
-                        Log.d(TAG,it.second.channelID.toString())
-                }
-                else{
-                    Chat(onClick = { navController.navigate("DMScreen/${it.first}") }, chatChannel =it.second , userAccount = chatScreenViewModel.retrieveUserAccount(it.second.memberTags.get(1)))
+                LaunchedEffect(chatChannel) {
+                    userAccount = chatScreenViewModel.retrieveUserAccount(chatChannel.second.memberTags.get(1))
                 }
 
-
-
+                if (userAccount != null) {
+                    if(chatChannel.second.isGroupChat){
+                        Chat(onClick = { navController.navigate("DMScreen/${chatChannel.first}") }, chatChannel = chatChannel.second, userAccount = userAccount!!)
+                        Log.d("ChatsOnClick TestCase",chatChannel.second.channelID.toString())
+                    }
+                    else{
+                        Chat(onClick = { navController.navigate("DMScreen/${chatChannel.first}") }, chatChannel = chatChannel.second, userAccount = userAccount!!)
+                    }
+                }
             }
         }
-        NewChat( modifier=
+        NewChat(modifier=
         modifier
             .size(80.dp)
             .align(alignment = Alignment.BottomEnd),onNewChatClicked = onNewChatClicked)
     }
 }
+
+
 
 @Composable
 fun Chat(
@@ -296,7 +305,7 @@ fun Chat(
                 .border(
                     (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
                     RoundedCornerShape(50.dp)
-                ),
+                ).clip(RoundedCornerShape(50.dp)),
             error= painterResource(id = R.drawable.close_blue),
             placeholder = painterResource(id = R.drawable.usericon_white)
 

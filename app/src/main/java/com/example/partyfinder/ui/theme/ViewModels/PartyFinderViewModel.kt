@@ -6,29 +6,46 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.data.repositories.networkLiveGamerCallRepository
 import com.example.partyfinder.model.LiveGamerCall
 import com.example.partyfinder.model.LiveGamerCallRequest
 import com.example.partyfinder.model.LiveGamerCallSearchResult
 import com.example.partyfinder.model.uiState.PartyFinderUiState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Timer
 import kotlin.concurrent.scheduleAtFixedRate
 
-class PartyFinderViewModel (val userRepository: LocalUserRepository):ViewModel(){
+class PartyFinderViewModel (val userUIDSharedViewModel : UserUIDSharedViewModel, val retrievedUserUID:String?):ViewModel(){
     private val _partyFinderScreenUiState = MutableStateFlow(PartyFinderUiState())
     val partyFinderUiState:StateFlow<PartyFinderUiState> = _partyFinderScreenUiState.asStateFlow()
 
     var _liveGamerCallSearchResultList = MutableLiveData<List<LiveGamerCallSearchResult>>()
     val liveGamerCallSearchResultList : LiveData<List<LiveGamerCallSearchResult>> get() = _liveGamerCallSearchResultList
 
+    val _currentUserUID = MutableLiveData<String>()
+    val currentUserUID :LiveData<String> get() = _currentUserUID
     init {
-
+        if (retrievedUserUID == null){
+            viewModelScope.launch {
+                while(isActive){
+                    if (userUIDSharedViewModel.currentUserUID.value != null) {
+                        _currentUserUID.value = userUIDSharedViewModel.currentUserUID.value!!
+                    } else {
+                        _currentUserUID.value = ""
+                    }
+                    delay(1000)
+                }
+            }
+        }
+        else{
+            _currentUserUID.value = retrievedUserUID!!
+        }
 
         Timer().scheduleAtFixedRate(0, 1000) {
             viewModelScope.launch {
@@ -68,7 +85,7 @@ class PartyFinderViewModel (val userRepository: LocalUserRepository):ViewModel()
     fun postLiveGamerCall(){
         var liveGamerCall = LiveGamerCall(
             gameName = partyFinderUiState.value.gameNameSelectedValue,
-            uid = "PHOhuIFLXdMvfFRK6hOfoNKm0Yu2" ,
+            uid = currentUserUID.value.toString() ,
             gamerCallAccepted = false,
             isGamerCallLive = true,
             noOfPlayersRequired = partyFinderUiState.value.noOfPlayerRequired.toInt(),

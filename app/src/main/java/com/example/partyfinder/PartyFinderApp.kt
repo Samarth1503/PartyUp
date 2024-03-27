@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -18,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.partyfinder.datasource.datasource
+import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.model.uiEvent.LoginUIEvent
 import com.example.partyfinder.model.uiEvent.RegisterUIEvent
 import com.example.partyfinder.ui.theme.ChatScreens.ChatMenu
@@ -39,6 +41,7 @@ import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallContent
 import com.example.partyfinder.ui.theme.GamersCallScreens.GamersCallTopBar
 import com.example.partyfinder.ui.theme.HomeScreen
 import com.example.partyfinder.ui.theme.HomepageContent
+import com.example.partyfinder.ui.theme.LoadingIndicator
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.LogInPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.RegisterPage
 import com.example.partyfinder.ui.theme.LoginAndRegisterScreens.TermsAndConditons
@@ -260,7 +263,7 @@ fun PartyFinderApp(
                 chats = { Chats(
                     chatChannelList = chatScreenUiState.channelList,
                     navController = navController,
-                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked()},
+                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked(currentUserGamerID = profileUiState.gamerID, currentUserGamerTag = profileUiState.gamerTag, isGroupChatpara = false, user2UUID = "Ff45eF8a0HUAoDDk1eR5fx7xASm1")},
                     chatScreenViewModel = chatScreenViewModel
 
                     )
@@ -273,32 +276,49 @@ fun PartyFinderApp(
         composable("DMScreen/{channelID}", arguments = listOf(navArgument("channelID"){type= NavType.StringType}))
         {backStackEntry ->
             chatScreenViewModel.setCurrentChatChannel(backStackEntry.arguments!!.getString("channelID")!!)
-            DmScreen(
-                currentChatChannel = chatScreenUiState.currentChannelObject!!,
-                UserTag = "kaizoku",
-                dmTopBar ={
-                    DmTopBar(
-                        isMenuClicked = chatScreenViewModel.isDmScreenMenuClicked,
-                        onMenuItemClicked = {},
-                        currentChatChannel = chatScreenUiState.currentChannelObject!!,
-                        onMenuClicked = {chatScreenViewModel.onDmScreenMenuClicked()},
-                        navigateBack = { navigateBack(navController) },
-                        retreivedGamerAccount =chatScreenViewModel.retrieveUserAccount(
-                            chatScreenUiState.currentChannelObject!!.memberTags.get(1))
-                    )
-                          },
-                dmChatInput ={
-                    DmChatInput(onSendButtonClick =   {
-                        chatScreenViewModel.sendChatButtonClick(
-                            fireBaseUniqueID = chatScreenUiState.currentChannel,
-                            message = chatScreenUiState.message)
-                    }
+            var userAccount by remember { mutableStateOf<UserAccount?>(null) }
 
-                        , message =chatScreenUiState.message,
-                        onMessageChange = { it -> chatScreenViewModel.onMessageValueChanged(it)})
+            if(chatScreenUiState.currentChannelObject != null && chatScreenUiState.currentChannelObject!!.memberTags.size > 1) {
+                LaunchedEffect(chatScreenUiState.currentChannelObject!!.memberTags.get(0)) {
+                    userAccount = chatScreenViewModel.retrieveUserAccount(
+                        chatScreenUiState.currentChannelObject!!.memberTags.get(1)
+                    )
                 }
-            )
+            }
+            else{
+                Log.d("DmScreenUI TestCase" ,"CurrentChatChannelObject is empty or member Tags are less than 1")
+            }
+
+            if (userAccount != null) {
+                DmScreen(
+                    currentChatChannel = chatScreenUiState.currentChannelObject!!,
+                    UserTag = "kaizoku",
+                    dmTopBar ={
+                        DmTopBar(
+                            isMenuClicked = chatScreenViewModel.isDmScreenMenuClicked,
+                            onMenuItemClicked = {},
+                            currentChatChannel = chatScreenUiState.currentChannelObject!!,
+                            onMenuClicked = {chatScreenViewModel.onDmScreenMenuClicked()},
+                            navigateBack = { navigateBack(navController) },
+                            retreivedGamerAccount = userAccount
+                        )
+                    },
+                    dmChatInput ={
+                        DmChatInput(onSendButtonClick =   {
+                            chatScreenViewModel.sendChatButtonClick(
+                                fireBaseUniqueID = chatScreenUiState.currentChannel,
+                                message = chatScreenUiState.message)
+                        },
+                            message =chatScreenUiState.message,
+                            onMessageChange = { it -> chatScreenViewModel.onMessageValueChanged(it)})
+                    }
+                )
+            }
+            else{
+                LoadingIndicator()
+            }
         }
+
 
         composable(route= PartyFinderScreen.FindPartyScreen.name){
             FindPartyScreen(

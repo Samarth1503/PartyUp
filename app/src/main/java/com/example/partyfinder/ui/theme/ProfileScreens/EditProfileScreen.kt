@@ -91,8 +91,13 @@ fun EditProfileScreen(
     }
     val profilePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
-    ) {
-        profilePicImageUri = it
+    ) { uri ->
+        profilePicImageUri = uri
+        if (uri != null) {
+            viewModel.uploadTheProfileImage(uri)
+
+            //Reload the Image
+        }
     }
 
 

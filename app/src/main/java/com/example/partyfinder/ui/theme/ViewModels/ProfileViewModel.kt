@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
+import com.example.partyfinder.model.Status
 import com.example.partyfinder.model.uiState.ProfileUiState
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -41,9 +42,7 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     private val _snackbarMessage = MutableLiveData<String>()
     val snackbarMessage: LiveData<String> get() = _snackbarMessage
 
-
-
-    var selectedStatus by mutableStateOf(Pair(0,0))
+    var selectedStatus by mutableStateOf(Status())
 
     private var _gamerCallList = MutableLiveData<GamerCallsList>()
     val gamerCallList: LiveData<GamerCallsList> get() = _gamerCallList
@@ -57,8 +56,12 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     init {
         if (retrievedUserUID == null){
             viewModelScope.launch {
-                while (isActive){
-                    _currentUserUID.value = userUIDSharedViewModel.currentUserUID.value!!
+                while(isActive){
+                    if (userUIDSharedViewModel.currentUserUID.value != null) {
+                        _currentUserUID.value = userUIDSharedViewModel.currentUserUID.value!!
+                    } else {
+                        _currentUserUID.value = ""
+                    }
                     delay(1000)
                 }
             }
@@ -77,20 +80,30 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
 
 
     fun uploadTheProfileImage(ProfilePicUri : Uri){
+        Log.d("UploadImage", "Starting image upload process")
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("UserProfileImages/")
+        Log.d("UploadImage", "FirebaseStorage instance obtained")
+
+        val storageRef = storage.reference.child("UserProfileImages/").child(_currentUserUID.value!!)
+        Log.d("UploadImage", "Storage reference created")
+
         val uploadTask = storageRef.putFile(ProfilePicUri)
+        Log.d("UploadImage", "Upload task created")
+
         uploadTask.addOnSuccessListener {
+            Log.d("UploadImage", "Upload task succeeded")
             storageRef.downloadUrl.addOnSuccessListener { uri ->
                 val downloadUrl = uri.toString()
+                Log.d("UploadImage", "Download URL obtained: $downloadUrl")
                 _profileUiState.update { currentState -> currentState.copy(
                     profileImageLink = downloadUrl
                 ) }
+                Log.d("UploadImage", "Profile UI state updated")
             }
         }.addOnFailureListener {
+            Log.d("UploadImage", "Upload task failed", it)
             // Handle unsuccessful uploads
         }
-
     }
     suspend fun backGroundGetGamerCall() {
         _gamerCallList.value = networkGamerCallsRepository.getGamerCalls().value
@@ -168,26 +181,37 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
         } else {
             Log.d(TAG, "No local UID found")
         }
+
         navigateToHomeScreen()
     }
 
 
-    fun updateStatus(changedStatus: Pair<Int, Int>) {
+    fun updateStatus(changedStatus: Status) {
+        Log.d("PVM TestCase", "updateStatus $changedStatus")
+        Log.d("PVM TestCase", "updateStatus 2 ${_profileUiState.value.status}")
         _profileUiState.update { currentState -> currentState.copy(
             status = changedStatus
         )}
+        selectedStatus = changedStatus
+        Log.d("PVM TestCase", "updateStatus 3 ${changedStatus}")
     }
 
-    fun onChangeStatusClicked(isExpanded: Boolean, selectedStatus: Pair<Int, Int>) {
+    fun onChangeStatusClicked(isExpanded: Boolean, selectedStatus1: Status) {
+        Log.d("PVM TestCase", "onChangeStatusClicked $selectedStatus")
         if (isExpanded) {
+            Log.d("PVM TestCase", "onChangeStatusClicked 1 ${_profileUiState.value.status}")
             _profileUiState.update { currentState -> currentState.copy(
-                status = selectedStatus,
+                status = selectedStatus1,
                 isChangeStatusExpanded = !isExpanded
             )}
+            selectedStatus = selectedStatus1
+            Log.d("PVM TestCase", "onChangeStatusClicked 2 ${_profileUiState.value.status}")
         } else {
+            Log.d("PVM TestCase", "onChangeStatusClicked 3 ${_profileUiState.value.status}")
             _profileUiState.update { currentState -> currentState.copy(
                 isChangeStatusExpanded = !isExpanded
             )}
+            Log.d("PVM TestCase", "onChangeStatusClicked 4 ${_profileUiState.value.status}")
         }
     }
 

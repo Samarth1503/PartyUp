@@ -5,13 +5,14 @@ import com.example.partyfinder.R
 import com.example.partyfinder.model.ChatChannelList
 import com.example.partyfinder.model.CommunitiesList
 import com.example.partyfinder.model.GamerCallsList
+import com.example.partyfinder.model.Status
 import com.google.gson.Gson
 
 object datasource {
     val userStatusOption= listOf(
-        Pair(R.string.ONLINE,R.drawable.user_online_logo),
-        Pair(R.string.AFK,R.drawable.user_afk_logo),
-        Pair(R.string.DND,R.drawable.user_dnd_logo)
+        Status(R.string.ONLINE,R.drawable.user_online_logo),
+        Status(R.string.AFK,R.drawable.user_afk_logo),
+        Status(R.string.DND,R.drawable.user_dnd_logo)
     )
 
     val dmScreenDropDownOptions = listOf(

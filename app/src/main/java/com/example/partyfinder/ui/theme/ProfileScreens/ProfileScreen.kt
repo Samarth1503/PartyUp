@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.example.partyfinder.R
 import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.GamerCallsList
+import com.example.partyfinder.model.Status
 import com.example.partyfinder.ui.theme.GamersCallScreens.G_Calls
 import com.example.partyfinder.ui.theme.PartyFinderTheme
 
@@ -157,7 +158,7 @@ fun ProfileDataWidget(
     gamerTag:String,
     isChangeStatusExapanded:Boolean,
     onChangeStatusClick:()->Unit,
-    userStatus:Pair<Int,Int>,
+    userStatus:Status,
     ){
 
     Card(
@@ -218,7 +219,7 @@ fun ProfileScreenBioWidget(
     gamerBio:String,
 ){
     Card(
-        modifier=modifier
+        modifier= modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 100.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))) {
@@ -346,10 +347,10 @@ fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userG
 
 @Composable
 fun ProfileUpdateStatus(
-    selectedStatusOption:Pair<Int,Int>,
-    onSelectionChanged:(Pair<Int,Int>)->Unit,
+    selectedStatusOption:Status,
+    onSelectionChanged:(Status)->Unit,
     modifier:Modifier=Modifier,
-    options:List<Pair<Int,Int>>
+    options:List<Status>
 ){
     Column(modifier=Modifier.padding(dimensionResource(id = R.dimen.main_padding))){
         options.forEach{ item ->

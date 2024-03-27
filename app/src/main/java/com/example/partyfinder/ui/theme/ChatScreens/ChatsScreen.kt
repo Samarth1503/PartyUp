@@ -231,6 +231,7 @@ fun ChatMenu(
     }
 }
 
+
 @Composable
 fun Chats(
     modifier: Modifier = Modifier,
@@ -247,7 +248,6 @@ fun Chats(
         ) {
             items(chatChannelList!!.chatChannels.toList()){ chatChannel ->
                 var userAccount by remember { mutableStateOf<UserAccount?>(null) }
-
                 LaunchedEffect(chatChannel) {
                     userAccount = chatScreenViewModel.retrieveUserAccount(chatChannel.second.memberTags.get(1))
                 }

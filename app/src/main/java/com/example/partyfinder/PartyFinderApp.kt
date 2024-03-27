@@ -134,7 +134,7 @@ fun PartyFinderApp(
     NavHost(
         navController = navController,
 //        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-        startDestination = PartyFinderScreen.SearchUserChatScreen.name
+        startDestination = PartyFinderScreen.HomeScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -283,7 +283,7 @@ fun PartyFinderApp(
             var userAccount by remember { mutableStateOf<UserAccount?>(null) }
 
             if(chatScreenUiState.currentChannelObject != null && chatScreenUiState.currentChannelObject!!.memberTags.size > 1) {
-                LaunchedEffect(chatScreenUiState.currentChannelObject!!.memberTags.get(0)) {
+                LaunchedEffect(chatScreenUiState.currentChannelObject!!.memberTags.get(1)) {
                     userAccount = chatScreenViewModel.retrieveUserAccount(
                         chatScreenUiState.currentChannelObject!!.memberTags.get(1)
                     )

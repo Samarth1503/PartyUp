@@ -29,8 +29,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.time.LocalDateTime
 import kotlin.coroutines.resume
@@ -221,6 +221,7 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
     }
 
 
+
     suspend fun retrieveUserAccount(UserUid: String): UserAccount? {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference("/users/data/")
@@ -241,7 +242,6 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
             }
         }
     }
-
 
 
     fun onMessageValueChanged(changedMsg:String){

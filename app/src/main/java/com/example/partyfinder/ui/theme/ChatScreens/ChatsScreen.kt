@@ -249,7 +249,11 @@ fun Chats(
             items(chatChannelList!!.chatChannels.toList()){ chatChannel ->
                 var userAccount by remember { mutableStateOf<UserAccount?>(null) }
                 LaunchedEffect(chatChannel) {
-                    userAccount = chatScreenViewModel.retrieveUserAccount(chatChannel.second.memberTags.get(1))
+                    userAccount = if(chatChannel.second.memberTags.get(1) == chatScreenViewModel.currentUserUID.value){
+                        chatScreenViewModel.retrieveUserAccount(chatChannel.second.memberTags.get(0))
+                } else {
+                        chatScreenViewModel.retrieveUserAccount(chatChannel.second.memberTags.get(1))
+                    }
                 }
 
                 if (userAccount != null) {
@@ -324,7 +328,7 @@ fun Chat(
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "58008",
+                text = userAccount.gamerTag,
                 style = MaterialTheme.typography.bodySmall,
                 color = colorResource(id = R.color.chatPreview)
             )

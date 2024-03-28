@@ -298,7 +298,11 @@ fun PartyFinderApp(
             if(chatScreenUiState.currentChannelObject != null && chatScreenUiState.currentChannelObject!!.memberTags.size > 1) {
                 LaunchedEffect(chatScreenUiState.currentChannelObject!!.memberTags.get(1)) {
                     userAccount = chatScreenViewModel.retrieveUserAccount(
-                        chatScreenUiState.currentChannelObject!!.memberTags.get(1)
+                        if(chatScreenUiState.currentChannelObject!!.memberTags.get(1) == profileViewModel.currentUserUID.value){
+                            chatScreenUiState.currentChannelObject!!.memberTags.get(0)
+                        } else {
+                            chatScreenUiState.currentChannelObject!!.memberTags.get(1)
+                        }
                     )
                 }
             }

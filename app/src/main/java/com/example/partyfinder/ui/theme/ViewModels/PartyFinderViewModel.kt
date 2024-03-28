@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.UserApiService
 import com.example.partyfinder.data.repositories.networkLiveGamerCallRepository
 import com.example.partyfinder.model.LiveGamerCall
 import com.example.partyfinder.model.LiveGamerCallRequest
@@ -73,7 +74,11 @@ class PartyFinderViewModel (val userUIDSharedViewModel : UserUIDSharedViewModel,
 
     suspend fun getLiveGamerCallResults(gameName:String,NoOfPlayersinParty:String,NoOfPlayersRequired:String){
        var resultList:List<LiveGamerCallSearchResult>
-                resultList = networkLiveGamerCallRepository.liveGamerCallSearchResult(gameName = gameName,NoOfPlayersinParty=NoOfPlayersinParty,NoOfPlayersRequired=NoOfPlayersRequired)
+                resultList = networkLiveGamerCallRepository.liveGamerCallSearchResult(
+                    gameName = gameName,
+                    NoOfPlayersinParty=NoOfPlayersinParty,
+                    NoOfPlayersRequired=NoOfPlayersRequired,
+                    currentLiveGamerCallID = partyFinderUiState.value.currentLiveGamerCallID)
                 _liveGamerCallSearchResultList.value= resultList
                 Log.d("UpdatingViewModelData" , resultList.toString())
                 _partyFinderScreenUiState.update { currentState -> currentState.copy(
@@ -104,11 +109,22 @@ class PartyFinderViewModel (val userUIDSharedViewModel : UserUIDSharedViewModel,
 
             if (updatedResponse.isSuccessful){
                 Log.d(TAG,"LiveGamerCall Posted and Updated Successfully")
+                UserApiService.updateLiveGamerCallID(userID = currentUserUID.value.toString(), liveGamerCallID = response.body()!!.name)
+                _partyFinderScreenUiState.update { currentState -> currentState.copy(
+                    currentLiveGamerCallID = response.body()!!.name
+                ) }
             }
             else
             {
                 Log.d(TAG,"Failed to Post or update livegamerCall")
             }
+        }
+    }
+
+    fun deleteBothLiveGamerCalls(currentUserLiveGamerCallID:String,acceptedUserLiveGamerCallID:String,acceptedUserUID:String){
+        viewModelScope.launch{
+            networkLiveGamerCallRepository.deleteLiveGamerCalls(currentUserLiveGamerCallID)
+            networkLiveGamerCallRepository.deleteLiveGamerCalls(acceptedUserLiveGamerCallID)
         }
     }
     fun onHideDetailsClicked(currentValue:Boolean){
@@ -215,6 +231,9 @@ class PartyFinderViewModel (val userUIDSharedViewModel : UserUIDSharedViewModel,
             isGamerCallLive = false,
             liveGamerCallResultLits = null
         ) }
+        viewModelScope.launch{
+            networkLiveGamerCallRepository.deleteLiveGamerCalls(partyFinderUiState.value.currentLiveGamerCallID)
+        }
     }
 
 

@@ -267,7 +267,7 @@ fun PartyFinderApp(
                 chats = { Chats(
                     chatChannelList = chatScreenUiState.channelList,
                     navController = navController,
-                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked(currentUserGamerID = profileUiState.gamerID, isGroupChatpara = false, user2UUID = "37aqDckIbyM8GJKtB7Kh0AW8nZR2")},
+                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked(currentUserGamerID = profileUiState.gamerID, isGroupChatpara = false, user2UUID = "8llkiilC3QTG1O3JlB51eChAm083")},
                     chatScreenViewModel = chatScreenViewModel
 
                     )
@@ -373,7 +373,9 @@ fun PartyFinderApp(
                     isGamerCallLive = partyFinderScreenUiState.isGamerCallLive,
                     onClickSearch = {partyFinderScreenViewModel.onSearchClick()},
                     onClickStopCall = {partyFinderScreenViewModel.onStopCallClick()},
-                    liveGamerCallResultList = partyFinderScreenUiState.liveGamerCallResultLits
+                    liveGamerCallResultList = partyFinderScreenUiState.liveGamerCallResultLits,
+                    chatScreenViewModel = chatScreenViewModel,
+                    navController = navController
                 )
                 }
             )

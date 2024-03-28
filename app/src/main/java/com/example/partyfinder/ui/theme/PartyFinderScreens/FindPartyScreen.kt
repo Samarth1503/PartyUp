@@ -1,5 +1,6 @@
 package com.example.partyfinder.ui.theme.PartyFinderScreens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,7 +32,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -49,18 +49,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.partyfinder.R
-import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.LiveGamerCall
 import com.example.partyfinder.model.LiveGamerCallSearchResult
 import com.example.partyfinder.model.UserAccount
-import com.example.partyfinder.ui.theme.CustomExposedDropDownMenu
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 
 @Composable
 fun FindPartyScreen(
@@ -77,74 +75,75 @@ fun FindPartyScreen(
     }
 }
 
-@Preview
-@Composable
-fun PrevivewFindPartyScreen(){
-    var gameExpanded by remember { mutableStateOf(false) }
-    var gamevalue by remember { mutableStateOf("") }
-    var partyExpanded by remember { mutableStateOf(false) }
-    var partyValue by remember{ mutableStateOf("") }
-    var requiredExpanded by remember { mutableStateOf(false) }
-    var requiredvalue by remember{ mutableStateOf("") }
-    var hideDetails by remember{ mutableStateOf(false) }
-    var isCallLive by remember{ mutableStateOf(false) }
-    PartyFinderTheme {
-        FindPartyScreen(
-            findPartyScreenTopBar = { FindPartyScreenTopBar() },
-            partyFinderContent = { PartyFinderContent(
-                gameNameExposedDD = { CustomExposedDropDownMenu(
-                    placeholder = "Select the Game",
-                    isDropDownExpanded =gameExpanded,
-                    onExpandChange = { newValue -> gameExpanded= newValue},
-                    DropDownSelectedValue =gamevalue ,
-                    onValueChange = {newValue -> gamevalue = newValue },
-                    onDismissRequest = { gameExpanded=false },
-                    exposedMenuContent = {
-                        datasource.FindPartyGamesMenuItems.forEach{item ->
-                            DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { gamevalue = item})
-                        }
-                    })
-                },
-                noOfPlayerInParty = { CustomExposedDropDownMenu(
-                    placeholder = "Count",
-                    isDropDownExpanded = partyExpanded,
-                    onExpandChange ={newValue ->   partyExpanded= newValue} ,
-                    onValueChange = {newValue -> partyValue = newValue  },
-                    DropDownSelectedValue =partyValue,
-                    onDismissRequest = { partyExpanded =false }) {
-                    datasource.FindPartyNoOfPlayerMenuItems.forEach { item ->
-                        DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { partyValue = item})
-                    }
-
-                }
-                },
-                noOfPlayersRequired = { CustomExposedDropDownMenu(
-                    placeholder = "Count",
-                    isDropDownExpanded = requiredExpanded,
-                    onExpandChange = {newValue -> requiredExpanded= newValue  },
-                    onValueChange = {newValue -> requiredvalue = newValue  },
-                    DropDownSelectedValue = requiredvalue,
-                    onDismissRequest = { requiredExpanded=false }) {
-                    datasource.FindPartyNoOfPlayerMenuItems.forEach { item ->
-                        DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { requiredvalue=item})
-                    }
-                }
-                },
-                hideDetails = hideDetails,
-                onClickHideDetails = {hideDetails = !hideDetails},
-                onClickClearDetails = {
-                    gamevalue =""
-                    partyValue=""
-                    requiredvalue=""},
-                isGamerCallLive = isCallLive,
-                onClickSearch = {isCallLive = true},
-                onClickStopCall = {isCallLive =false},
-                liveGamerCallResultList = emptyList()
-            )
-            }
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun PrevivewFindPartyScreen(){
+//    var gameExpanded by remember { mutableStateOf(false) }
+//    var gamevalue by remember { mutableStateOf("") }
+//    var partyExpanded by remember { mutableStateOf(false) }
+//    var partyValue by remember{ mutableStateOf("") }
+//    var requiredExpanded by remember { mutableStateOf(false) }
+//    var requiredvalue by remember{ mutableStateOf("") }
+//    var hideDetails by remember{ mutableStateOf(false) }
+//    var isCallLive by remember{ mutableStateOf(false) }
+//    PartyFinderTheme {
+//        FindPartyScreen(
+//            findPartyScreenTopBar = { FindPartyScreenTopBar() },
+//            partyFinderContent = { PartyFinderContent(
+//                gameNameExposedDD = { CustomExposedDropDownMenu(
+//                    placeholder = "Select the Game",
+//                    isDropDownExpanded =gameExpanded,
+//                    onExpandChange = { newValue -> gameExpanded= newValue},
+//                    DropDownSelectedValue =gamevalue ,
+//                    onValueChange = {newValue -> gamevalue = newValue },
+//                    onDismissRequest = { gameExpanded=false },
+//                    exposedMenuContent = {
+//                        datasource.FindPartyGamesMenuItems.forEach{item ->
+//                            DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { gamevalue = item})
+//                        }
+//                    })
+//                },
+//                noOfPlayerInParty = { CustomExposedDropDownMenu(
+//                    placeholder = "Count",
+//                    isDropDownExpanded = partyExpanded,
+//                    onExpandChange ={newValue ->   partyExpanded= newValue} ,
+//                    onValueChange = {newValue -> partyValue = newValue  },
+//                    DropDownSelectedValue =partyValue,
+//                    onDismissRequest = { partyExpanded =false }) {
+//                    datasource.FindPartyNoOfPlayerMenuItems.forEach { item ->
+//                        DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { partyValue = item})
+//                    }
+//
+//                }
+//                },
+//                noOfPlayersRequired = { CustomExposedDropDownMenu(
+//                    placeholder = "Count",
+//                    isDropDownExpanded = requiredExpanded,
+//                    onExpandChange = {newValue -> requiredExpanded= newValue  },
+//                    onValueChange = {newValue -> requiredvalue = newValue  },
+//                    DropDownSelectedValue = requiredvalue,
+//                    onDismissRequest = { requiredExpanded=false }) {
+//                    datasource.FindPartyNoOfPlayerMenuItems.forEach { item ->
+//                        DropdownMenuItem(text = { Text(text = item, color = colorResource(id = R.color.primary)) }, onClick = { requiredvalue=item})
+//                    }
+//                }
+//                },
+//                hideDetails = hideDetails,
+//                onClickHideDetails = {hideDetails = !hideDetails},
+//                onClickClearDetails = {
+//                    gamevalue =""
+//                    partyValue=""
+//                    requiredvalue=""},
+//                isGamerCallLive = isCallLive,
+//                onClickSearch = {isCallLive = true},
+//                onClickStopCall = {isCallLive =false},
+//                liveGamerCallResultList = emptyList(),
+//
+//            )
+//            }
+//        )
+//    }
+//}
 
 @Composable
 fun FindPartyScreenTopBar(
@@ -182,9 +181,12 @@ fun FindPartyScreenTopBar(
     }
 }
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PartyFinderContent(
+    chatScreenViewModel: chatScreenViewModel,
+    navController: NavHostController,
     modifier:Modifier=Modifier,
     hideDetails:Boolean,
     onClickHideDetails:()->Unit,
@@ -361,7 +363,18 @@ fun PartyFinderContent(
         )
         {
             items(liveGamerCallResultList) {
-                PartyFinderLiveCallsResult(liveGamerCallObject = it.liveGamerCallObject, userAccountObject = it.userAccount)
+                PartyFinderLiveCallsResult(
+                    liveGamerCallObject = it.liveGamerCallObject,
+                    userAccountObject = it.userAccount,
+                    onClickJoin = {
+                      var chatChannelID = chatScreenViewModel.onNewChatClicked(
+                          currentUserGamerID = it.liveGamerCallObject.uid,
+                          user2UUID = it.userAccount.gamerID,
+                          isGroupChatpara = false)
+                        if (chatChannelID != ""){
+                            navController.navigate("DMScreen/${chatChannelID}")
+                        }
+                    })
             }
         }
     }
@@ -369,6 +382,7 @@ fun PartyFinderContent(
 
 @Composable
 fun PartyFinderLiveCallsResult(
+    onClickJoin:()->Unit,
     liveGamerCallObject:LiveGamerCall,
     userAccountObject:UserAccount,
     modifier:Modifier=Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp)
@@ -421,7 +435,7 @@ fun PartyFinderLiveCallsResult(
                     .width(120.dp)
                     .padding(end = 20.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.neutral_20)),
-                onClick = {  }) {
+                onClick = onClickJoin) {
 
                     Text(text = "Join")
 

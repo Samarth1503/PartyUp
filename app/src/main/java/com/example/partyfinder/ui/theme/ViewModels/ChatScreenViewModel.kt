@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.UserApiService
 import com.example.partyfinder.data.repositories.networkChatChannelRepository
 import com.example.partyfinder.model.ChatChannel
 import com.example.partyfinder.model.ChatChannelList
@@ -81,13 +82,27 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
                if (chatsScreenUiState.value.currentChannel!=""){
                setLiveChangesListenerForNode(chatsScreenUiState.value.currentChannel)}
 
-               val response = retrieveChatChannelList()
-               if (response.isSuccessful){
-                   Log.d("retriveChatChannelList TestCase",response.body().toString())
+                   val currentUserAccountObject = retrieveUserAccount(currentUserUID.value.toString())
+               if (currentUserAccountObject != null) {
+                   var userChatChannels:ChatChannelList
+                   var mutableMap = mutableMapOf<String,ChatChannel>()
+                   userChatChannels = ChatChannelList(mutableMap)
+                   currentUserAccountObject.chatChannelList.forEach {
+
+                       val chatChannelObject = networkChatChannelRepository.retreiveCurrentChannel(it)
+                       mutableMap.put(it, chatChannelObject.body()!!)
+                   }
                    _chatsScreenUiState.update { currentState -> currentState.copy(
-                       channelList = response.body()
+                       channelList = userChatChannels
                    ) }
                }
+//               val response = retrieveChatChannelList()
+//               if (response.isSuccessful){
+//                   Log.d("retriveChatChannelList TestCase",response.body().toString())
+//                   _chatsScreenUiState.update { currentState -> currentState.copy(
+//                       channelList = response.body()
+//                   ) }
+//               }
                else{
                    Log.d(TAG,"Error fetching data")
                }
@@ -122,7 +137,12 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
 //    fun createChatChannelFromLiveGamerCall(user1:UserAccount,user2:UserAccount){
 //        onNewChatClicked()
 //    }
-    fun onNewChatClicked(currentUserGamerID:String ,user2UUID:String,isGroupChatpara:Boolean){
+
+
+
+
+
+        fun onNewChatClicked(currentUserGamerID:String ,user2UUID:String,isGroupChatpara:Boolean):String{
             val chatChannel = ChatChannel(
                 channelID = "",
                 channelName = if (isGroupChatpara){"Group Chat"} else{currentUserGamerID},
@@ -133,17 +153,33 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
                 memberTags = listOf(currentUserUID.value.toString(),user2UUID)
 
             )
-
+            var isChatChannelUpdate = false
         viewModelScope.launch {
 
             val response = networkChatChannelRepository.postChatChannel(chatChannel)
             if (response.isSuccessful){
                 val chatChannelFBID =response.body()!!.name
                 chatChannel.channelID = chatChannelFBID
+                isChatChannelUpdate = true
                 val updateResponse = networkChatChannelRepository.updateChatChannel(chatChannelFBID,chatChannel)
 
                 if (updateResponse.isSuccessful){
+                    isChatChannelUpdate = true
                     Log.d("NewChatChannel TestCase" , "ChatChannel Updated Successfully")
+                    val currentUserAccount = retrieveUserAccount(currentUserUID.value.toString())
+                    if (currentUserAccount != null) {
+                        currentUserAccount.chatChannelList =currentUserAccount.chatChannelList.toMutableList().apply { add(chatChannelFBID) }
+                        UserApiService.updateUserAccount(currentUserUID.value.toString(),currentUserAccount)
+                        Log.d("NewChatChannel TestCase","ChatChannelID updated in currentUser account")
+                    }
+
+                    val secondUserAccount =retrieveUserAccount(user2UUID)
+                    if (secondUserAccount != null){
+                        secondUserAccount.chatChannelList =secondUserAccount.chatChannelList.toMutableList().apply { add(chatChannelFBID) }
+                        UserApiService.updateUserAccount(user2UUID,secondUserAccount)
+                        Log.d("NewChatChannel TestCase" , "ChatChannelID updated in secondUserAccount")
+                    }
+
                 }
                 else{
                     Log.d("NewChatChannel TestCase" , "ChatChannel Update failed")
@@ -152,6 +188,12 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
 
         }
         Log.d(TAG,"Chat channel posted")
+        if (isChatChannelUpdate){
+            return chatChannel.channelID
+        }
+            else{
+                return ""
+            }
     }
     fun onChatsScreenMenuClick(){
         isMenuClicked=!isMenuClicked

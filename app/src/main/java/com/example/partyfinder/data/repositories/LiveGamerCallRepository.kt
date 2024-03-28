@@ -23,7 +23,9 @@ interface LiveGamerCallRepository{
     suspend fun fetchLiveGamerCallList()
     suspend fun updateLiveGamerCall(liveGamerCallId:String,liveGamerCall:LiveGamerCall):Response<ResponseBody>
 
-    suspend fun liveGamerCallSearchResult(gameName:String,NoOfPlayersinParty:String,NoOfPlayersRequired:String):List<LiveGamerCallSearchResult>
+    suspend fun liveGamerCallSearchResult(gameName:String,NoOfPlayersinParty:String,NoOfPlayersRequired:String,currentLiveGamerCallID:String):List<LiveGamerCallSearchResult>
+
+    suspend fun deleteLiveGamerCalls(liveGamerCallID:String)
 }
 
 object networkLiveGamerCallRepository : LiveGamerCallRepository{
@@ -69,7 +71,12 @@ object networkLiveGamerCallRepository : LiveGamerCallRepository{
         return response
     }
 
-    override suspend fun liveGamerCallSearchResult(gameName:String,NoOfPlayersinParty:String,NoOfPlayersRequired:String): List<LiveGamerCallSearchResult> {
+    override suspend fun liveGamerCallSearchResult(
+        gameName:String,
+        NoOfPlayersinParty:String,
+        NoOfPlayersRequired:String,
+        currentLiveGamerCallID:String,
+        ): List<LiveGamerCallSearchResult> {
         val resultList = mutableListOf<LiveGamerCallSearchResult>()
 
         liveGamerCallList.value?.liveGamerCallList?.values?.forEach {
@@ -77,7 +84,9 @@ object networkLiveGamerCallRepository : LiveGamerCallRepository{
             if (
                 resultLiveGamerCall.gameName == gameName &&
                 resultLiveGamerCall.noOfPlayersRequired.toString() == NoOfPlayersinParty &&
-                resultLiveGamerCall.noOfPlayersinParty.toString() ==NoOfPlayersRequired) {
+                resultLiveGamerCall.noOfPlayersinParty.toString() ==NoOfPlayersRequired &&
+                resultLiveGamerCall.liveGamerCallID != currentLiveGamerCallID
+                ) {
                 try {
                     val userAccountResponse =
                         UserApiService.getUserAccount(userID = resultLiveGamerCall.uid)
@@ -125,6 +134,8 @@ object networkLiveGamerCallRepository : LiveGamerCallRepository{
     }
 
 
-
+    override suspend fun deleteLiveGamerCalls(liveGamerCallID: String) {
+        LiveGamerCallApiService.deleteLiveGamerCall(liveGamerCallID)
+    }
 
 }

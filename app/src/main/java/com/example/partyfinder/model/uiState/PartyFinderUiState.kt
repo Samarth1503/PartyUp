@@ -14,5 +14,6 @@ data class PartyFinderUiState(
     val isNoOfPlayerRequiredDDExtended:Boolean=false,
     val listOfGameNameDDitems:List<String> = datasource.FindPartyGamesMenuItems,
     val listOfNoOfPLayerDDitems:List<String> = datasource.FindPartyNoOfPlayerMenuItems,
-    val liveGamerCallResultLits:List<LiveGamerCallSearchResult>? = null
+    val liveGamerCallResultLits:List<LiveGamerCallSearchResult>? = null,
+    val currentLiveGamerCallID:String =""
 )

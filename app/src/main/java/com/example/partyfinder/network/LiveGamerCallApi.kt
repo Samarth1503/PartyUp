@@ -7,6 +7,7 @@ import com.example.partyfinder.model.LiveGamerCallList
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -22,4 +23,7 @@ interface LiveGamerCallApi {
 
     @PUT("liveGamerCalls/data/{liveGamerCallId}/.json")
     suspend fun updateLiveGamerCall(@Path("liveGamerCallId") liveGamerCallId: String, @Body liveGamerCall: LiveGamerCall): Response<ResponseBody>
+
+    @DELETE("liveGamerCalls/data/{liveGamerCallId}/.json")
+    suspend fun deleteLiveGamerCall(@Path("liveGamerCallId") liveGamerCallID:String)
 }

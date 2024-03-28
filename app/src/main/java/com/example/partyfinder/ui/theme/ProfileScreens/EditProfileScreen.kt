@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -134,7 +135,8 @@ fun EditProfileScreen(
                                 .clip(RoundedCornerShape(50))
                                 .align(Alignment.BottomStart),
                             error = painterResource(id = R.drawable.close_blue),
-                            placeholder = painterResource(id = R.drawable.usericon_white)
+                            placeholder = painterResource(id = R.drawable.usericon_white),
+                            contentScale =  ContentScale.Crop
                         )
                     }
                 }
@@ -184,7 +186,8 @@ fun EditProfileScreen(
                                 .clip(RoundedCornerShape(50))
                                 .align(Alignment.BottomStart),
                             error = painterResource(id = R.drawable.close_blue),
-                            placeholder = painterResource(id = R.drawable.usericon_white)
+                            placeholder = painterResource(id = R.drawable.usericon_white),
+                            contentScale =  ContentScale.Crop
                         )
                     }
                     Surface(

@@ -94,18 +94,17 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
 
                 if(type == "profile"){
                     _profileUiState.update { currentState -> currentState.copy(
-                        profileImageLink = downloadUrl
+                        profilePic = downloadUrl
                     ) }
                 } else {
                     _profileUiState.update { currentState -> currentState.copy(
                         coverImageLink = downloadUrl
                     ) }
                 }
-                Log.d("UploadImage", "Profile UI state updated with \n1: ${_profileUiState.value.profileImageLink}\n2: ${_profileUiState.value.coverImageLink}")
+                Log.d("UploadImage", "Profile UI state updated with \n1: ${_profileUiState.value.profilePic}\n2: ${_profileUiState.value.coverImageLink}")
             }
         }.addOnFailureListener {
             Log.d("UploadImage", "Upload task failed", it)
-            // Handle unsuccessful uploads
         }
     }
 
@@ -171,32 +170,38 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     }
 
     fun onSaveChangesClicked(navigateToHomeScreen: () -> Unit) {
+        Log.d("onSaveChangesClicked UploadImage 1", "Profile UI state updated with \n1: ${_profileUiState.value.profilePic}\n2: ${_profileUiState.value.coverImageLink}")
         if (currentUserUID.value != "") {
             val db = FirebaseDatabase.getInstance().getReference("users")
 
             db.child("data").child(currentUserUID.value!! ).child("gamerID").setValue(_profileUiState.value.gamerID)
             db.child("data").child(currentUserUID.value!! ).child("gamerTag").setValue(_profileUiState.value.gamerTag)
             db.child("data").child(currentUserUID.value!! ).child("bio").setValue(_profileUiState.value.bio)
-            db.child("data").child(currentUserUID.value!! ).child("profilePic").setValue(_profileUiState.value.profileImageLink)
-            db.child("data").child(currentUserUID.value!! ).child("bannerPic").setValue(_profileUiState.value.coverImageLink)
             db.child("data").child(currentUserUID.value!! ).child("rank1GameName").setValue(_profileUiState.value.rank1GameName)
             db.child("data").child(currentUserUID.value!! ).child("rank1GameRank").setValue(_profileUiState.value.rank1GameRank)
             db.child("data").child(currentUserUID.value!! ).child("rank2GameName").setValue(_profileUiState.value.rank2GameName)
             db.child("data").child(currentUserUID.value!! ).child("rank2GameRank").setValue(_profileUiState.value.rank2GameRank)
             db.child("data").child(currentUserUID.value!! ).child("rank3GameName").setValue(_profileUiState.value.rank3GameName)
             db.child("data").child(currentUserUID.value!! ).child("rank3GameRank").setValue(_profileUiState.value.rank3GameRank)
-                .addOnSuccessListener { Log.d("onSaveChangesClicked TestCase", "Realtime Database update successful!") }
+            db.child("data").child(currentUserUID.value!! ).child("coverImageLink").setValue(_profileUiState.value.coverImageLink)
+            db.child("data").child(currentUserUID.value!! ).child("profilePic").setValue(_profileUiState.value.profilePic)
+                .addOnSuccessListener { Log.d("onSaveChangesClicked TestCase", "Realtime Database update successful!")
+                    val editedProfileData = db.child("data").child(currentUserUID.value!!).get()
+                    editedProfileData.addOnSuccessListener { dataSnapshot ->
+                        val profileData = dataSnapshot.getValue(ProfileUiState::class.java)
+                        Log.d("onSaveChangesClicked TestCase 1", "Profile data: $profileData")
+
+                        Log.d("onSaveChangesClicked UploadImage 2", "Profile UI state updated with \n1: ${_profileUiState.value.profilePic}\n2: ${_profileUiState.value.coverImageLink}")
+                    }
+                }
                 .addOnFailureListener { e -> Log.w("onSaveChangesClicked TestCase", "Error updating Realtime Database", e) }
 
-            val editedProfileData = db.child("data").child(currentUserUID.value!!).get()
-            Log.d("onSaveChangesClicked TestCase", editedProfileData.toString())
         } else {
             Log.d("onSaveChangesClicked TestCase", "No local UID found")
         }
 
         navigateToHomeScreen()
     }
-
 
     fun updateStatus(changedStatus: Status) {
         Log.d("PVM TestCase", "updateStatus $changedStatus")
@@ -224,6 +229,16 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
                 isChangeStatusExpanded = !isExpanded
             )}
             Log.d("PVM TestCase", "onChangeStatusClicked 4 ${_profileUiState.value.status}")
+        }
+        if (currentUserUID.value != "") {
+            val db = FirebaseDatabase.getInstance().getReference("users")
+
+            db.child("data").child(currentUserUID.value!! ).child("status").setValue(_profileUiState.value.status)
+                .addOnSuccessListener { Log.d("onSaveChangesClicked TestCase", "Realtime Database update successful!")
+                }
+                .addOnFailureListener { e -> Log.w("onSaveChangesClicked TestCase", "Error updating Realtime Database", e) }
+        } else {
+            Log.d("onSaveChangesClicked TestCase", "No local UID found")
         }
     }
 
@@ -278,7 +293,7 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
                             rank3GameName = firebaseProfileData.rank3GameName,
                             rank3GameRank = firebaseProfileData.rank3GameRank,
                             coverImageLink = firebaseProfileData.coverImageLink,
-                            profileImageLink = firebaseProfileData.profileImageLink,
+                            profilePic = firebaseProfileData.profilePic,
                             UserGamerCalls = firebaseProfileData.UserGamerCalls
                         )
                     }

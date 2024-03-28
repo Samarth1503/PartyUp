@@ -9,7 +9,7 @@ data class ProfileUiState(
     val gamerTag:String = "#TAG",
     val status: Status = Status(),
     val bio:String = "Hey,I like to play games",
-    val profileImageLink: String = "",
+    val profilePic: String = "",
     val coverImageLink: String = "",
     val rank1GameName :String = "",
     val rank1GameRank:String = "",

@@ -9,7 +9,6 @@ class UserAccount(
     var gamerTag: String = "",
     var bio: String = "",
     var profilePic: String= "",
-    var profileBanner: String = "",
     val coverImageLink: String = "",
     var rank1GameName :String = "",
     var rank1GameRank:String = "",

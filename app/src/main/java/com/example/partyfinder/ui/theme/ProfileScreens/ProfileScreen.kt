@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -117,7 +118,8 @@ fun ProfileBannerWidget(
                         .crossfade(true)
                         .build(),
                     contentDescription = "Banner Image",
-                    modifier = Modifier
+                    modifier = Modifier,
+                    contentScale =  ContentScale.Crop
                 )
             }
         }
@@ -161,7 +163,8 @@ fun ProfileBannerWidget(
                     .clip(RoundedCornerShape(50))
                     .align(Alignment.BottomStart),
                 error = painterResource(id = R.drawable.close_blue),
-                placeholder = painterResource(id = R.drawable.usericon_white)
+                placeholder = painterResource(id = R.drawable.usericon_white),
+                contentScale =  ContentScale.Crop
             )
         }
     }

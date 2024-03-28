@@ -135,7 +135,7 @@ fun PartyFinderApp(
     NavHost(
         navController = navController,
         startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-//        startDestination = PartyFinderScreen.ProfileScreen.name
+//        startDestination = PartyFinderScreen.RegisterScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -219,7 +219,7 @@ fun PartyFinderApp(
                                 navigateAfterPost = { navController.navigateUp() },
                                 GamerID = profileViewModel._profileUiState.value.gamerID,
                                 GamerTag = profileViewModel._profileUiState.value.gamerTag,
-                                GamerProfilePic = profileViewModel._profileUiState.value.profileImageLink
+                                GamerProfilePic = profileViewModel._profileUiState.value.profilePic
                             ) }
                     )
                 }
@@ -397,7 +397,7 @@ fun PartyFinderApp(
                 profileBannerWidget = {
                     ProfileBannerWidget(
                         onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name) },
-                        profilePic = profileViewModel._profileUiState.value.profileImageLink,
+                        profilePic = profileViewModel._profileUiState.value.profilePic,
                         coverImage = profileViewModel._profileUiState.value.coverImageLink
                     ) },
                 profileScreenContent = {
@@ -437,7 +437,7 @@ fun PartyFinderApp(
                 navigateBack = { navigateBack(navController) },
                 navigateToHomeScreen = {navController.navigate(PartyFinderScreen.HomeScreen.name)},
                 userUID = localUserUID.value,
-                profilePic = profileUiState.profileImageLink
+                profilePic = profileUiState.profilePic
             )
         }
 

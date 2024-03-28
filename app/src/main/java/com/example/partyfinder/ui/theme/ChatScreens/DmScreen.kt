@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -376,7 +377,8 @@ fun DmChatInput(
                 unfocusedPlaceholderColor = colorResource(id = R.color.primary),
                 focusedTextColor = colorResource(id = R.color.SubliminalText),
                 unfocusedTextColor = colorResource(id = R.color.SubliminalText),
-                cursorColor = colorResource(id = R.color.primary))
+                cursorColor = colorResource(id = R.color.primary)),
+            keyboardActions = KeyboardActions(onDone = {onSendButtonClick()})
         )
 
         Image (

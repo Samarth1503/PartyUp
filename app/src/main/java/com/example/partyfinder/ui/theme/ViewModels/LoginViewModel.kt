@@ -31,8 +31,10 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
     var loginFailed = mutableStateOf(false)
     var loginIsSuccessful = mutableStateOf(false)
 
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
+//            Log.d("LocalUser TestCase", userRepository.getUserUID())
             val userEmail = userRepository.getUserEmail()
             if (userEmail != null) {
                 _loginUIState.update { currentState ->
@@ -106,6 +108,7 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
         if (loginIsSuccessful.value){
             viewModelScope.launch {
                 userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+//                Log.d("LocalUser TestCase", userRepository.getUserUID())
             }
         }
     }

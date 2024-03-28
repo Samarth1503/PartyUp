@@ -46,11 +46,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.partyfinder.R
 import com.example.partyfinder.ui.theme.ViewModels.ProfileViewModel
 
@@ -110,13 +114,31 @@ fun EditProfileScreen(
         ) {
             EditProfileScreenTopBar(navigateBack = navigateBack)
 
+//            Cover/Banner section
             Box(modifier = Modifier.height(dimensionResource(id = R.dimen.Profile_Banner_Box_Height))){
                 Surface(modifier= Modifier
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.Profile_banner_height)),
                     color = colorResource(id = R.color.on_tertiary)
                 ) {
-
+                    if (coverPicImageUri != null){
+                        AsyncImage(
+                            model = ImageRequest.Builder(context = LocalContext.current)
+                                .data(coverPicImageUri)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .padding(start = dimensionResource(id = R.dimen.main_padding))
+                                .height(dimensionResource(id = R.dimen.profile_picture_height))
+                                .width(dimensionResource(id = R.dimen.profile_picture_height))
+                                .clip(RoundedCornerShape(50))
+                                .align(Alignment.BottomStart),
+                            error = painterResource(id = R.drawable.close_blue),
+                            placeholder = painterResource(id = R.drawable.usericon_white),
+                            contentScale =  ContentScale.Crop
+                        )
+                    }
                 }
                 Surface(
                     modifier= Modifier
@@ -126,28 +148,48 @@ fun EditProfileScreen(
                         .align(Alignment.TopEnd),
                     shape = RoundedCornerShape(50),
                     color = colorResource(id = R.color.primary)
-                )
-                {
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
                         contentDescription ="edit profile",
                         modifier = Modifier.clickable {
                             coverPhotoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
-                        )
+                    )
                 }
+
+//                ProfilePic section
                 Box(modifier=Modifier.align(Alignment.BottomStart)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.luffy),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(start = dimensionResource(id = R.dimen.main_padding))
-                            .height(dimensionResource(id = R.dimen.profile_picture_height))
-                            .width(dimensionResource(id = R.dimen.profile_picture_height))
-                            .clip(RoundedCornerShape(50))
-
-                    )
+                    if (profilePicImageUri == null){
+                        Image(
+                            painter = painterResource(id = R.drawable.luffy),
+                            contentDescription =null,
+                            modifier = Modifier
+                                .padding(start = dimensionResource(id = R.dimen.main_padding))
+                                .height(dimensionResource(id = R.dimen.profile_picture_height))
+                                .width(dimensionResource(id = R.dimen.profile_picture_height))
+                                .clip(RoundedCornerShape(50))
+                                .align(Alignment.BottomStart),
+                        )
+                    } else {
+                        AsyncImage(
+                            model = ImageRequest.Builder(context = LocalContext.current)
+                                .data(profilePicImageUri)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .padding(start = dimensionResource(id = R.dimen.main_padding))
+                                .height(dimensionResource(id = R.dimen.profile_picture_height))
+                                .width(dimensionResource(id = R.dimen.profile_picture_height))
+                                .clip(RoundedCornerShape(50))
+                                .align(Alignment.BottomStart),
+                            error = painterResource(id = R.drawable.close_blue),
+                            placeholder = painterResource(id = R.drawable.usericon_white),
+                            contentScale =  ContentScale.Crop
+                        )
+                    }
                     Surface(
                         modifier= Modifier
                             .height(36.dp)

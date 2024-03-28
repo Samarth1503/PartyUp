@@ -24,7 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -142,8 +143,7 @@ fun GamersCallContent(
                     callDes = gamerCall.callDes,
                     partySize = gamerCall.partySize,
                     profilePic = gamerCall.ProfilePic,
-                    gamerID = gamerCall.gamerID,
-                    gamerTag = gamerCall.gamerTag
+                    gamerID = gamerCall.gamerID
                 )
             }
 
@@ -169,7 +169,6 @@ fun G_Calls(
     modifier: Modifier = Modifier,
     profilePic:String,
     gamerID:String,
-    gamerTag:String,
     gameName:String,
     partySize:Int,
     callDes:String
@@ -209,7 +208,7 @@ fun G_Calls(
             ) {
 
                 AsyncImage(
-                    model =ImageRequest.Builder(context = LocalContext.current)
+                    model = ImageRequest.Builder(context = LocalContext.current)
                         .data(profilePic)
                         .crossfade(true)
                         .build(),
@@ -218,10 +217,8 @@ fun G_Calls(
                         .padding(top = 12.dp, end = 8.dp)
                         .size(60.dp)
                         .clip(RoundedCornerShape(50)),
-                    error= painterResource(id = R.drawable.close_blue),
+                    error = painterResource(id = R.drawable.close_blue),
                     placeholder = painterResource(id = R.drawable.usericon_white)
-
-
                 )
 
                 Column {
@@ -243,7 +240,7 @@ fun G_Calls(
                             style = MaterialTheme.typography.titleSmall,
                             color = colorResource(id = R.color.white),
                             modifier = modifier
-                                .padding(top = 12.dp)
+                                .padding(start = 4.dp,top = 8.dp)
                         )
 
                         if (!isMenuVisible) {
@@ -268,77 +265,73 @@ fun G_Calls(
 
 //                Name + Other details
                     Row(
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(top = 4.dp)
                             .background(
                                 color = colorResource(id = R.color.DarkBG),
                                 shape = RoundedCornerShape(15.dp)
                             ),
-                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
-//                    horizontalArrangement = Arrangement.End
                     ) {
                         Text(
                             text = gamerID,
                             style = MaterialTheme.typography.labelSmall,
                             color = colorResource(id = R.color.SubliminalText),
-                            modifier = modifier
+                            modifier = Modifier
                                 .padding(start = 4.dp)
+                                .width(94.dp),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 2
                         )
 
-                        Text(
-                            text = gamerTag,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = colorResource(id = R.color.SubliminalText),
-                            modifier = modifier
-                                .padding(start = 2.dp)
-                        )
-
-                        Spacer(modifier = modifier.weight(1f))
+                        Spacer(modifier = Modifier.weight(1f))
 
 //                    Icons
-                        Row(
+                        Row( modifier = Modifier.padding(top = 12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.playericon_white),
                                 contentDescription = "NoOfPlayersIcon",
-                                modifier = modifier
+                                modifier = Modifier
+                                    .padding(bottom = 1.dp)
+                                    .size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = partySize.toString(),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = colorResource(id = R.color.white),
+                                modifier = Modifier
+                                    .padding(bottom = 2.dp)
+                            )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                            Image(
+                                painter = painterResource(id = R.drawable.dmicon_white),
+                                contentDescription = "Chat",
+                                modifier = Modifier
                                     .padding(bottom = 1.dp)
                                     .size(16.dp)
                             )
                             Spacer(modifier = modifier.width(4.dp))
                             Text(
-                                text =partySize.toString(),
+                                text = "PartyUp!",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = colorResource(id = R.color.white),
-                                modifier = modifier
-                                    .padding(bottom = 2.dp)
+                                modifier = Modifier
+                                    .padding(end = 12.dp, bottom = 2.dp)
                             )
                         }
-
-                        Spacer(modifier = modifier.width(16.dp))
-
-                        Image(
-                            painter = painterResource(id = R.drawable.dmicon_white),
-                            contentDescription = "NoOfPlayersIcon",
-                            modifier = modifier
-                                .padding(bottom = 1.dp)
-                                .size(16.dp)
-                        )
-                        Spacer(modifier = modifier.width(4.dp))
-                        Text(
-                            text = "PartyUp!",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = colorResource(id = R.color.white),
-                            modifier = modifier
-                                .padding(end = 16.dp, bottom = 2.dp)
-                        )
                     }
                 }
             }
 
-            Divider(color = colorResource(id = R.color.CallWidgetBorder), thickness = 1.dp)
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = colorResource(id = R.color.CallWidgetBorder)
+            )
 
 //        Description
             Row(

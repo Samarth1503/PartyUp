@@ -1,7 +1,10 @@
 package com.example.partyfinder.ui.theme.ProfileScreens
 
+import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,15 +33,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.partyfinder.R
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.Status
+import com.example.partyfinder.model.uiState.Ranks
 import com.example.partyfinder.ui.theme.GamersCallScreens.G_Calls
 
 //@Preview
@@ -93,7 +101,9 @@ fun ProfileScreen(
 @Composable
 fun ProfileBannerWidget(
     modifier: Modifier = Modifier,
-    onEditProfileClick: () -> Unit
+    onEditProfileClick: () -> Unit,
+    profilePic: String,
+    coverImage: String
 ){
     Box(modifier =modifier.height(dimensionResource(id = R.dimen.Profile_Banner_Box_Height))){
         Surface(modifier= Modifier
@@ -101,7 +111,17 @@ fun ProfileBannerWidget(
             .height(dimensionResource(id = R.dimen.Profile_banner_height)),
             color = colorResource(id = R.color.on_tertiary)
         ) {
-
+            if (coverImage != null || coverImage != ""){
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(coverImage)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Banner Image",
+                    modifier = Modifier,
+                    contentScale =  ContentScale.Crop
+                )
+            }
         }
         Surface(
             modifier= Modifier
@@ -112,25 +132,41 @@ fun ProfileBannerWidget(
                 .align(Alignment.TopEnd),
             shape = RoundedCornerShape(50),
             color = colorResource(id = R.color.primary)
-        )
-            {
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
                 contentDescription =null,
                 modifier=Modifier.padding(bottom = 4.dp, start = 1.dp))
         }
-        Image(
-            painter = painterResource(id = R.drawable.luffy),
-            contentDescription =null,
-            modifier= Modifier
-                .padding(start = dimensionResource(id = R.dimen.main_padding))
-                .height(dimensionResource(id = R.dimen.profile_picture_height))
-                .width(dimensionResource(id = R.dimen.profile_picture_height))
-                .clip(RoundedCornerShape(50))
-                .align(Alignment.BottomStart)
-
-
-        )
+        if (profilePic == null || profilePic == ""){
+            Image(
+                painter = painterResource(id = R.drawable.luffy),
+                contentDescription =null,
+                modifier = Modifier
+                    .padding(start = dimensionResource(id = R.dimen.main_padding))
+                    .height(dimensionResource(id = R.dimen.profile_picture_height))
+                    .width(dimensionResource(id = R.dimen.profile_picture_height))
+                    .clip(RoundedCornerShape(50))
+                    .align(Alignment.BottomStart),
+            )
+        } else {
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(profilePic)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Profile Picture",
+                modifier = Modifier
+                    .padding(start = dimensionResource(id = R.dimen.main_padding))
+                    .height(dimensionResource(id = R.dimen.profile_picture_height))
+                    .width(dimensionResource(id = R.dimen.profile_picture_height))
+                    .clip(RoundedCornerShape(50))
+                    .align(Alignment.BottomStart),
+                error = painterResource(id = R.drawable.close_blue),
+                placeholder = painterResource(id = R.drawable.usericon_white),
+                contentScale =  ContentScale.Crop
+            )
+        }
     }
 }
 
@@ -140,6 +176,7 @@ fun ProfileScreenContent(
     profileScreenBioWidget:@Composable ()->Unit,
     profileRanksWidget:@Composable ()->Unit,
     profileMyGamerCallsWidget:@Composable () ->Unit,
+    logoutButtonClicked: ()-> Unit,
     modifier: Modifier = Modifier,
     ){
     Column {
@@ -147,6 +184,26 @@ fun ProfileScreenContent(
         profileScreenBioWidget()
         profileRanksWidget()
         profileMyGamerCallsWidget()
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center) {
+            Button(
+                modifier = Modifier
+                    .padding(16.dp, 8.dp)
+                    .clip(RoundedCornerShape(1.dp)),
+                onClick = { logoutButtonClicked() },
+                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG),
+                    disabledContainerColor = colorResource(id = R.color.CallWidgetBorder),
+                    disabledContentColor = colorResource(id = R.color.SubliminalText)),
+                border = BorderStroke(1.dp, colorResource(id = R.color.CallWidgetBorder)),
+            ) {
+                Text(
+                    text = "Logout",
+                    color = colorResource(id = R.color.primary)
+                )
+            }
+        }
     }
 }
 
@@ -171,23 +228,28 @@ fun ProfileDataWidget(
         modifier=modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
     ) {
-        Column(modifier= Modifier.padding(16.dp)) {
+        Column(modifier= Modifier.padding(start = dimensionResource(id = R.dimen.main_padding),16.dp,16.dp,16.dp)) {
             Text(
                 text = if (gamerID == "" || gamerID == null){ "GamerID" } else { gamerID },
                 color = colorResource(id = R.color.primary),
-                style=MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(start = 4.dp)
             )
-            Text(text = gamerTag, color = colorResource(id = R.color.primary))
+            Text(text = gamerTag, color = colorResource(id = R.color.primary),
+                modifier = Modifier.padding(start = 4.dp))
 
-            Row (verticalAlignment = Alignment.CenterVertically){
+            Spacer(modifier = Modifier.height(4.dp))
 
+            Row (verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 4.dp))
+            {
                Image(painter = painterResource(userStatus.second) , contentDescription = null)
 
                 Text(
                     text = stringResource(id = userStatus.first),
                     color = colorResource(id = R.color.white),
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier= Modifier.padding(start=4.dp)
+                    modifier= Modifier.padding(start = 4.dp)
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -227,8 +289,18 @@ fun ProfileScreenBioWidget(
             .fillMaxWidth()
             .defaultMinSize(minHeight = 100.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))) {
-        Column(modifier= Modifier.padding(16.dp)) {
-            Text(text = "Bio", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
+        Column(modifier= Modifier.padding(22.dp, 16.dp)
+        ) {
+            Text(
+                text = "Bio",
+                fontSize = 20.sp,
+                color = colorResource(id = R.color.primary),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             Text(color = colorResource(id = R.color.white),
                 style = MaterialTheme.typography.bodyLarge,
                 text = if(gamerBio=="")"Edit Profile to enter your Bio" else gamerBio
@@ -238,19 +310,36 @@ fun ProfileScreenBioWidget(
 }
 
 @Composable
-fun ProfileRanksWidget(onUpdateRanksClick: () -> Unit,
-    modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)){
-    Card(modifier=modifier.wrapContentHeight(), colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
+fun ProfileRanksWidget(
+    onUpdateRanksClick: () -> Unit,
+    ranks: List<Ranks>
+){
+    Card(
+        modifier = Modifier
+            .padding(16.dp, 16.dp)
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
     ) {
-        Column(modifier= Modifier.padding(16.dp)) {
-            Row(modifier= Modifier, verticalAlignment = Alignment.CenterVertically) {
+
+        var buttonText : String
+        if (ranks.isEmpty()){
+            buttonText = "Add Ranks"
+        } else {
+            buttonText = "Update Ranks"
+        }
+        Column(modifier= Modifier.padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "Ranks",
                     fontSize = 20.sp,
                     color= colorResource(id = R.color.primary),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(start = 6.dp,bottom = 8.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
@@ -258,23 +347,53 @@ fun ProfileRanksWidget(onUpdateRanksClick: () -> Unit,
                     onClick = { onUpdateRanksClick()},
                     modifier = Modifier.shadow(elevation = 16.dp)
                 ) {
-                    Text(text = "Update Ranks", style = MaterialTheme.typography.titleSmall)
+                    Text(text = buttonText, style = MaterialTheme.typography.titleSmall)
                 }
             }
-            ProfileRankDisplay()
-            ProfileRankDisplay()
-            ProfileRankDisplay()
+
+
+            if (ranks.isEmpty()){
+                Text(
+                    text = "No Ranks to Display",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.white),
+                    modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                )
+            }
+            // Iterate over the ranks list and call ProfileRankDisplay for each Ranks object
+            ranks.forEachIndexed { index, rank ->
+                ProfileRankDisplay(gameNumber = index + 1, gameName = rank.gameName, rankName = rank.gameRank)
+            }
         }
     }
 }
 
+
 @Composable
-fun ProfileRankDisplay(modifier: Modifier = Modifier
-    .fillMaxWidth()
-    .padding(top = 8.dp)){
-    Row (modifier=modifier){
+fun ProfileRankDisplay(
+    gameNumber: Int,
+    gameName: String,
+    rankName: String,
+){
+    val rankIcon = when (gameNumber) {
+        3 -> {
+            painterResource(id = R.drawable.rank3_icon)
+        }
+        2 -> {
+            painterResource(id = R.drawable.rank2_icon)
+        }
+        else -> {
+            painterResource(id = R.drawable.rank1_icon)
+        }
+    }
+
+    Row (modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
         Image(
-            painter = painterResource(id = R.drawable.rank1_icon),
+            painter = rankIcon,
             contentDescription = null,
             modifier= Modifier
                 .padding(top = 8.dp)
@@ -283,66 +402,71 @@ fun ProfileRankDisplay(modifier: Modifier = Modifier
 
         )
         Column {
-            Text(text = "OverWatch 2", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
-            Text(text = "Gold", color = colorResource(id = R.color.white), style = MaterialTheme.typography.bodyMedium)
+            Text(text = gameName, color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
+            Text(text = rankName, color = colorResource(id = R.color.white), style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
 
 
 @Composable
-fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),userGamerCalls:GamerCallsList?){
+fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),
+                              userGamerCalls:GamerCallsList?){
     Card(modifier= modifier
         .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
         ) {
         Column(modifier= Modifier.padding(16.dp)) {
-            Text(text = "My Gamer Calls", color = colorResource(id = R.color.primary), style = MaterialTheme.typography.titleSmall)
-                if (userGamerCalls == null){
-                    Row(modifier= Modifier
-                        .padding(
-                            top = dimensionResource(id = R.dimen.main_padding),
-                            end = dimensionResource(
-                                id = R.dimen.main_padding
-                            )
+            Text(
+                text = "My Gamer Calls",
+                fontSize = 20.sp,
+                color = colorResource(id = R.color.primary),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(start = 6.dp, top = 4.dp)
+            )
+            if (userGamerCalls == null){
+                Row(modifier= Modifier
+                    .padding(
+                        top = dimensionResource(id = R.dimen.main_padding),
+                        end = dimensionResource(
+                            id = R.dimen.main_padding
                         )
-                        .wrapContentHeight()
-                        .fillMaxWidth()) {
-                        Text(
-                            text = "No Gamer Calls Present add a gamer Call Right Now",
-                            color = colorResource(id = R.color.white),
-                            style = MaterialTheme.typography.titleSmall,
-                            modifier= Modifier
-                                .width(200.dp)
-                                .weight(1f))
+                    )
+                    .wrapContentHeight()
+                    .fillMaxWidth()) {
+                    Text(
+                        text = "No Gamer Calls Present add a gamer Call Right Now",
+                        color = colorResource(id = R.color.white),
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier= Modifier
+                            .width(200.dp)
+                            .weight(1f))
 
-                        Image(
-                            modifier= Modifier
-                                .width(dimensionResource(id = R.dimen.profile_add_gamercall_icon_size))
-                                .height(
-                                    dimensionResource(id = R.dimen.profile_add_gamercall_icon_size)
-                                ),
-                            painter = painterResource(id = R.drawable.new_chat_img),
-                            contentDescription = null)
-                    }
+                    Image(
+                        modifier= Modifier
+                            .width(dimensionResource(id = R.dimen.profile_add_gamercall_icon_size))
+                            .height(
+                                dimensionResource(id = R.dimen.profile_add_gamercall_icon_size)
+                            ),
+                        painter = painterResource(id = R.drawable.new_chat_img),
+                        contentDescription = null)
                 }
-            else
-                {
-                    Column(modifier=Modifier.padding(top = 16.dp)) {
-                        if (userGamerCalls != null) {
-                            userGamerCalls.gamerCalls.forEach(){
-                                G_Calls(
-                                    profilePic = it.value.ProfilePic,
-                                    gamerID = it.value.gamerID,
-                                    gamerTag = it.value.gamerTag,
-                                    gameName = it.value.gameName,
-                                    partySize = it.value.partySize,
-                                    callDes =it.value.callDes
-                                )
-                            }
+            } else {
+                Column(modifier=Modifier.padding(top = 16.dp)) {
+                    if (userGamerCalls != null) {
+                        userGamerCalls.gamerCalls.forEach(){
+                            Log.d("Profile-G-Calls TestCase ", "${it.value.ProfilePic} \n${it.value.gamerID}")
+                            G_Calls(
+                                profilePic = it.value.ProfilePic,
+                                gamerID = it.value.gamerID,
+                                gameName = it.value.gameName,
+                                partySize = it.value.partySize,
+                                callDes =it.value.callDes
+                            )
                         }
                     }
                 }
+            }
         }
     }
 }

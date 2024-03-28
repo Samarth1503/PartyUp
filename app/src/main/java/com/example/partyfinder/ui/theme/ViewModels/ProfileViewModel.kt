@@ -1,6 +1,5 @@
 package com.example.partyfinder.ui.theme.ViewModels
 
-import android.content.ContentValues.TAG
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -14,9 +13,13 @@ import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.Status
 import com.example.partyfinder.model.uiState.ProfileUiState
+import com.example.partyfinder.model.uiState.Ranks
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Suppress("NAME_SHADOWING")
@@ -31,7 +35,7 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
 
 //    val userUID = "dtU0UnHSqgaM5BMsdsVqyQwaHW22"
 
-    private val _profileUiState = MutableStateFlow(ProfileUiState())
+    val _profileUiState = MutableStateFlow(ProfileUiState())
     val profileState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
 
     // Database Variable
@@ -50,23 +54,16 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     val currentUserUID :LiveData<String> get() = _currentUserUID
 
     init {
-        if (retrievedUserUID == null){
-            viewModelScope.launch {
-                while(isActive){
-                    if (userUIDSharedViewModel.currentUserUID.value != null) {
-                        _currentUserUID.value = userUIDSharedViewModel.currentUserUID.value!!
-                    } else {
-                        _currentUserUID.value = ""
-                    }
-                    delay(1000)
+        viewModelScope.launch {
+            while (isActive) {
+                _currentUserUID.value = retrievedUserUID ?: userUIDSharedViewModel.currentUserUID.value
+                if (_currentUserUID.value != null) {
+                    Log.d("ProfileVM TestCase", "Init If Triggered")
+                    fetchData(_currentUserUID.value)
+                    break
                 }
+                delay(1000)
             }
-        }
-        else{
-            _currentUserUID.value = retrievedUserUID!!
-//            viewModelScope.launch {
-//                fetchData(_currentUserUID.value)
-//            }
         }
 
         viewModelScope.launch {
@@ -97,18 +94,17 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
 
                 if(type == "profile"){
                     _profileUiState.update { currentState -> currentState.copy(
-                        profileImageLink = downloadUrl
+                        profilePic = downloadUrl
                     ) }
                 } else {
                     _profileUiState.update { currentState -> currentState.copy(
                         coverImageLink = downloadUrl
                     ) }
                 }
-                Log.d("UploadImage", "Profile UI state updated")
+                Log.d("UploadImage", "Profile UI state updated with \n1: ${_profileUiState.value.profilePic}\n2: ${_profileUiState.value.coverImageLink}")
             }
         }.addOnFailureListener {
             Log.d("UploadImage", "Upload task failed", it)
-            // Handle unsuccessful uploads
         }
     }
 
@@ -174,32 +170,38 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     }
 
     fun onSaveChangesClicked(navigateToHomeScreen: () -> Unit) {
+        Log.d("onSaveChangesClicked UploadImage 1", "Profile UI state updated with \n1: ${_profileUiState.value.profilePic}\n2: ${_profileUiState.value.coverImageLink}")
         if (currentUserUID.value != "") {
             val db = FirebaseDatabase.getInstance().getReference("users")
 
             db.child("data").child(currentUserUID.value!! ).child("gamerID").setValue(_profileUiState.value.gamerID)
-            db.child("data").child(currentUserUID.value!! ).child("gamerTAG").setValue(_profileUiState.value.gamerTag)
+            db.child("data").child(currentUserUID.value!! ).child("gamerTag").setValue(_profileUiState.value.gamerTag)
             db.child("data").child(currentUserUID.value!! ).child("bio").setValue(_profileUiState.value.bio)
-            db.child("data").child(currentUserUID.value!! ).child("profilePic").setValue(_profileUiState.value.profileImageLink)
-            db.child("data").child(currentUserUID.value!! ).child("bannerPic").setValue(_profileUiState.value.coverImageLink)
             db.child("data").child(currentUserUID.value!! ).child("rank1GameName").setValue(_profileUiState.value.rank1GameName)
             db.child("data").child(currentUserUID.value!! ).child("rank1GameRank").setValue(_profileUiState.value.rank1GameRank)
             db.child("data").child(currentUserUID.value!! ).child("rank2GameName").setValue(_profileUiState.value.rank2GameName)
             db.child("data").child(currentUserUID.value!! ).child("rank2GameRank").setValue(_profileUiState.value.rank2GameRank)
             db.child("data").child(currentUserUID.value!! ).child("rank3GameName").setValue(_profileUiState.value.rank3GameName)
             db.child("data").child(currentUserUID.value!! ).child("rank3GameRank").setValue(_profileUiState.value.rank3GameRank)
-                .addOnSuccessListener { Log.d(TAG, "Realtime Database update successful!") }
-                .addOnFailureListener { e -> Log.w(TAG, "Error updating Realtime Database", e) }
+            db.child("data").child(currentUserUID.value!! ).child("coverImageLink").setValue(_profileUiState.value.coverImageLink)
+            db.child("data").child(currentUserUID.value!! ).child("profilePic").setValue(_profileUiState.value.profilePic)
+                .addOnSuccessListener { Log.d("onSaveChangesClicked TestCase", "Realtime Database update successful!")
+                    val editedProfileData = db.child("data").child(currentUserUID.value!!).get()
+                    editedProfileData.addOnSuccessListener { dataSnapshot ->
+                        val profileData = dataSnapshot.getValue(ProfileUiState::class.java)
+                        Log.d("onSaveChangesClicked TestCase 1", "Profile data: $profileData")
 
-            val editedProfileData = db.child("data").child(currentUserUID.value!! ).get()
-            Log.d(TAG, editedProfileData.toString())
+                        Log.d("onSaveChangesClicked UploadImage 2", "Profile UI state updated with \n1: ${_profileUiState.value.profilePic}\n2: ${_profileUiState.value.coverImageLink}")
+                    }
+                }
+                .addOnFailureListener { e -> Log.w("onSaveChangesClicked TestCase", "Error updating Realtime Database", e) }
+
         } else {
-            Log.d(TAG, "No local UID found")
+            Log.d("onSaveChangesClicked TestCase", "No local UID found")
         }
 
         navigateToHomeScreen()
     }
-
 
     fun updateStatus(changedStatus: Status) {
         Log.d("PVM TestCase", "updateStatus $changedStatus")
@@ -228,107 +230,86 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
             )}
             Log.d("PVM TestCase", "onChangeStatusClicked 4 ${_profileUiState.value.status}")
         }
+        if (currentUserUID.value != "") {
+            val db = FirebaseDatabase.getInstance().getReference("users")
+
+            db.child("data").child(currentUserUID.value!! ).child("status").setValue(_profileUiState.value.status)
+                .addOnSuccessListener { Log.d("onSaveChangesClicked TestCase", "Realtime Database update successful!")
+                }
+                .addOnFailureListener { e -> Log.w("onSaveChangesClicked TestCase", "Error updating Realtime Database", e) }
+        } else {
+            Log.d("onSaveChangesClicked TestCase", "No local UID found")
+        }
     }
 
+    fun getProfileRanks(): List<Ranks> {
+        val ranks = mutableListOf<Ranks>()
 
-//    suspend fun fetchData(currentUserUID: String?) = withContext(Dispatchers.IO) {
-//        Log.d("ProfileViewModel TestCase","FetchData() called")
-//
-//        val db = FirebaseDatabase.getInstance().getReference("users")
-//        if (currentUserUID == null) {
-//            Log.e("ProfileVM FetchDataTrial TestCase", "currentUserUID is null")
-//            dataLoadingProcess.value = false
-//            return@withContext
-//        }
-//
-//        val dataFetchTask = db.child("data").child(currentUserUID).get()
-//
-//        try {
-//            val dataSnapshot = Tasks.await(dataFetchTask)
-//            val firebaseProfileData = dataSnapshot.getValue(ProfileUiState::class.java)
-//            if (firebaseProfileData != null) {
-//                Log.d("ProfileVM FetchDataTrial TestCase", firebaseProfileData.toString())
-//                // Convert FirebaseProfileUiState to ProfileUiState
-//                withContext(Dispatchers.Main) {
-//                    _profileUiState.update { currentState -> currentState.copy(
-//                        gamerID = firebaseProfileData.gamerID,
-//                        gamerTag = firebaseProfileData.gamerTag,
-//                        status = firebaseProfileData.status,
-//                        bio = firebaseProfileData.bio,
-//                        profileImageLink = firebaseProfileData.profileImageLink,
-//                        UserGamerCalls = firebaseProfileData.UserGamerCalls
-//                    )}
-//                }
-//                Log.d("ProfileVM FetchDataTrial TestCase", "Returning true")
-//                dataLoadingProcess.value = false
-//                true
-//            } else {
-//                Log.e("FetchDataTrial TestCase","No data available")
-//                Log.d("ProfileVM FetchDataTrial TestCase", "Returning false")
-//                dataLoadingProcess.value = false
-//                false
-//            }
-//        } catch (e: Exception) {
-//            Log.e("FetchDataTrial TestCase","Error fetching data", e)
-//            Log.d("ProfileVM FetchDataTrial TestCase", "Returning false")
-//            dataLoadingProcess.value = false
-//            false
-//        }
-//    }
+        if (_profileUiState.value.rank1GameName != "") {
+            ranks.add(Ranks(1, _profileUiState.value.rank1GameName, _profileUiState.value.rank1GameRank))
+        }
 
+        if (_profileUiState.value.rank2GameName != "") {
+            ranks.add(Ranks(2, _profileUiState.value.rank2GameName, _profileUiState.value.rank2GameRank))
+        }
 
+        if (_profileUiState.value.rank3GameName != "") {
+            ranks.add(Ranks(3, _profileUiState.value.rank3GameName, _profileUiState.value.rank3GameRank))
+        }
 
-
-
-
-
-
-    private suspend fun updatingFetchedData() {
-
-//        val db = FirebaseDatabase.getInstance().getReference("users")
-//
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(gamerID = db.child("data").child(currentUserUID.value!! ).child("gamerID").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase12", profileState.value.gamerID)
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(bio = db.child("data").child(currentUserUID.value!! ).child("bio").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank1GameName = db.child("data").child(currentUserUID.value!! ).child("rank1GameName").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank1GameRank = db.child("data").child(currentUserUID.value!! ).child("rank1GameRank").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank2GameName = db.child("data").child(currentUserUID.value!! ).child("rank2GameName").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank2GameRank = db.child("data").child(currentUserUID.value!! ).child("rank2GameRank").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank3GameName = db.c hild("data").child(currentUserUID.value!! ).child("rank3GameName").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank3GameRank = db.child("data").child(currentUserUID.value!! ).child("rank3GameRank").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
+        return ranks
     }
 
 
 
+    suspend fun fetchData(currentUserUID: String?) = withContext(Dispatchers.IO) {
+        Log.d("ProfileViewModel TestCase", "FetchData() called")
+
+        val db = FirebaseDatabase.getInstance().getReference("users")
+        if (currentUserUID.isNullOrEmpty()) {
+            Log.e("ProfileVM FetchDataTrial TestCase", "currentUserUID is null or empty")
+            return@withContext
+        }
+
+        val dataFetchTask = db.child("data").child(currentUserUID).get()
+
+        try {
+            val dataSnapshot = Tasks.await(dataFetchTask)
+            val firebaseProfileData = dataSnapshot.getValue(ProfileUiState::class.java)
+            if (firebaseProfileData != null) {
+                Log.d("ProfileVM FetchDataTrial TestCase", firebaseProfileData.toString())
+                // Convert FirebaseProfileUiState to ProfileUiState
+                withContext(Dispatchers.Main) {
+                    _profileUiState.update { currentState ->
+                        currentState.copy(
+                            gamerID = firebaseProfileData.gamerID,
+                            gamerTag = firebaseProfileData.gamerTag,
+                            status = firebaseProfileData.status,
+                            bio = firebaseProfileData.bio,
+                            rank1GameName = firebaseProfileData.rank1GameName,
+                            rank1GameRank = firebaseProfileData.rank1GameRank,
+                            rank2GameName = firebaseProfileData.rank2GameName,
+                            rank2GameRank = firebaseProfileData.rank2GameRank,
+                            rank3GameName = firebaseProfileData.rank3GameName,
+                            rank3GameRank = firebaseProfileData.rank3GameRank,
+                            coverImageLink = firebaseProfileData.coverImageLink,
+                            profilePic = firebaseProfileData.profilePic,
+                            UserGamerCalls = firebaseProfileData.UserGamerCalls
+                        )
+                    }
+                }
+                Log.d("ProfileVM FetchDataTrial TestCase", "Data fetched successfully")
+            } else {
+                Log.e("FetchDataTrial TestCase", "No data available")
+            }
+        } catch (e: Exception) {
+            Log.e("FetchDataTrial TestCase", "Error fetching data", e)
+        }
+    }
+
+
+    fun logoutUser(redirectToLogin:()->Unit) {
+        FirebaseAuth.getInstance().signOut()
+        redirectToLogin()
+    }
 }

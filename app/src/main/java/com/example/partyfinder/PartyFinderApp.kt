@@ -1,5 +1,6 @@
 package com.example.partyfinder
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -77,7 +78,6 @@ enum class PartyFinderScreen{
     ProfileScreen,
     EditProfileScreen,
     FindPartyScreen,
-    UpdateRanksScreen,
     SpecificCommunityScreen,
     GamerCallsScreen,
     CreateGamerCallsScreen,
@@ -94,6 +94,7 @@ private fun navigateBack(navController: NavController) {
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun PartyFinderApp(
     localDBUserUID: String?,
@@ -133,8 +134,8 @@ fun PartyFinderApp(
 
     NavHost(
         navController = navController,
-//        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
-        startDestination = PartyFinderScreen.HomeScreen.name
+        startDestination = if (localUserUID.value == "") PartyFinderScreen.RegisterScreen.name else PartyFinderScreen.HomeScreen.name
+//        startDestination = PartyFinderScreen.RegisterScreen.name
     ){
         composable(route= PartyFinderScreen.HomeScreen.name){
             HomeScreen(
@@ -143,8 +144,14 @@ fun PartyFinderApp(
                 navigateToPartyFinder = {navController.navigate(PartyFinderScreen.FindPartyScreen.name)},
                 navigateToGamerCalls = {navController.navigate(PartyFinderScreen.GamerCallsScreen.name)},
                 navigateToCommunities = {navController.navigate("SpecificCommunityScreen/${communityUIState.communityName}")},
-                homepageContent = { HomepageContent(communitylist = communityUIState.communityList, navController = navController)}
-
+                homepageContent = {
+                    HomepageContent(
+                        communitylist = communityUIState.communityList,
+                        navController = navController,
+                        gamerID = profileViewModel._profileUiState.value.gamerID,
+                        userStatus = profileUiState.status
+                    )
+                }
             )
         }
 
@@ -207,7 +214,13 @@ fun PartyFinderApp(
                         onNoOfGamersValueChange ={createGamerCallViewModel.onNoOfGamersValueChange(it)} ,
                         onCallDescriptionValueChange ={createGamerCallViewModel.onCallDescriptionValueChange(it)} ,
                         onCallDurationValueChange ={createGamerCallViewModel.onCallDurationValueChange(it)},
-                        onPostButtonClick = {createGamerCallViewModel.postGamerCall() }
+                        onPostButtonClick = {
+                            createGamerCallViewModel.postGamerCall(
+                                navigateAfterPost = { navController.navigateUp() },
+                                GamerID = profileViewModel._profileUiState.value.gamerID,
+                                GamerTag = profileViewModel._profileUiState.value.gamerTag,
+                                GamerProfilePic = profileViewModel._profileUiState.value.profilePic
+                            ) }
                     )
                 }
             )
@@ -383,7 +396,12 @@ fun PartyFinderApp(
 
         composable(route= PartyFinderScreen.ProfileScreen.name){
             ProfileScreen(
-                profileBannerWidget = { ProfileBannerWidget(onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name) }) },
+                profileBannerWidget = {
+                    ProfileBannerWidget(
+                        onEditProfileClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name) },
+                        profilePic = profileViewModel._profileUiState.value.profilePic,
+                        coverImage = profileViewModel._profileUiState.value.coverImageLink
+                    ) },
                 profileScreenContent = {
                     ProfileScreenContent(
                         profileDataWidget = { ProfileDataWidget(
@@ -399,13 +417,17 @@ fun PartyFinderApp(
                                     options = datasource.userStatusOption
                                 )
                             }
-
                         )
                         },
                         profileScreenBioWidget = { ProfileScreenBioWidget(gamerBio = profileUiState.bio) },
-                        profileRanksWidget = { ProfileRanksWidget(onUpdateRanksClick = { navController.navigate(
-                            PartyFinderScreen.UpdateRanksScreen.name)}) },
-                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = profileUiState.UserGamerCalls) })
+                        profileRanksWidget = {
+                            ProfileRanksWidget(
+                                onUpdateRanksClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name)},
+                                ranks = profileViewModel.getProfileRanks()
+                            ) },
+                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = profileUiState.UserGamerCalls) },
+                        logoutButtonClicked = {profileViewModel.logoutUser { navController.navigate(PartyFinderScreen.LoginScreen.name) }}
+                    )
                 }
             )
 
@@ -417,7 +439,7 @@ fun PartyFinderApp(
                 navigateBack = { navigateBack(navController) },
                 navigateToHomeScreen = {navController.navigate(PartyFinderScreen.HomeScreen.name)},
                 userUID = localUserUID.value,
-                profilePic = profileUiState.profileImageLink
+                profilePic = profileUiState.profilePic
             )
         }
 

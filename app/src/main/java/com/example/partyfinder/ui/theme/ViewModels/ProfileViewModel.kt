@@ -1,6 +1,5 @@
 package com.example.partyfinder.ui.theme.ViewModels
 
-import android.content.ContentValues.TAG
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -16,6 +15,7 @@ import com.example.partyfinder.model.Status
 import com.example.partyfinder.model.uiState.ProfileUiState
 import com.example.partyfinder.model.uiState.Ranks
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -101,7 +101,7 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
                         coverImageLink = downloadUrl
                     ) }
                 }
-                Log.d("UploadImage", "Profile UI state updated")
+                Log.d("UploadImage", "Profile UI state updated with \n1: ${_profileUiState.value.profileImageLink}\n2: ${_profileUiState.value.coverImageLink}")
             }
         }.addOnFailureListener {
             Log.d("UploadImage", "Upload task failed", it)
@@ -175,7 +175,7 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
             val db = FirebaseDatabase.getInstance().getReference("users")
 
             db.child("data").child(currentUserUID.value!! ).child("gamerID").setValue(_profileUiState.value.gamerID)
-            db.child("data").child(currentUserUID.value!! ).child("gamerTAG").setValue(_profileUiState.value.gamerTag)
+            db.child("data").child(currentUserUID.value!! ).child("gamerTag").setValue(_profileUiState.value.gamerTag)
             db.child("data").child(currentUserUID.value!! ).child("bio").setValue(_profileUiState.value.bio)
             db.child("data").child(currentUserUID.value!! ).child("profilePic").setValue(_profileUiState.value.profileImageLink)
             db.child("data").child(currentUserUID.value!! ).child("bannerPic").setValue(_profileUiState.value.coverImageLink)
@@ -185,13 +185,13 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
             db.child("data").child(currentUserUID.value!! ).child("rank2GameRank").setValue(_profileUiState.value.rank2GameRank)
             db.child("data").child(currentUserUID.value!! ).child("rank3GameName").setValue(_profileUiState.value.rank3GameName)
             db.child("data").child(currentUserUID.value!! ).child("rank3GameRank").setValue(_profileUiState.value.rank3GameRank)
-                .addOnSuccessListener { Log.d(TAG, "Realtime Database update successful!") }
-                .addOnFailureListener { e -> Log.w(TAG, "Error updating Realtime Database", e) }
+                .addOnSuccessListener { Log.d("onSaveChangesClicked TestCase", "Realtime Database update successful!") }
+                .addOnFailureListener { e -> Log.w("onSaveChangesClicked TestCase", "Error updating Realtime Database", e) }
 
-            val editedProfileData = db.child("data").child(currentUserUID.value!! ).get()
-            Log.d(TAG, editedProfileData.toString())
+            val editedProfileData = db.child("data").child(currentUserUID.value!!).get()
+            Log.d("onSaveChangesClicked TestCase", editedProfileData.toString())
         } else {
-            Log.d(TAG, "No local UID found")
+            Log.d("onSaveChangesClicked TestCase", "No local UID found")
         }
 
         navigateToHomeScreen()
@@ -293,60 +293,8 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     }
 
 
-
-
-
-
-
-
-
-
-    private suspend fun updatingFetchedData() {
-
-//        val db = FirebaseDatabase.getInstance().getReference("users")
-//
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(gamerID = db.child("data").child(currentUserUID.value!! ).child("gamerID").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase12", profileState.value.gamerID)
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(bio = db.child("data").child(currentUserUID.value!! ).child("bio").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank1GameName = db.child("data").child(currentUserUID.value!! ).child("rank1GameName").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank1GameRank = db.child("data").child(currentUserUID.value!! ).child("rank1GameRank").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank2GameName = db.child("data").child(currentUserUID.value!! ).child("rank2GameName").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank2GameRank = db.child("data").child(currentUserUID.value!! ).child("rank2GameRank").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank3GameName = db.c hild("data").child(currentUserUID.value!! ).child("rank3GameName").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
-//        _profileUiState.update { currentState ->
-//            val updatedState = currentState.copy(rank3GameRank = db.child("data").child(currentUserUID.value!! ).child("rank3GameRank").get().await().value.toString())
-//            Log.d("UpdatingDataTrial TestCase", updatedState.toString())
-//            updatedState
-//        }
+    fun logoutUser(redirectToLogin:()->Unit) {
+        FirebaseAuth.getInstance().signOut()
+        redirectToLogin()
     }
-
-
-
 }

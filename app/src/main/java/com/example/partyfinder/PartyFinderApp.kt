@@ -144,8 +144,14 @@ fun PartyFinderApp(
                 navigateToPartyFinder = {navController.navigate(PartyFinderScreen.FindPartyScreen.name)},
                 navigateToGamerCalls = {navController.navigate(PartyFinderScreen.GamerCallsScreen.name)},
                 navigateToCommunities = {navController.navigate("SpecificCommunityScreen/${communityUIState.communityName}")},
-                homepageContent = { HomepageContent(communitylist = communityUIState.communityList, navController = navController)}
-
+                homepageContent = {
+                    HomepageContent(
+                        communitylist = communityUIState.communityList,
+                        navController = navController,
+                        gamerID = profileViewModel._profileUiState.value.gamerID,
+                        userStatus = profileUiState.status
+                    )
+                }
             )
         }
 
@@ -208,7 +214,13 @@ fun PartyFinderApp(
                         onNoOfGamersValueChange ={createGamerCallViewModel.onNoOfGamersValueChange(it)} ,
                         onCallDescriptionValueChange ={createGamerCallViewModel.onCallDescriptionValueChange(it)} ,
                         onCallDurationValueChange ={createGamerCallViewModel.onCallDurationValueChange(it)},
-                        onPostButtonClick = {createGamerCallViewModel.postGamerCall() }
+                        onPostButtonClick = {
+                            createGamerCallViewModel.postGamerCall(
+                                navigateAfterPost = { navController.navigateUp() },
+                                GamerID = profileViewModel._profileUiState.value.gamerID,
+                                GamerTag = profileViewModel._profileUiState.value.gamerTag,
+                                GamerProfilePic = profileViewModel._profileUiState.value.profileImageLink
+                            ) }
                     )
                 }
             )
@@ -411,7 +423,9 @@ fun PartyFinderApp(
                                 onUpdateRanksClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name)},
                                 ranks = profileViewModel.getProfileRanks()
                             ) },
-                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = profileUiState.UserGamerCalls) })
+                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = profileUiState.UserGamerCalls) },
+                        logoutButtonClicked = {profileViewModel.logoutUser { navController.navigate(PartyFinderScreen.LoginScreen.name) }}
+                    )
                 }
             )
 

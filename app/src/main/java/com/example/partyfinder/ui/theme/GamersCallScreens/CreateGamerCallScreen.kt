@@ -198,7 +198,7 @@ fun CreateGamerCallContent(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically) {
             Button(
-                onClick = onPostButtonClick,
+                onClick = onPostButtonClick ,
                 shape = RoundedCornerShape(20.dp),
                 modifier= Modifier
                     .height(dimensionResource(id = R.dimen.generic_button_height))

@@ -13,7 +13,6 @@ import retrofit2.http.Path
 
 interface GamerCallApi {
 
-
     @GET("gamerCalls.json")
      suspend fun getGamerCalls( ): GamerCallsList
 
@@ -22,7 +21,6 @@ interface GamerCallApi {
 
     @PUT("gamerCalls/data/{gamerCallid}/.json")
     suspend fun updateLiveGamerCall(@Path("gamerCallid") gamerCallId: String, @Body gamerCall: GamerCalls): Response<ResponseBody>
-
 
 }
 

@@ -1,5 +1,6 @@
 package com.example.partyfinder.ui.theme.ProfileScreens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -172,6 +173,7 @@ fun ProfileScreenContent(
     profileScreenBioWidget:@Composable ()->Unit,
     profileRanksWidget:@Composable ()->Unit,
     profileMyGamerCallsWidget:@Composable () ->Unit,
+    logoutButtonClicked: ()-> Unit,
     modifier: Modifier = Modifier,
     ){
     Column {
@@ -187,7 +189,7 @@ fun ProfileScreenContent(
                 modifier = Modifier
                     .padding(16.dp, 8.dp)
                     .clip(RoundedCornerShape(1.dp)),
-                onClick = { /*TODO*/ },
+                onClick = { logoutButtonClicked() },
                 colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG),
                     disabledContainerColor = colorResource(id = R.color.CallWidgetBorder),
                     disabledContentColor = colorResource(id = R.color.SubliminalText)),
@@ -450,10 +452,10 @@ fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),
                 Column(modifier=Modifier.padding(top = 16.dp)) {
                     if (userGamerCalls != null) {
                         userGamerCalls.gamerCalls.forEach(){
+                            Log.d("Profile-G-Calls TestCase ", "${it.value.ProfilePic} \n${it.value.gamerID}")
                             G_Calls(
                                 profilePic = it.value.ProfilePic,
                                 gamerID = it.value.gamerID,
-                                gamerTag = it.value.gamerTag,
                                 gameName = it.value.gameName,
                                 partySize = it.value.partySize,
                                 callDes =it.value.callDes

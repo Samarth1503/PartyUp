@@ -1,6 +1,5 @@
 package com.example.partyfinder.ui.theme
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,6 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.partyfinder.PartyFinderScreen
 import com.example.partyfinder.R
 import com.example.partyfinder.model.CommunitiesList
+import com.example.partyfinder.model.Status
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -277,7 +278,17 @@ import kotlinx.coroutines.launch
 fun HomepageContent(
     modifier: Modifier = Modifier,
     communitylist:CommunitiesList?,
-    navController: NavHostController) {
+    navController: NavHostController,
+    gamerID: String,
+    userStatus: Status
+) {
+//    For displaying status
+    if (userStatus.first == 0){
+        userStatus.first = R.string.ONLINE
+        userStatus.second = R.drawable.user_online_logo
+    }
+
+
     Column(modifier = Modifier
         .verticalScroll(rememberScrollState())
         .fillMaxWidth()
@@ -309,10 +320,10 @@ fun HomepageContent(
                 .background(colorResource(id = R.color.primary))
                 .align(Alignment.TopCenter))
             Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp) // Change this to adjust the border thickness
-                    .background(colorResource(id = R.color.primary))
-                    .align(Alignment.BottomCenter))
+                .fillMaxWidth()
+                .height(1.dp) // Change this to adjust the border thickness
+                .background(colorResource(id = R.color.primary))
+                .align(Alignment.BottomCenter))
         }
 
         Row(modifier = modifier
@@ -323,36 +334,33 @@ fun HomepageContent(
                 shape = RoundedCornerShape(15.dp)
             ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+//            horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "#PoisonBish",
+                text = gamerID,
                 style = MaterialTheme.typography.titleSmall,
                 color = colorResource(id = R.color.primary),
                 modifier = modifier
                     .padding(12.dp)
             )
 
+            Spacer(modifier = Modifier.weight(1f))
 //            PlayerStatus
-            Row(modifier = modifier
-                    .padding(16.dp, 0.dp),
+            Row(modifier = modifier,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Canvas(modifier = Modifier
-                    .padding(top = 2.dp)
-                    .size(12.dp)) {
-                    drawCircle(color = Color.Green)
-                }
+                Image(painter = painterResource(userStatus.second) , contentDescription = null)
+
                 Text(
-                    text = "Online",
-                    style = MaterialTheme.typography.titleSmall,
+                    text = stringResource(id = userStatus.first),
                     color = colorResource(id = R.color.white),
-                    modifier = modifier
-                        .padding(4.dp, 12.dp)
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier= Modifier.padding(start = 4.dp)
                 )
             }
 
-            Spacer(modifier = modifier.weight(1f))
+            Spacer(modifier = modifier.weight(2f))
+
             Row(modifier = modifier
                 .clickable { navController.navigate(PartyFinderScreen.ProfileScreen.name) }
                 .padding(end = 10.dp)
@@ -834,7 +842,9 @@ fun PreviewTF(){
             navigateToPartyFinder = {},
             navigateToGamerCalls = {},
             navigateToCommunities = {},
-            homepageContent = { HomepageContent(communitylist =CommunitiesList(emptyMap()), navController = rememberNavController() )}
+            homepageContent = { HomepageContent(communitylist =CommunitiesList(emptyMap()), navController = rememberNavController(), gamerID = "#PoisonBish",
+                userStatus = Status()
+            )}
         )
     }
 }

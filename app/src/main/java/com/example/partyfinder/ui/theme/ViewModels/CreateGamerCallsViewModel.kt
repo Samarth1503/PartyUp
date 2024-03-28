@@ -57,15 +57,20 @@ class CreateGamerCallsViewModel(val userUIDSharedViewModel : UserUIDSharedViewMo
         ) }
     }
 
-    fun postGamerCall(){
+    fun postGamerCall(
+        navigateAfterPost: () -> Unit,
+        GamerProfilePic: String,
+        GamerID: String,
+        GamerTag: String
+    ){
         var gamerCall = GamerCalls(
             gamerCallID = "",
-            ProfilePic = "https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6",
+            ProfilePic = GamerProfilePic,
             callDes = _CreateGamerCallsUiState.value.DescriptionOfCall,
             gameName = _CreateGamerCallsUiState.value.gameName,
             userUID = currentUserUID.value!!,
-            gamerID = "Kaizoku",
-            gamerTag = "#123",
+            gamerID = GamerID,
+            gamerTag = GamerTag,
             partySize = _CreateGamerCallsUiState.value.noOfGamers.toInt(),
             callDuration = _CreateGamerCallsUiState.value.CallDuration
         )
@@ -81,6 +86,7 @@ class CreateGamerCallsViewModel(val userUIDSharedViewModel : UserUIDSharedViewMo
                 val updateResponse = networkGamerCallsRepository.updateGamerCall(gamerCallID = gamerCallID, gamerCall = gamerCall)
                 if (updateResponse.isSuccessful){
                     Log.d("Posting GamerCall","GamerCall Updated Successfully")
+                    navigateAfterPost()
                 }
             }
         }

@@ -27,8 +27,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +43,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.partyfinder.R
@@ -98,7 +101,10 @@ fun SearchUserChatTopBar(
 
 
 @Composable
-fun SearchUserChatContent(viewModel: chatScreenViewModel, modifier: Modifier = Modifier) {
+fun SearchUserChatContent(
+    viewModel: chatScreenViewModel,
+    navController: NavController
+) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val userListState = remember { mutableStateOf(emptyList<UserAccount>()) }
 
@@ -112,7 +118,7 @@ fun SearchUserChatContent(viewModel: chatScreenViewModel, modifier: Modifier = M
     ) {
         val mainPadding = dimensionResource(id = R.dimen.main_padding)
         SearchView(textState, mainPadding)
-        ItemList(userListState, textState, mainPadding)
+        ItemList(userListState, textState, mainPadding, viewModel, navController)
     }
 }
 
@@ -156,7 +162,7 @@ fun SearchView(state: MutableState<TextFieldValue>, mainPadding : Dp) {
                     painter = painterResource(id = R.drawable.search_icon_blue),
                     contentDescription = "SearchIcon",
                     modifier = Modifier
-                        .padding(end = mainPadding/2)
+                        .padding(end = mainPadding / 2)
                         .size(25.dp)
                 )
             }
@@ -170,8 +176,15 @@ fun SearchView(state: MutableState<TextFieldValue>, mainPadding : Dp) {
 
 
 @Composable
-fun ItemList(userListState: MutableState<List<UserAccount>>, textState: MutableState<TextFieldValue>, mainPadding: Dp) {
+fun ItemList(
+    userListState: MutableState<List<UserAccount>>,
+    textState: MutableState<TextFieldValue>,
+    mainPadding: Dp,
+    viewModel: chatScreenViewModel,
+    navController: NavController
+) {
     val searchedText = textState.value.text
+    var chatChannelID by remember { mutableStateOf("") }
 
     val filteredItems = if (searchedText.isEmpty()) {
         userListState.value
@@ -199,7 +212,18 @@ fun ItemList(userListState: MutableState<List<UserAccount>>, textState: MutableS
                 userID = user.gamerID,
                 userTag = user.gamerTag,
                 userProfilePic = user.profilePic,
-                onItemClick = { /* Click event code needs to be implemented */ }
+                onItemClick = {
+                    viewModel.currentUserUID.value?.let {
+                        val channelID = viewModel.onNewChatClicked(
+                            currentUserGamerID = it,
+                            isGroupChatpara = false,
+                            user2UUID = user.gamerID
+                        )
+                        if (channelID.isNotEmpty()) {
+                            navController.navigate("DMScreen/$channelID")
+                        }
+                    }
+                }
             )
         }
     }

@@ -280,7 +280,7 @@ fun PartyFinderApp(
                 chats = { Chats(
                     chatChannelList = chatScreenUiState.channelList,
                     navController = navController,
-                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked(currentUserGamerID = profileUiState.gamerID, isGroupChatpara = false, user2UUID = "8llkiilC3QTG1O3JlB51eChAm083")},
+                    onNewChatClicked = {navController.navigate(PartyFinderScreen.SearchUserChatScreen.name)},
                     chatScreenViewModel = chatScreenViewModel
 
                     )
@@ -448,8 +448,12 @@ fun PartyFinderApp(
         }
 
         composable(route = PartyFinderScreen.SearchUserChatScreen.name){
-            SearchUserChatScreen(searchUserChatTopBar = { SearchUserChatTopBar(navigateUp = { navigateBack(navController)})},
-                searchUserChatContent = { SearchUserChatContent(viewModel = chatScreenViewModel)}
+            SearchUserChatScreen(
+                searchUserChatTopBar = { SearchUserChatTopBar(navigateUp = { navigateBack(navController)})},
+                searchUserChatContent = { SearchUserChatContent(
+                    viewModel = chatScreenViewModel,
+                    navController = navController
+                )}
             )
         }
     }

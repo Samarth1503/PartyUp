@@ -195,6 +195,7 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
                 return ""
             }
     }
+
     fun onChatsScreenMenuClick(){
         isMenuClicked=!isMenuClicked
         _chatsScreenUiState.update { currentState -> currentState.copy(

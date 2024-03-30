@@ -160,8 +160,7 @@ fun PartyFinderApp(
                 registrationViewModel = registrationViewModel,
                 loginViewModel = loginViewModel,
                 navigateToRegisterScreen = { navController.navigate(PartyFinderScreen.RegisterScreen.name) },
-                onLogInClicked = { loginViewModel.onEvent(LoginUIEvent.LoginButtonCLicked) } ,
-                navigateToHomeScreen = { navController.navigate(PartyFinderScreen.HomeScreen.name) }
+                onLogInClicked = { loginViewModel.onEvent(LoginUIEvent.LoginButtonCLicked) }
             )
         }
 
@@ -194,9 +193,10 @@ fun PartyFinderApp(
 
         composable(route = PartyFinderScreen.GamerCallsScreen.name){
             GamersCall(
-                gamersCallsTopBar = { GamersCallTopBar {
-                    navController.navigateUp()
-                }},
+                gamersCallsTopBar = { GamersCallTopBar (
+                    onBackClick = { navController.navigateUp() },
+                    onFilteClick = { navController.navigate(PartyFinderScreen.FilteredGamerCallsScreen.name) }
+                ) },
                 gamersCallContent = { GamersCallContent(listOfGamerCalls = gamerCallsUiState.listOfGamersCall)},
                 onCreateClick = {navController.navigate(PartyFinderScreen.CreateGamerCallsScreen.name)}
             )
@@ -228,12 +228,12 @@ fun PartyFinderApp(
 
         composable( route= PartyFinderScreen.FilteredGamerCallsScreen.name){
             FilteredGamersCallScreen(
-                filteredGamersCallsTopBar = { FilteredGamersCallTopBar(onBackClick = {})},
+                filteredGamersCallsTopBar = { FilteredGamersCallTopBar(onBackClick = { navController.navigateUp() })},
                 filteredGamersCallsContent = {
                     FilteredGamersCallContent(
                         FilterGamerCallGameMenu = { CustomExposedDropDownMenu(
                             placeholder = "Select the Game",
-                            isDropDownExpanded =filteredGamerCallsUiState.isFGameNameDropDownExpanded ,
+                            isDropDownExpanded = filteredGamerCallsUiState.isFGameNameDropDownExpanded ,
                             onExpandChange = {newValue -> filterGamerCallsViewModel.onGameNameExapandedChange(newValue)  },
                             DropDownSelectedValue =filteredGamerCallsUiState.FGameNameDropDownValue,
                             onValueChange = {newValue -> filterGamerCallsViewModel.onGameNameValueChange(newValue)  },

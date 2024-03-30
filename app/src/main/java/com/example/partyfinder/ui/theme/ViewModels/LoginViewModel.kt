@@ -2,6 +2,8 @@ package com.example.partyfinder.ui.theme.ViewModels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.partyfinder.data.repositories.LocalUserRepository
@@ -18,10 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val userRepository: LocalUserRepository) : ViewModel() {
-
-    private val TAG = LoginViewModel::class.simpleName
-
+class LoginViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, private val userRepository: LocalUserRepository) : ViewModel() {
 
     private val _loginUIState = MutableStateFlow(LoginUIState())
     val loginUIState: StateFlow<LoginUIState> = _loginUIState.asStateFlow()
@@ -32,9 +31,11 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
     var loginIsSuccessful = mutableStateOf(false)
 
 
+    val _currentUserUID = MutableLiveData<String>()
+    val currentUserUID : LiveData<String> get() = _currentUserUID
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
-//            Log.d("LocalUser TestCase", userRepository.getUserUID())
             val userEmail = userRepository.getUserEmail()
             if (userEmail != null) {
                 _loginUIState.update { currentState ->
@@ -69,7 +70,7 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
 
             is LoginUIEvent.ForgotPasswordClicked -> {
                 sendPasswordReset()
-                Log.d(TAG, "ForgotPasswordComponent Clicked")
+                Log.d("LoginProcess TestCase", "ForgotPasswordComponent Clicked")
             }
 
             is LoginUIEvent.LoginButtonCLicked -> {
@@ -88,63 +89,32 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
         FirebaseAuth.getInstance()
             .signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                Log.d(TAG, "Inside_login_success")
-                Log.d(TAG, "${it.isSuccessful}")
+                Log.d("LoginProcessTestCase", "Inside_login_success")
+                Log.d("LoginProcessTestCase", "${it.isSuccessful}")
 
                 if(it.isSuccessful){
-                    loginInProgress.value = false
-                    loginIsSuccessful.value = true
                     uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
-                    Log.d(TAG, "User UID: $uid")
+                    // Update the value of currentUserUID in shared ViewModel with the UID
+                    _currentUserUID.postValue(uid)
+                    Log.d("LoginProcessTestCase", "User UID: $uid")
+
+                    viewModelScope.launch(Dispatchers.IO) {
+                        Log.d("LoginProcessTestCase", "upsert() started")
+                        userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
+                        Log.d("LoginProcessTestCase", "upsert() ended")
+                    }
+
+                    loginIsSuccessful.value = true
                 }
             }
             .addOnFailureListener {
-                Log.d(TAG, "Inside_login_failure")
-                it.localizedMessage?.let { it1 -> Log.d(TAG, it1) }
+                Log.d("LoginProcessTestCase", "Inside_login_failure")
+                it.localizedMessage?.let { it1 -> Log.d("LoginProcessTestCase", it1) }
 
                 loginInProgress.value = false
                 loginFailed.value = true
             }
-        if (loginIsSuccessful.value){
-            viewModelScope.launch {
-                userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
-//                Log.d("LocalUser TestCase", userRepository.getUserUID())
-            }
-        }
     }
-
-////    It is to run testCases easily
-//    private suspend fun login() {
-//        loginInProgress.value = true
-//        val email = "samarthmehta633@gmail.com"
-//        val password = "123456"
-//        var uid = ""
-//        FirebaseAuth.getInstance()
-//            .signInWithEmailAndPassword(email, password)
-//            .addOnCompleteListener {
-//                Log.d(TAG, "Inside_login_success")
-//                Log.d(TAG, "${it.isSuccessful}")
-//
-//                if(it.isSuccessful){
-//                    loginInProgress.value = false
-//                    loginIsSuccessful.value = true
-//                    uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
-//                    Log.d(TAG, "User UID: $uid")
-//                }
-//            }
-//            .addOnFailureListener {
-//                Log.d(TAG, "Inside_login_failure")
-//                it.localizedMessage?.let { it1 -> Log.d(TAG, it1) }
-//
-//                loginInProgress.value = false
-//                loginFailed.value = true
-//            }
-//        if (loginIsSuccessful.value){
-//            viewModelScope.launch {
-//                userRepository.upsert(LocalUser(id = 0, userEmail = email, userUID = uid))
-//            }
-//        }
-//    }
 
     private fun sendPasswordReset() {
         val email = _loginUIState.value.email
@@ -152,16 +122,16 @@ class LoginViewModel(private val userRepository: LocalUserRepository) : ViewMode
         Firebase.auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d(TAG, "Email sent.")
+                    Log.d("LoginProcessTestCase", "Email sent.")
                 }
                 else{
-                    Log.d(TAG, "Unable to send Email")
+                    Log.d("LoginProcessTestCase", "Unable to send Email")
                 }
             }
     }
 
     private fun printState(){
-        Log.d(TAG, "InsideStack")
-        Log.d(TAG, _loginUIState.value.toString())
+        Log.d("LoginProcessTestCase", "InsideStack")
+        Log.d("LoginProcessTestCase", _loginUIState.value.toString())
     }
 }

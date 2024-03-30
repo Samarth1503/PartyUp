@@ -259,7 +259,15 @@ fun SpecificCommunityContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
        items(currentCommunity!!.communityPosts.values.toList()){
-                CommunityPosts(userName = it.userName, userProfilePic = it.userProfilepic, postContent =it.postContent )
+                CommunityPosts(
+                    postID = it.postId,
+                    userName = it.userName,
+                    userProfilePic = it.userProfilepic,
+                    postContent = it.postContent,
+                    likes = it.likes,
+                    reports = it.reports,
+                    communityName = currentCommunityName
+                )
         }
     }
 }
@@ -269,17 +277,25 @@ fun SpecificCommunityContent(
 @Composable
 fun CommunityPosts(
     modifier: Modifier = Modifier,
+    postID: String,
     userName: String,
-    userProfilePic:String,
-    postContent:String,
-    postViewModel: PostViewModel = viewModel()) {
+    userProfilePic: String,
+    postContent: String,
+    likes: Int,
+    reports: Int,
+    communityName: String,
+    postViewModel: PostViewModel = viewModel()
+) {
 
-//        Variable declaration for like
-    var likes = "1k"
-    // need to update the value of likes on the post from db
+    postViewModel.postDataLoading(
+        id = postID,
+        postLikes = likes,
+        postReports = reports,
+        community = communityName
+    )
 
     var postImage: Int? = null
-    // need to update the link of image on the post from db if any
+
     var isLiked by remember { mutableStateOf(false) }
     var likeIsClicked by remember { mutableStateOf(false) }
 
@@ -390,7 +406,7 @@ fun CommunityPosts(
                 ){
                     Text(modifier = modifier
                             .padding(end = 4.dp),
-                        text = likes,
+                        text = "${postViewModel.communityPostUIState.value.likes}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = colorResource(id = R.color.white)
                     )

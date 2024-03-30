@@ -95,6 +95,7 @@ fun GamersCall(
 fun GamersCallTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () ->Unit,
+    onFilteClick: () ->Unit
     ) {
     Box(
         modifier = modifier
@@ -116,6 +117,15 @@ fun GamersCallTopBar(
             text = "Gamers Call",
             style = MaterialTheme.typography.titleMedium,
             color = colorResource(id = R.color.primary)
+        )
+        Image(
+            painter = painterResource(id = (R.drawable.filter1)),
+            contentDescription = "FilterIcon",
+            modifier = modifier
+                .padding(0.dp, 5.dp, 24.dp, 0.dp)
+                .size(26.dp)
+                .align(Alignment.CenterEnd)
+                .clickable { onFilteClick() }
         )
     }
 }
@@ -425,7 +435,7 @@ fun G_Calls(
 fun PreviewGamersCall(){
     PartyFinderTheme {
         GamersCall(
-            gamersCallsTopBar = { GamersCallTopBar(onBackClick = {})},
+            gamersCallsTopBar = { GamersCallTopBar(onBackClick = {}, onFilteClick = {} )},
             onCreateClick = {},
             gamersCallContent = { GamersCallContent(listOfGamerCalls = datasource.gamerCallsList)}
         )

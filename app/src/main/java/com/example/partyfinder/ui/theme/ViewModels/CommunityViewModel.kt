@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.data.repositories.networkCommunityRepository
 import com.example.partyfinder.model.CommunitiesList
 import com.example.partyfinder.model.Community
@@ -24,13 +23,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class CommunityViewModel(val userRepository: LocalUserRepository): ViewModel() {
+class CommunityViewModel( val profileViewModel: ProfileViewModel): ViewModel() {
     private val TAG = CommunityViewModel::class.simpleName
 
     private val _communityUIState = MutableStateFlow(CommunityUIState())
     val communityUiState: StateFlow<CommunityUIState> = _communityUIState.asStateFlow()
 
-    val dbref = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app").reference
+    private val dbref = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app").reference
+
+    private val userID = profileViewModel._currentUserUID
+    private val userProfilePic = profileViewModel._profileUiState.value.profilePic
 
     private val _communityList = MutableLiveData<CommunitiesList> ()
     val communityList : LiveData<CommunitiesList> get() = _communityList
@@ -104,8 +106,8 @@ class CommunityViewModel(val userRepository: LocalUserRepository): ViewModel() {
         var tempUserPost = CommunityPost(
             postContent = communityUiState.value.newPostContent,
             postId = "default",
-            userName = "Kaizoku",
-            userProfilepic ="https://firebasestorage.googleapis.com/v0/b/partyup-sam.appspot.com/o/download.jfif?alt=media&token=f38c422b-b4da-437a-97f3-a0774fd5c1a6",
+            userName = userID.value!!,
+            userProfilepic = userProfilePic,
         )
         viewModelScope.launch {
             val response = networkCommunityRepository.postCommunityUserPost(communityID = communityUiState.value.communityName,userPost = tempUserPost)

@@ -337,7 +337,7 @@ fun HomepageContent(
 //            horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = gamerID,
+                text = if(gamerID == "" || gamerID == null){"GamerID"} else {gamerID},
                 style = MaterialTheme.typography.titleSmall,
                 color = colorResource(id = R.color.primary),
                 modifier = modifier
@@ -393,6 +393,24 @@ fun HomepageContent(
                     .padding(dimensionResource(id = R.dimen.main_padding))
             )
 
+            ////        Replace myCallsCount with the length of the list of the GamerCalls
+////        replace items(4) with items(myCallsCount.length) ie the count of items in the list
+////        Add Parameter to My_Calls_Mini() for GamerID n stuff
+//            if (myCallsCount != null || myCallsCount != 0) {
+//                LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
+//                    items(4) {
+//                        G_Calls_Mini()
+//                    }
+//                }
+//            } else {
+//                Text(
+//                    text = "No Gamer Calls Active",
+//                    style = MaterialTheme.typography.titleSmall,
+//                    color = colorResource(id = R.color.white),
+//                    modifier = Modifier.padding(bottom = 24.dp)
+//                )
+//            }
+
             LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
                 items(4) {
                     G_Calls_Mini()
@@ -409,7 +427,8 @@ fun HomepageContent(
                 color = colorResource(id = R.color.DarkBG),
                 shape = RoundedCornerShape(15.dp)
             ),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(modifier = modifier
                 .padding(end = 10.dp),
@@ -437,11 +456,34 @@ fun HomepageContent(
                     )
                 }
             }
-            LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-                items(4) {
-                    My_Calls_Mini()
-                }
-            }
+
+////        Replace myCallsCount with the length of the list of the GamerCalls
+////        replace items(4) with items(myCallsCount.length) ie the count of items in the list
+////        Add Parameter to My_Calls_Mini() for GamerID n stuff
+//            if (myCallsCount != null || myCallsCount != 0) {
+//                LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
+//                    items(4) {
+//                        My_Calls_Mini()
+//                    }
+//                }
+//            } else {
+//                Text(
+//                    text = "No Gamer Calls Active",
+//                    style = MaterialTheme.typography.titleSmall,
+//                    color = colorResource(id = R.color.white),
+//                    modifier = Modifier.padding(bottom = 24.dp)
+//                )
+//            }
+
+
+////        Code commented above is the correct and real code
+
+            Text(
+                text = "No Gamer Calls Active",
+                style = MaterialTheme.typography.titleSmall,
+                color = colorResource(id = R.color.white),
+                modifier = Modifier.padding(bottom = 24.dp)
+            )
         }
 
 
@@ -485,7 +527,7 @@ fun HomepageContent(
                         Spacer(modifier = Modifier.width(8.dp))
                     if (i + 1 < keys.size) {
                         CommunityCard_Mini(gameName = keys[i + 1], modifier = Modifier
-                            .clickable { navController.navigate("SpecificCommunityScreen/${keys[i+1]}") }
+                            .clickable { navController.navigate("SpecificCommunityScreen/${keys[i + 1]}") }
                             .padding(vertical = 10.dp))
                     }
                 }

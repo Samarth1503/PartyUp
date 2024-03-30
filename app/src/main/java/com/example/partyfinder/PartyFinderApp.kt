@@ -286,6 +286,7 @@ fun PartyFinderApp(
                     onMenuItemClicked = {},
                     onClearAllChat = {chatScreenViewModel.clearAllChatChannels()},
                     onMenuClicked ={chatScreenViewModel.onChatsScreenMenuClick()}
+
                 ) },
                 chats = { Chats(
                     chatChannelList = chatScreenUiState.channelList,

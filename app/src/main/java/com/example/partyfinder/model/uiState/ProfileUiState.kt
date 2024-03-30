@@ -18,7 +18,8 @@ data class ProfileUiState(
     val rank3GameName :String = "",
     val rank3GameRank:String = "",
     val isChangeStatusExpanded:Boolean = false,
-    val UserGamerCalls: GamerCallsList?= datasource.gamerCallsList
+    val UserGamerCalls: GamerCallsList?= datasource.gamerCallsList,
+    val random4GamerCallsOnHomeScreen : GamerCallsList? = datasource.gamerCallsList
 )
 
 data class Ranks(

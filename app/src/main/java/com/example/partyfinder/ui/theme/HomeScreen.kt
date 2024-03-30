@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -43,16 +44,17 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.partyfinder.PartyFinderScreen
 import com.example.partyfinder.R
 import com.example.partyfinder.model.CommunitiesList
+import com.example.partyfinder.model.GamerCalls
+import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.Status
+import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -278,6 +280,9 @@ import kotlinx.coroutines.launch
 fun HomepageContent(
     modifier: Modifier = Modifier,
     communitylist:CommunitiesList?,
+    myGamerCallsList:GamerCallsList?,
+    chatScreenViewModel: chatScreenViewModel,
+    randomGamerCallsList:GamerCallsList?,
     navController: NavHostController,
     gamerID: String,
     userStatus: Status
@@ -394,8 +399,12 @@ fun HomepageContent(
             )
 
             LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-                items(4) {
-                    G_Calls_Mini()
+                items(randomGamerCallsList!!.gamerCalls.values.toList()){
+                        G_Calls_Mini(
+                            onJoinClick = {
+                            chatScreenViewModel.onNewChatClicked(chatScreenViewModel.currentUserUID.value!!,it.userUID,false)
+                             navController.navigate("ChatsScreen")
+                            }, gamerCall = it)
                 }
             }
         }
@@ -438,8 +447,8 @@ fun HomepageContent(
                 }
             }
             LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-                items(4) {
-                    My_Calls_Mini()
+                items(myGamerCallsList!!.gamerCalls.values.toList()){
+                    My_Calls_Mini(gamerCall = it, onDeleteClick = { /*TODO*/ })
                 }
             }
         }
@@ -485,7 +494,7 @@ fun HomepageContent(
                         Spacer(modifier = Modifier.width(8.dp))
                     if (i + 1 < keys.size) {
                         CommunityCard_Mini(gameName = keys[i + 1], modifier = Modifier
-                            .clickable { navController.navigate("SpecificCommunityScreen/${keys[i+1]}") }
+                            .clickable { navController.navigate("SpecificCommunityScreen/${keys[i + 1]}") }
                             .padding(vertical = 10.dp))
                     }
                 }
@@ -562,7 +571,10 @@ fun CommunityCard_Mini(
 
 
 @Composable
-fun G_Calls_Mini(modifier: Modifier = Modifier) {
+fun G_Calls_Mini(
+    onJoinClick :() -> Unit,
+    gamerCall: GamerCalls,
+    modifier: Modifier = Modifier) {
 
 //        Variable declaration for menu
     var isMenuVisible by remember { mutableStateOf(false) }
@@ -588,7 +600,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Valorant",
+                text = gamerCall.gameName,
                 style = MaterialTheme.typography.titleSmall,
                 color = colorResource(id = R.color.white),
                 modifier = Modifier
@@ -596,7 +608,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
             )
 
             Text(
-                text = "#58008",
+                text = gamerCall.gamerTag,
                 style = MaterialTheme.typography.labelSmall,
                 color = colorResource(id = R.color.SubliminalText),
                 modifier = Modifier
@@ -638,7 +650,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "5",
+                            text = gamerCall.partySize.toString(),
                             style = MaterialTheme.typography.bodySmall,
                             color = colorResource(id = R.color.white),
                             modifier = Modifier
@@ -646,7 +658,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
                         )
                     }
                     Text(
-                        text = "2hrs ago",
+                        text = gamerCall.callDuration + "Hours",
                         style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.white),
                         modifier = Modifier
@@ -662,6 +674,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
 
 //                Bottom Row 2
                 Row(
+
                     modifier = Modifier
                         .padding(4.dp, 12.dp)
                         .background(
@@ -670,7 +683,8 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
                         )
                         .height(16.dp)
                         .fillMaxWidth()
-                        .zIndex(2f),
+                        .zIndex(2f)
+                        .clickable { onJoinClick() },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ){
@@ -680,6 +694,7 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
                         color = colorResource(id = R.color.white),
                         modifier = Modifier
                             .padding(12.dp, 0.dp)
+
                     )
                 }
             }
@@ -690,7 +705,10 @@ fun G_Calls_Mini(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun My_Calls_Mini(modifier: Modifier = Modifier) {
+fun My_Calls_Mini(
+    gamerCall: GamerCalls,
+    onDeleteClick:()->Unit,
+    modifier: Modifier = Modifier) {
     Column(modifier = modifier
         .padding(12.dp, 0.dp, 4.dp, 12.dp)
         .width(180.dp)
@@ -711,7 +729,7 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Valorant",
+                text = gamerCall.gameName,
                 style = MaterialTheme.typography.titleSmall,
                 fontSize = 12.sp,
                 color = colorResource(id = R.color.white),
@@ -735,7 +753,7 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "5",
+                    text = gamerCall.partySize.toString(),
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.white),
@@ -749,6 +767,7 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .padding(4.dp, 0.dp, 8.dp, 1.dp)
                     .size(12.dp)
+                    .clickable { onDeleteClick() }
             )
             Spacer(modifier = Modifier.weight(0.00001f))
         }
@@ -786,7 +805,7 @@ fun My_Calls_Mini(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ){}
             Text(
-                text = "2hrs",
+                text = gamerCall.callDuration + "hrs",
                 style = MaterialTheme.typography.titleSmall,
                 color = colorResource(id = R.color.SubliminalText),
                 fontSize = 10.sp,
@@ -832,22 +851,23 @@ fun ImageCarousel(images: List<Int>, modifier: Modifier = Modifier) {
 }
 
 
-@Preview
-@Composable
-fun PreviewTF(){
-    PartyFinderTheme {
-        HomeScreen(
-            navigateToProfileScreen={},
-            navigateToChats = {},
-            navigateToPartyFinder = {},
-            navigateToGamerCalls = {},
-            navigateToCommunities = {},
-            homepageContent = { HomepageContent(communitylist =CommunitiesList(emptyMap()), navController = rememberNavController(), gamerID = "#PoisonBish",
-                userStatus = Status()
-            )}
-        )
-    }
-}
-
+//@Preview
+//@Composable
+//fun PreviewTF(){
+//    PartyFinderTheme {
+//        HomeScreen(
+//            navigateToProfileScreen={},
+//            navigateToChats = {},
+//            navigateToPartyFinder = {},
+//            navigateToGamerCalls = {},
+//            navigateToCommunities = {},
+//            homepageContent = { HomepageContent(communitylist =CommunitiesList(emptyMap()), navController = rememberNavController(), gamerID = "#PoisonBish",
+//                userStatus = Status(),
+//                myGamerCallsList = datasource.gamerCallsList
+//            )}
+//        )
+//    }
+//}
+//
 
 

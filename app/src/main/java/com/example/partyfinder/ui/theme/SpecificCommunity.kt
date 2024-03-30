@@ -1,6 +1,8 @@
 package com.example.partyfinder.ui.theme
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -60,6 +62,7 @@ fun SpecificCommunityScreen(
     navigateUp:()->Unit,
     currentCommunityScreenName:String,
     currentCommunityObject:Community,
+    context: Context,
     communityViewModel: CommunityViewModel){
     Surface(color= colorResource(id = R.color.black)){
         Box(modifier = Modifier
@@ -67,7 +70,7 @@ fun SpecificCommunityScreen(
             var newPostOverlay by remember {mutableStateOf(false)}
             Column {
                 SpecificCommunityTopBar(navigateUp = navigateUp, communityName = currentCommunityScreenName)
-                SpecificCommunityContent(currentCommunity = currentCommunityObject, currentCommunityName = currentCommunityScreenName)
+                SpecificCommunityContent(currentCommunity = currentCommunityObject, currentCommunityName = currentCommunityScreenName, context = context)
             }
 
 //            To add a new post
@@ -203,6 +206,7 @@ fun SpecificCommunityTopBar(
 fun SpecificCommunityContent(
     modifier: Modifier = Modifier,
     currentCommunity: Community?,
+    context:Context,
     currentCommunityName:String) {
     Box(
         modifier = modifier
@@ -259,7 +263,7 @@ fun SpecificCommunityContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
        items(currentCommunity!!.communityPosts.values.toList()){
-                CommunityPosts(userName = it.userName, userProfilePic = it.userProfilepic, postContent =it.postContent )
+                CommunityPosts(userName = it.userName, userProfilePic = it.userProfilepic, postContent =it.postContent , context = context )
         }
     }
 }
@@ -270,6 +274,7 @@ fun SpecificCommunityContent(
 fun CommunityPosts(
     modifier: Modifier = Modifier,
     userName: String,
+    context: Context,
     userProfilePic:String,
     postContent:String,
     postViewModel: PostViewModel = viewModel()) {
@@ -432,18 +437,28 @@ fun CommunityPosts(
                         .clickable { postViewModel.onEvent(PostUIEvent.PostShared) },
                     verticalAlignment = Alignment.CenterVertically
                 ){
-                    Image(
-                        painter = painterResource(id = R.drawable.share_blue_1),
-                        contentDescription = "Share",
-                        modifier = modifier
-                            .padding(0.dp, 5.dp, 6.dp, 4.dp)
-                            .size(16.dp)
-                    )
-                    Text(
-                        text = "Share",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = colorResource(id = R.color.white)
-                    )
+                    Row(modifier = Modifier.clickable {
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "text/plain"
+                        intent.putExtra(Intent.EXTRA_TEXT, "Read the following post by $userName:\n$postContent \n Download The app now to read the post in App")
+                        val shareIntent = Intent.createChooser(intent, null)
+                        context.startActivity(shareIntent) // Use the context parameter here
+                    }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.share_blue_1),
+                            contentDescription = "Share",
+                            modifier = modifier
+                                .padding(0.dp, 5.dp, 6.dp, 4.dp)
+                                .size(16.dp)
+                        )
+                        Text(
+                            modifier=Modifier.padding(top = 5.dp),
+                            text = "Share",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = colorResource(id = R.color.white)
+                        )
+                    }
+
                 }
                 Row(
                     modifier = modifier

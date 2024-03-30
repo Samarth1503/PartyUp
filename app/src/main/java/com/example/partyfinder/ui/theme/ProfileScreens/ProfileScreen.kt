@@ -1,5 +1,6 @@
 package com.example.partyfinder.ui.theme.ProfileScreens
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -47,7 +48,7 @@ import com.example.partyfinder.R
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.Status
 import com.example.partyfinder.model.uiState.Ranks
-import com.example.partyfinder.ui.theme.GamersCallScreens.G_Calls
+import com.example.partyfinder.ui.theme.GamersCallScreens.User_G_Calls
 
 //@Preview
 //@Composable
@@ -410,8 +411,11 @@ fun ProfileRankDisplay(
 
 
 @Composable
-fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),
-                              userGamerCalls:GamerCallsList?){
+fun ProfileMyGamerCallsWidget(
+    modifier: Modifier = Modifier.padding(16.dp),
+    userGamerCalls:GamerCallsList?,
+    context: Context
+){
     Card(modifier= modifier
         .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.neutral_10))
@@ -456,12 +460,14 @@ fun ProfileMyGamerCallsWidget(modifier: Modifier = Modifier.padding(16.dp),
                     if (userGamerCalls != null) {
                         userGamerCalls.gamerCalls.forEach(){
                             Log.d("Profile-G-Calls TestCase ", "${it.value.ProfilePic} \n${it.value.gamerID}")
-                            G_Calls(
+                            User_G_Calls(
                                 profilePic = it.value.ProfilePic,
                                 gamerID = it.value.gamerID,
                                 gameName = it.value.gameName,
                                 partySize = it.value.partySize,
-                                callDes =it.value.callDes
+                                callDes =it.value.callDes,
+                                context = context,
+                                onDeleteClicked = {}
                             )
                         }
                     }

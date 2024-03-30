@@ -1,5 +1,7 @@
 package com.example.partyfinder.ui.theme.GamersCallScreens
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -41,15 +43,15 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.partyfinder.R
-import com.example.partyfinder.datasource.datasource
 import com.example.partyfinder.model.GamerCallsList
-import com.example.partyfinder.ui.theme.PartyFinderTheme
+import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
@@ -120,10 +122,21 @@ fun GamersCallTopBar(
     }
 }
 
+
+
+
 @Composable
 fun GamersCallContent(
+    chatScreenViewModel: chatScreenViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier,
-    listOfGamerCalls:GamerCallsList) {
+    context: Context,
+    listOfGamerCalls: GamerCallsList,
+    ) {
+
+    var isChatChannelLoading by remember {
+        mutableStateOf(false)
+    }
     Box(modifier = modifier){
         LazyColumn(
             modifier = modifier
@@ -143,8 +156,16 @@ fun GamersCallContent(
                     callDes = gamerCall.callDes,
                     partySize = gamerCall.partySize,
                     profilePic = gamerCall.ProfilePic,
-                    gamerID = gamerCall.gamerID
+                    gamerID = gamerCall.gamerID,
+                    context = context,
+                    onPartyUpClicked = {
+                        val channelID = runBlocking {
+                            chatScreenViewModel.onNewChatClicked(chatScreenViewModel.currentUserUID.value!!, gamerCall.userUID, false)
+                        }
+                       navController.navigate("ChatsScreen")
+                    }
                 )
+
             }
 
         }
@@ -168,10 +189,12 @@ fun GamersCallContent(
 fun G_Calls(
     modifier: Modifier = Modifier,
     profilePic:String,
+    context: Context,
     gamerID:String,
     gameName:String,
     partySize:Int,
-    callDes:String
+    callDes:String,
+    onPartyUpClicked :() ->Unit,
 ) {
 
 //        Variable declaration for menu
@@ -322,6 +345,7 @@ fun G_Calls(
                                 color = colorResource(id = R.color.white),
                                 modifier = Modifier
                                     .padding(end = 12.dp, bottom = 2.dp)
+                                    .clickable { onPartyUpClicked() }
                             )
                         }
                     }
@@ -358,20 +382,20 @@ fun G_Calls(
 //        Menu
         if (isMenuVisible) {
             Box( modifier = Modifier
-                    .padding(
-                        0.dp,
-                        (dimensionResource(id = R.dimen.top_bar_height) - 24.dp),
-                        32.dp,
-                        0.dp
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = colorResource(id = R.color.CallWidgetBorder),
-                        shape = RoundedCornerShape(4.dp)
-                    )
-                    .zIndex(2f)
-                    .background(colorResource(id = R.color.black))
-                    .align(Alignment.TopEnd)
+                .padding(
+                    0.dp,
+                    (dimensionResource(id = R.dimen.top_bar_height) - 24.dp),
+                    32.dp,
+                    0.dp
+                )
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .zIndex(2f)
+                .background(colorResource(id = R.color.black))
+                .align(Alignment.TopEnd)
             ) {
                 Column ( modifier = modifier
                     .padding(20.dp, 8.dp, 20.dp, 8.dp)
@@ -380,6 +404,280 @@ fun G_Calls(
                         modifier = modifier
 //                        .fillMaxWidth()
                             .height(36.dp)
+                            . clickable {
+                                val intent = Intent(Intent.ACTION_SEND)
+                                intent.type = "text/plain"
+                                intent.putExtra(Intent.EXTRA_TEXT, "Hey Join This GamerCall in PartyFinder App")
+                                val shareIntent = Intent.createChooser(intent, null)
+                                context.startActivity(shareIntent) // Use the context parameter here
+                            }
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.share_icon_white),
+                            contentDescription = "ShareIcon",
+                            modifier = modifier
+                                .padding(0.dp, 5.dp, 12.dp, 4.dp)
+                                .size(18.dp)
+
+                        )
+                        Text(
+                            text = "Share",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = colorResource(id = R.color.primary)
+                        )
+                    }
+                    Row ( verticalAlignment = Alignment.CenterVertically,
+                        modifier = modifier
+//                        .fillMaxWidth()
+                            .height(36.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.report_blue),
+                            contentDescription = "DeleteChats",
+                            modifier = modifier
+                                .padding(0.dp, 5.dp, 12.dp, 4.dp)
+                                .size(20.dp)
+                        )
+                        Text(
+                            text = "Report",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = colorResource(id = R.color.primary)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun User_G_Calls(
+    modifier: Modifier = Modifier,
+    profilePic:String,
+    context: Context,
+    gamerID:String,
+    gameName:String,
+    partySize:Int,
+    callDes:String,
+    onDeleteClicked:()->Unit
+) {
+
+//        Variable declaration for menu
+    var isMenuVisible by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier
+        .fillMaxWidth()
+        .zIndex(1f)
+    ){
+        Column(
+            modifier = modifier
+                .padding(0.dp, 10.dp, 0.dp, 0.dp)
+                .background(
+                    color = colorResource(id = R.color.DarkBG),
+                    shape = RoundedCornerShape(15.dp)
+                )
+                .height(160.dp)
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(10.dp)
+                )
+        ) {
+            Row(
+                modifier = modifier
+                    .background(
+                        color = colorResource(id = R.color.DarkBG),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                    .height(100.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp, 8.dp, 16.dp, 0.dp)
+            ) {
+
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(profilePic)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    modifier = modifier
+                        .padding(top = 12.dp, end = 8.dp)
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(50)),
+                    error = painterResource(id = R.drawable.close_blue),
+                    placeholder = painterResource(id = R.drawable.usericon_white)
+                )
+
+                Column {
+//                Menu Icon
+                    Row(
+                        modifier = modifier
+                            .padding(top = 6.dp)
+                            .background(
+                                color = colorResource(id = R.color.DarkBG),
+                                shape = RoundedCornerShape(15.dp)
+                            )
+                            .height(32.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = gameName,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = colorResource(id = R.color.white),
+                            modifier = modifier
+                                .padding(start = 4.dp,top = 8.dp)
+                        )
+
+                        if (!isMenuVisible) {
+                            Image(
+                                painter = painterResource(id = R.drawable.menu_icon_white),
+                                contentDescription = "MenuIcon",
+                                modifier = modifier
+                                    .size(16.dp)
+                                    .clickable { isMenuVisible = !isMenuVisible }
+                            )
+                        }
+                        if (isMenuVisible) {
+                            Image(
+                                painter = painterResource(id = R.drawable.close_white),
+                                contentDescription = "MenuIcon",
+                                modifier = modifier
+                                    .size(18.dp)
+                                    .clickable { isMenuVisible = !isMenuVisible }
+                            )
+                        }
+                    }
+
+//                Name + Other details
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .background(
+                                color = colorResource(id = R.color.DarkBG),
+                                shape = RoundedCornerShape(15.dp)
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = gamerID,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = colorResource(id = R.color.SubliminalText),
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                                .width(94.dp),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 2
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+//                    Icons
+                        Row( modifier = Modifier.padding(top = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.playericon_white),
+                                contentDescription = "NoOfPlayersIcon",
+                                modifier = Modifier
+                                    .padding(bottom = 1.dp)
+                                    .size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = partySize.toString(),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = colorResource(id = R.color.white),
+                                modifier = Modifier
+                                    .padding(bottom = 2.dp)
+                            )
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Image(
+                                painter = painterResource(id = R.drawable.delete_blue),
+                                contentDescription = "Chat",
+                                modifier = Modifier
+                                    .padding(bottom = 1.dp)
+                                    .size(16.dp)
+                            )
+                            Spacer(modifier = modifier.width(4.dp))
+                            Text(
+                                text = "Delete",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = colorResource(id = R.color.white),
+                                modifier = Modifier
+                                    .padding(end = 12.dp, bottom = 2.dp)
+                                    .clickable { onDeleteClicked() }
+                            )
+                        }
+                    }
+                }
+            }
+
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = colorResource(id = R.color.CallWidgetBorder)
+            )
+
+//        Description
+            Row(
+                modifier = modifier
+                    .background(
+                        color = colorResource(id = R.color.DarkBG),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                    .height(60.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(
+                    text = callDes,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colorResource(id = R.color.white),
+                    modifier = modifier
+                        .padding(12.dp, 0.dp)
+                )
+            }
+        }
+
+
+//        Menu
+        if (isMenuVisible) {
+            Box( modifier = Modifier
+                .padding(
+                    0.dp,
+                    (dimensionResource(id = R.dimen.top_bar_height) - 24.dp),
+                    32.dp,
+                    0.dp
+                )
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.CallWidgetBorder),
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .zIndex(2f)
+                .background(colorResource(id = R.color.black))
+                .align(Alignment.TopEnd)
+            ) {
+                Column ( modifier = modifier
+                    .padding(20.dp, 8.dp, 20.dp, 8.dp)
+                ){
+                    Row ( verticalAlignment = Alignment.CenterVertically,
+                        modifier = modifier
+//                        .fillMaxWidth()
+                            .height(36.dp)
+                            . clickable {
+                                val intent = Intent(Intent.ACTION_SEND)
+                                intent.type = "text/plain"
+                                intent.putExtra(Intent.EXTRA_TEXT, "Hey Join This GamerCall in PartyFinder App")
+                                val shareIntent = Intent.createChooser(intent, null)
+                                context.startActivity(shareIntent) // Use the context parameter here
+                            }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.share_icon_white),
@@ -418,18 +716,16 @@ fun G_Calls(
     }
 }
 
-
-
-@Preview
-@Composable
-fun PreviewGamersCall(){
-    PartyFinderTheme {
-        GamersCall(
-            gamersCallsTopBar = { GamersCallTopBar(onBackClick = {})},
-            onCreateClick = {},
-            gamersCallContent = { GamersCallContent(listOfGamerCalls = datasource.gamerCallsList)}
-        )
-    }
-}
-
+//@Preview
+//@Composable
+//fun PreviewGamersCall(){
+//    PartyFinderTheme {
+//        GamersCall(
+//            gamersCallsTopBar = { GamersCallTopBar(onBackClick = {})},
+//            onCreateClick = {},
+//            gamersCallContent = { GamersCallContent(listOfGamerCalls = datasource.gamerCallsList)}
+//        )
+//    }
+//}
+//
 

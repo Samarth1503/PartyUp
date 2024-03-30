@@ -95,6 +95,7 @@ fun DmScreen(
 @Composable
 fun DmTopBar(
     isMenuClicked:Boolean,
+    onClearChatClicked:()->Unit,
     onMenuItemClicked:(item:Pair<String,Int>)->Unit,
     modifier: Modifier = Modifier,
     currentChatChannel: ChatChannel,
@@ -126,7 +127,12 @@ fun DmTopBar(
                             Text(text = item.first, color = colorResource(id = R.color.primary))
                         }},
                             onClick = {
-                                onMenuItemClicked(item)
+                                if(item == datasource.dmScreenDropDownOptions.get(0)){
+                                    onClearChatClicked()
+                                }
+                                else{
+
+                                }
                                 onMenuClicked()}
                         )
                     }

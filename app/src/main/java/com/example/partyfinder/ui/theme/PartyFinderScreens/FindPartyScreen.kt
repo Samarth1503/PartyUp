@@ -372,7 +372,7 @@ fun PartyFinderContent(
                           user2UUID = it.userAccount.gamerID,
                           isGroupChatpara = false)
                         if (chatChannelID != ""){
-                            navController.navigate("DMScreen/${chatChannelID}")
+                            navController.navigate("DMScreen/ChatsScreen")
                         }
                     })
             }

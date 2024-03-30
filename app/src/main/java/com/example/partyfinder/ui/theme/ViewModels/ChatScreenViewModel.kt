@@ -195,6 +195,8 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
                 return ""
             }
     }
+
+
     fun onChatsScreenMenuClick(){
         isMenuClicked=!isMenuClicked
         _chatsScreenUiState.update { currentState -> currentState.copy(
@@ -327,6 +329,31 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
     }
 
 
+    fun clearDMs(){
+        viewModelScope.launch {
+            val response = networkChatChannelRepository.retreiveCurrentChannel(chatsScreenUiState.value.currentChannelObject!!.channelID)
+            if (response.isSuccessful){
+                val emptychatItemList = emptyList<ChatItem>()
+                networkChatChannelRepository.postDmContent(chatsScreenUiState.value.currentChannel,emptychatItemList)
+            }
+        }
+    }
+
+    fun clearAllChatChannels(){
+        viewModelScope.launch {
+            val emptyChatChannelList = emptyList<String>()
+            val response = UserApiService.getUserAccount(currentUserUID.value!!)
+            if (response.isSuccessful){
+                var userAccount = response.body()
+                userAccount!!.chatChannelList = emptyChatChannelList
+
+               val  updateResponse = UserApiService.updateUserAccount(currentUserUID.value!!,userAccount)
+                if(updateResponse.isSuccessful){
+                    Log.d("ClearChatChannels" , "Deleted All chat channels on currentUserAccount")
+                }
+            }
+        }
+    }
     suspend fun searchUserDataInFirebase(): List<UserAccount> {
         val snapshot = FirebaseDatabase.getInstance().getReference("users").child("data").get().await()
         val userList = mutableListOf<UserAccount>()

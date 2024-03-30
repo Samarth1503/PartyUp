@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.UserApiService
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.model.uiState.CreateGamerCallsUiState
@@ -85,6 +86,15 @@ class CreateGamerCallsViewModel(val userUIDSharedViewModel : UserUIDSharedViewMo
 
                 val updateResponse = networkGamerCallsRepository.updateGamerCall(gamerCallID = gamerCallID, gamerCall = gamerCall)
                 if (updateResponse.isSuccessful){
+                    val userAccount = UserApiService.getUserAccount(currentUserUID.value!!).body()
+                    if (userAccount != null) {
+                        userAccount.userGamerCallsList = userAccount.userGamerCallsList.toMutableList().apply { add(gamerCallID) }
+                        UserApiService.updateUserAccount(currentUserUID.value!!,userAccount)
+                    }
+                    else{
+                        Log.d("Posting GamerCall","User Account retrieved was empty")
+                    }
+
                     Log.d("Posting GamerCall","GamerCall Updated Successfully")
                     navigateAfterPost()
                 }

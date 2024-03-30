@@ -19,8 +19,8 @@ class UserAccount(
     var status: Status = Status(),
     var liveGamerCallID: String = "",
     var chatChannelList:List<String> = emptyList(),
-    var userGamerCallsList:List<String> = listOf("defaultObject"),
-    var friendList:List<String> = listOf("defaultObject")
+    var userGamerCallsList:List<String> = emptyList(),
+    var friendList:List<String> = emptyList()
 ) {
     init {
         if (uid.isNotEmpty()) {

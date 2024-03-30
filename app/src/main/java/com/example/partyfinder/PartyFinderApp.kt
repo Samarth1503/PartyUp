@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -149,7 +150,10 @@ fun PartyFinderApp(
                         communitylist = communityUIState.communityList,
                         navController = navController,
                         gamerID = profileViewModel._profileUiState.value.gamerID,
-                        userStatus = profileUiState.status
+                        userStatus = profileUiState.status,
+                        myGamerCallsList = profileUiState.UserGamerCalls,
+                        chatScreenViewModel = chatScreenViewModel,
+                        randomGamerCallsList = profileUiState.random4GamerCallsOnHomeScreen
                     )
                 }
             )
@@ -189,7 +193,8 @@ fun PartyFinderApp(
             SpecificCommunityScreen(navigateUp = {navController.navigateUp()},
                 communityViewModel = communityViewModel,
                 currentCommunityScreenName = communityUIState.communityName,
-                currentCommunityObject = communityUIState.communityObject)
+                currentCommunityObject = communityUIState.communityObject,
+                context = LocalContext.current)
         }
 
         composable(route = PartyFinderScreen.GamerCallsScreen.name){
@@ -197,7 +202,11 @@ fun PartyFinderApp(
                 gamersCallsTopBar = { GamersCallTopBar {
                     navController.navigateUp()
                 }},
-                gamersCallContent = { GamersCallContent(listOfGamerCalls = gamerCallsUiState.listOfGamersCall)},
+                gamersCallContent = { GamersCallContent(
+                    listOfGamerCalls = gamerCallsUiState.listOfGamersCall,
+                    context = LocalContext.current,
+                    chatScreenViewModel = chatScreenViewModel,
+                    navController = navController)},
                 onCreateClick = {navController.navigate(PartyFinderScreen.CreateGamerCallsScreen.name)}
             )
         }
@@ -275,6 +284,7 @@ fun PartyFinderApp(
                 chatMenu = { ChatMenu(
                     isMenuClicked = chatScreenUiState.isMenuClicked,
                     onMenuItemClicked = {},
+                    onClearAllChat = {chatScreenViewModel.clearAllChatChannels()},
                     onMenuClicked ={chatScreenViewModel.onChatsScreenMenuClick()}
                 ) },
                 chats = { Chats(
@@ -321,7 +331,8 @@ fun PartyFinderApp(
                             currentChatChannel = chatScreenUiState.currentChannelObject!!,
                             onMenuClicked = {chatScreenViewModel.onDmScreenMenuClicked()},
                             navigateBack = { navigateBack(navController) },
-                            retreivedGamerAccount = userAccount
+                            retreivedGamerAccount = userAccount,
+                            onClearChatClicked = { chatScreenViewModel.clearDMs()}
                         )
                     },
                     dmChatInput = {
@@ -429,7 +440,9 @@ fun PartyFinderApp(
                                 onUpdateRanksClick = { navController.navigate(PartyFinderScreen.EditProfileScreen.name)},
                                 ranks = profileViewModel.getProfileRanks()
                             ) },
-                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(userGamerCalls = profileUiState.UserGamerCalls) },
+                        profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(
+                            userGamerCalls = profileUiState.UserGamerCalls,
+                            context = LocalContext.current) },
                         logoutButtonClicked = {profileViewModel.logoutUser { navController.navigate(PartyFinderScreen.LoginScreen.name) }}
                     )
                 }

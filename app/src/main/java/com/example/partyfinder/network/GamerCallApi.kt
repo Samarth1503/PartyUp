@@ -14,13 +14,16 @@ import retrofit2.http.Path
 interface GamerCallApi {
 
     @GET("gamerCalls.json")
-     suspend fun getGamerCalls( ): GamerCallsList
+     suspend fun getGamerCalls( ): Response<GamerCallsList>
 
     @POST("gamerCalls/data.json")
     suspend fun postGamerCall( @Body gamerCall: GamerCalls):Response<FirebaseResponse>
 
     @PUT("gamerCalls/data/{gamerCallid}/.json")
     suspend fun updateLiveGamerCall(@Path("gamerCallid") gamerCallId: String, @Body gamerCall: GamerCalls): Response<ResponseBody>
+
+    @GET("gamerCalls/data/{gamerCallid}.json")
+    suspend fun getGamerCallObject (@Path("gamerCallid") gamerCallID :String):Response<GamerCalls>
 
 }
 

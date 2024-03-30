@@ -194,6 +194,7 @@ fun ChatTopBar(modifier: Modifier = Modifier,
 fun ChatMenu(
     modifier: Modifier = Modifier,
     isMenuClicked:Boolean,
+    onClearAllChat:()->Unit,
     onMenuItemClicked:(item:Pair<String,Int>)->Unit,
     onMenuClicked:()->Unit,) {
     Box(modifier = modifier
@@ -220,7 +221,10 @@ fun ChatMenu(
                             Text(text = item.first, color = colorResource(id = R.color.primary))
                         }},
                             onClick = {
-                                onMenuItemClicked(item)
+//                                onMenuItemClicked(item)
+                                if (item == datasource.dmScreenDropDownOptions.get(0)){
+                                    onClearAllChat()
+                                }
                                 onMenuClicked()}
                         )
                     }

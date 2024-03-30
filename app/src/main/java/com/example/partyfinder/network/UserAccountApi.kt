@@ -10,7 +10,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UserAccountApi {
-    @GET("users/{firebaseUID}.json")
+    @GET("users/data/{firebaseUID}.json")
     suspend fun getUserAccount(@Path("firebaseUID")userID:String):Response<UserAccount>
 
     @PUT("users/data/{firebaseUID}.json")
@@ -18,4 +18,7 @@ interface UserAccountApi {
 
     @PUT("users/data/{firebaseUID}/liveGamerCallID.json")
     suspend fun updateLiveGamerCallID(@Path("firebaseUID")userID: String, @Body liveGamerCallID:String)
+
+    @PUT("users/data/{firebaseUID}/userGamerCallsList.json")
+    suspend fun uploadGamerCallID(@Path("firebaseUID")userID:String,@Body gamerCallID:String)
 }

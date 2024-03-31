@@ -607,23 +607,24 @@ fun User_G_Calls(
                             )
 
                             Spacer(modifier = Modifier.width(12.dp))
+                            Row(modifier =Modifier.clickable { onDeleteClicked() }) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.delete_blue),
+                                    contentDescription = "Chat",
+                                    modifier = Modifier
+                                        .padding(bottom = 1.dp)
+                                        .size(16.dp)
+                                )
+                                Spacer(modifier = modifier.width(4.dp))
+                                Text(
+                                    text = "Delete",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = colorResource(id = R.color.white),
+                                    modifier = Modifier
+                                        .padding(end = 12.dp, bottom = 2.dp)
 
-                            Image(
-                                painter = painterResource(id = R.drawable.delete_blue),
-                                contentDescription = "Chat",
-                                modifier = Modifier
-                                    .padding(bottom = 1.dp)
-                                    .size(16.dp)
-                            )
-                            Spacer(modifier = modifier.width(4.dp))
-                            Text(
-                                text = "Delete",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = colorResource(id = R.color.white),
-                                modifier = Modifier
-                                    .padding(end = 12.dp, bottom = 2.dp)
-                                    .clickable { onDeleteClicked() }
-                            )
+                                )
+                            }
                         }
                     }
                 }

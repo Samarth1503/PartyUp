@@ -7,15 +7,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.partyfinder.data.repositories.UserApiService
 import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.example.partyfinder.data.repositories.UserApiService
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.model.uiState.CreateGamerCallsUiState
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.getValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,43 +34,57 @@ class CreateGamerCallsViewModel(
     private val application: Application
 ) :ViewModel() {
     private val _CreateGamerCallsUiState = MutableStateFlow(CreateGamerCallsUiState())
-    val CreateGamerCallUiState:StateFlow<CreateGamerCallsUiState> = _CreateGamerCallsUiState.asStateFlow()
+    val CreateGamerCallUiState: StateFlow<CreateGamerCallsUiState> =
+        _CreateGamerCallsUiState.asStateFlow()
 
     val _currentUserUID = MutableLiveData<String>()
-    val currentUserUID :LiveData<String> get() = _currentUserUID
+    val currentUserUID: LiveData<String> get() = _currentUserUID
+
     init {
-        if (retrievedUserUID == null){
+        if (retrievedUserUID == null) {
             viewModelScope.launch {
-                while (isActive){
+                while (isActive) {
                     _currentUserUID.value = userUIDSharedViewModel.currentUserUID.value
                     delay(1000)
                 }
             }
-        }
-        else{
+        } else {
             _currentUserUID.value = retrievedUserUID!!
         }
     }
 
-    fun onGameNameValueChange(newValue:String){
-        _CreateGamerCallsUiState.update { currentState -> currentState.copy(
-            gameName = newValue
-        ) }
+
+
+    fun onGameNameValueChange(newValue: String) {
+        _CreateGamerCallsUiState.update { currentState ->
+            currentState.copy(
+                gameName = newValue
+            )
+        }
     }
-    fun onNoOfGamersValueChange(newValue:String){
-        _CreateGamerCallsUiState.update { currentState -> currentState.copy(
-            noOfGamers = newValue
-        ) }
+
+    fun onNoOfGamersValueChange(newValue: String) {
+        _CreateGamerCallsUiState.update { currentState ->
+            currentState.copy(
+                noOfGamers = newValue
+            )
+        }
     }
-    fun onCallDescriptionValueChange(newValue:String){
-        _CreateGamerCallsUiState.update { currentState -> currentState.copy(
-            DescriptionOfCall = newValue
-        ) }
+
+    fun onCallDescriptionValueChange(newValue: String) {
+        _CreateGamerCallsUiState.update { currentState ->
+            currentState.copy(
+                DescriptionOfCall = newValue
+            )
+        }
     }
-    fun onCallDurationValueChange(newValue:String){
-        _CreateGamerCallsUiState.update { currentState -> currentState.copy(
-            CallDuration = newValue
-        ) }
+
+    fun onCallDurationValueChange(newValue: String) {
+        _CreateGamerCallsUiState.update { currentState ->
+            currentState.copy(
+                CallDuration = newValue
+            )
+        }
     }
 
     fun postGamerCall(
@@ -97,39 +113,52 @@ class CreateGamerCallsViewModel(
                 val gamerCallID = response.body()!!.name
                 gamerCall.gamerCallID = gamerCallID
 
-                val updateResponse = networkGamerCallsRepository.updateGamerCall(gamerCallID = gamerCallID, gamerCall = gamerCall)
-                if (updateResponse.isSuccessful){
+                val updateResponse = networkGamerCallsRepository.updateGamerCall(
+                    gamerCallID = gamerCallID,
+                    gamerCall = gamerCall
+                )
+                if (updateResponse.isSuccessful) {
                     val userAccount = UserApiService.getUserAccount(currentUserUID.value!!).body()
                     if (userAccount != null) {
-                        userAccount.userGamerCallsList = userAccount.userGamerCallsList.toMutableList().apply { add(gamerCallID) }
-                        UserApiService.updateUserAccount(currentUserUID.value!!,userAccount)
-                    }
-                    else{
-                        Log.d("Posting GamerCall","User Account retrieved was empty")
-                    }
-
-                    Log.d("Posting GamerCall","GamerCall Updated Successfully")
-                if (updateResponse.isSuccessful) {
-                    Log.d("Posting GamerCall", "GamerCall Updated Successfully \n${gamerCallID}")
-
-                    launch(Dispatchers.Default) {
-                        scheduleGamerCallDeletion(gamerCallID, _CreateGamerCallsUiState.value.CallDuration.toInt())
+                        userAccount.userGamerCallsList =
+                            userAccount.userGamerCallsList.toMutableList()
+                                .apply { add(gamerCallID) }
+                        UserApiService.updateUserAccount(currentUserUID.value!!, userAccount)
+                    } else {
+                        Log.d("Posting GamerCall", "User Account retrieved was empty")
                     }
 
-                    Log.d("Posting GamerCall", "navigateAfterPost() reached")
-                    navigateAfterPost()
+                    Log.d("Posting GamerCall", "GamerCall Updated Successfully")
+                    if (updateResponse.isSuccessful) {
+                        Log.d(
+                            "Posting GamerCall",
+                            "GamerCall Updated Successfully \n${gamerCallID}"
+                        )
+
+                        launch(Dispatchers.Default) {
+                            scheduleGamerCallDeletion(
+                                gamerCallID = gamerCallID,
+                                gamerCallDuration = _CreateGamerCallsUiState.value.CallDuration.toInt(),
+                                userId = currentUserUID.value!!
+                            )
+                        }
+
+                        Log.d("Posting GamerCall", "navigateAfterPost() reached")
+                        navigateAfterPost()
+                    }
                 }
             }
         }
+
+
     }
 
-
-    private fun scheduleGamerCallDeletion(gamerCallID: String, gamerCallDuration: Int) {
+    fun scheduleGamerCallDeletion(gamerCallID: String, gamerCallDuration: Int, userId: String) {
         Log.d("Deleting GamerCall", "scheduleGamerCallDeletion() called")
         val delayMillis = (gamerCallDuration * 3600000).toLong()
 
-        // Create a Data object with the gamerCallID
-        val data = workDataOf("gamerCallID" to gamerCallID)
+        // Create a Data object with the gamerCallID and userId
+        val data = workDataOf("gamerCallID" to gamerCallID, "userId" to userId)
 
         // Create a OneTimeWorkRequest with the delay and the Data
         val workRequest = OneTimeWorkRequestBuilder<DeleteGamerCallWorker>()
@@ -140,20 +169,58 @@ class CreateGamerCallsViewModel(
         // Enqueue the WorkRequest
         WorkManager.getInstance(application).enqueue(workRequest)
     }
+
+    fun deleteGamerCall(gamerCallID: String, userId: String) {
+        Log.d("Deleting GamerCall", "deleteGamerCall() called")
+
+        viewModelScope.launch  {
+            val deleteResponse = networkGamerCallsRepository.deleteGamerCall(gamerCallId = gamerCallID)
+            if (deleteResponse.isSuccessful) {
+                Log.d("Deleting GamerCall", "GamerCall Deleted Successfully")
+                deleteGamerCallAndReorder(gamerCallID, userId)
+            } else {
+                Log.d("Deleting GamerCall", "GamerCall Delete Unsuccessful")
+            }
+        }
+    }
+
+
 }
 
+fun deleteGamerCallAndReorder(gamerCallId: String, userId: String) {
+    // Get a reference to the user's gamerCallsList
+    val dbRef = FirebaseDatabase.getInstance().getReference("users").child("data").child(userId).child("userGamerCallsList")
 
+    // Get the current list
+    dbRef.get().addOnSuccessListener { dataSnapshot ->
+        val list = dataSnapshot.getValue<List<String>>()?.toMutableList() ?: mutableListOf()
+
+        // Remove the gamerCallId from the list
+        list.remove(gamerCallId)
+
+        // Update the list in the database
+        dbRef.setValue(list)
+            .addOnSuccessListener {
+                Log.d("deleteGamerCallAndReorder TestCase", "Successfully updated userGamerCallsList")
+            }
+            .addOnFailureListener { e ->
+                Log.w("deleteGamerCallAndReorder TestCase", "Error updating userGamerCallsList", e)
+            }
+    }
+}
 class DeleteGamerCallWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         Log.d("Deleting GamerCall", "DeleteGamerCallWorker() - doWork() called")
         val gamerCallID = inputData.getString("gamerCallID")
+        val userId = inputData.getString("userId")
 
         val deleteResponse = networkGamerCallsRepository.deleteGamerCall(gamerCallId = gamerCallID!!)
-            if (deleteResponse.isSuccessful) {
-                Log.d("Deleting GamerCall", "GamerCall Deleted Successfully")
-            } else {
-                Log.d("Deleting GamerCall", "GamerCall Delete Unsuccessful")
-            }
+        if (deleteResponse.isSuccessful) {
+            Log.d("Deleting GamerCall", "GamerCall Deleted Successfully")
+            deleteGamerCallAndReorder(gamerCallID, userId!!)
+        } else {
+            Log.d("Deleting GamerCall", "GamerCall Delete Unsuccessful")
+        }
         return Result.success()
     }
 }

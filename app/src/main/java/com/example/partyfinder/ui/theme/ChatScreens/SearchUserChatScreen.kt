@@ -177,6 +177,7 @@ fun SearchView(state: MutableState<TextFieldValue>, mainPadding : Dp) {
 
 @Composable
 fun ItemList(
+
     userListState: MutableState<List<UserAccount>>,
     textState: MutableState<TextFieldValue>,
     mainPadding: Dp,
@@ -220,7 +221,7 @@ fun ItemList(
                             user2UUID = user.gamerID
                         )
                         if (channelID.isNotEmpty()) {
-                            navController.navigate("DMScreen/$channelID")
+                            navController.navigate("ChatsScreen")
                         }
                     }
                 }

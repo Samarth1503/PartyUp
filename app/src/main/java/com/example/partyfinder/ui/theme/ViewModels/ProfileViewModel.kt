@@ -16,7 +16,6 @@ import com.example.partyfinder.model.uiState.ProfileUiState
 import com.example.partyfinder.model.uiState.Ranks
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
@@ -38,13 +37,6 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     val _profileUiState = MutableStateFlow(ProfileUiState())
     val profileState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
 
-    // Database Variable
-    private val database: FirebaseDatabase = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app")
-    private lateinit var mDbRef: DatabaseReference
-
-    private val _snackbarMessage = MutableLiveData<String>()
-    val snackbarMessage: LiveData<String> get() = _snackbarMessage
-
     var selectedStatus by mutableStateOf(Status())
 
     private var _gamerCallList = MutableLiveData<GamerCallsList>()
@@ -55,15 +47,20 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
 
     init {
         viewModelScope.launch {
-            while (isActive) {
-                _currentUserUID.value = retrievedUserUID ?: userUIDSharedViewModel.currentUserUID.value
-                if (_currentUserUID.value != null) {
-                    Log.d("ProfileVM TestCase", "Init If Triggered")
-                    fetchData(_currentUserUID.value)
-                    break
-                }
-                delay(1000)
+
+            if(retrievedUserUID != null){
+                _currentUserUID.value = retrievedUserUID!!
+                fetchData(_currentUserUID.value)
             }
+            else{
+                while (isActive){
+                    _currentUserUID.value = userUIDSharedViewModel.currentUserUID.value
+                    delay(1000)
+                }
+                fetchData(_currentUserUID.value)
+
+            }
+
         }
 
         viewModelScope.launch {

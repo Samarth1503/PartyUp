@@ -19,7 +19,7 @@ package com.example.partyfinder.data.repositories
  suspend fun updateGamerCall(gamerCallID:String,gamerCall:GamerCalls):Response<ResponseBody>
  suspend fun deleteGamerCall(gamerCallId: String): Response<ResponseBody>
  }
- }
+
 
 
 
@@ -74,11 +74,15 @@ object networkGamerCallsRepository : GamerCallsRepository {
     var gamerCallList = mutableMapOf<String,GamerCalls>()
 
     //filtering gamerCalls for not containing users own gamerCalls
-    unfilteredGamerCallList!!.gamerCalls.values.forEach {
-       if ( it.userUID != currentUserUID){
-        gamerCallList.put(it.gamerCallID,it)
-       }
+
+    if (unfilteredGamerCallList != null) {
+     unfilteredGamerCallList.gamerCalls.values.forEach {
+      if ( it.userUID != currentUserUID){
+       gamerCallList.put(it.gamerCallID,it)
+      }
+     }
     }
+
     val filteredGamerCallList = GamerCallsList(gamerCalls = gamerCallList)
 
     _gamerCallsToDisplay.value = filteredGamerCallList

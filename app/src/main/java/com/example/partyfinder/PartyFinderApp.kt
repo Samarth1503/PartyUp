@@ -153,7 +153,8 @@ fun PartyFinderApp(
                         userStatus = profileUiState.status,
                         myGamerCallsList = profileUiState.UserGamerCalls,
                         chatScreenViewModel = chatScreenViewModel,
-                        randomGamerCallsList = profileUiState.random4GamerCallsOnHomeScreen
+                        randomGamerCallsList = profileUiState.random4GamerCallsOnHomeScreen,
+                        createGamerCallsViewModel = createGamerCallViewModel
                     )
                 }
             )
@@ -332,7 +333,7 @@ fun PartyFinderApp(
                             currentChatChannel = chatScreenUiState.currentChannelObject!!,
                             onMenuClicked = {chatScreenViewModel.onDmScreenMenuClicked()},
                             navigateBack = { navigateBack(navController) },
-                            retreivedGamerAccount = userAccount,
+                            retrievedGamerAccount = userAccount,
                             onClearChatClicked = { chatScreenViewModel.clearDMs()}
                         )
                     },
@@ -443,7 +444,9 @@ fun PartyFinderApp(
                             ) },
                         profileMyGamerCallsWidget = { ProfileMyGamerCallsWidget(
                             userGamerCalls = profileUiState.UserGamerCalls,
-                            context = LocalContext.current) },
+                            context = LocalContext.current,
+                            GamerCallsViewModel = createGamerCallViewModel)
+                             },
                         logoutButtonClicked = {profileViewModel.logoutUser { navController.navigate(PartyFinderScreen.LoginScreen.name) }}
                     )
                 }

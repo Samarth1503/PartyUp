@@ -49,6 +49,7 @@ import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.Status
 import com.example.partyfinder.model.uiState.Ranks
 import com.example.partyfinder.ui.theme.GamersCallScreens.User_G_Calls
+import com.example.partyfinder.ui.theme.ViewModels.CreateGamerCallsViewModel
 
 //@Preview
 //@Composable
@@ -414,6 +415,7 @@ fun ProfileRankDisplay(
 fun ProfileMyGamerCallsWidget(
     modifier: Modifier = Modifier.padding(16.dp),
     userGamerCalls:GamerCallsList?,
+    GamerCallsViewModel: CreateGamerCallsViewModel,
     context: Context
 ){
     Card(modifier= modifier
@@ -467,7 +469,7 @@ fun ProfileMyGamerCallsWidget(
                                 partySize = it.value.partySize,
                                 callDes =it.value.callDes,
                                 context = context,
-                                onDeleteClicked = {}
+                                onDeleteClicked = { GamerCallsViewModel.deleteGamerCall(it.value.gamerCallID,GamerCallsViewModel.currentUserUID.value!!)}
                             )
                         }
                     }

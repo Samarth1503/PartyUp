@@ -54,6 +54,7 @@ import com.example.partyfinder.model.CommunitiesList
 import com.example.partyfinder.model.GamerCalls
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.Status
+import com.example.partyfinder.ui.theme.ViewModels.CreateGamerCallsViewModel
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -282,6 +283,7 @@ fun HomepageContent(
     communitylist:CommunitiesList?,
     myGamerCallsList:GamerCallsList?,
     chatScreenViewModel: chatScreenViewModel,
+    createGamerCallsViewModel: CreateGamerCallsViewModel,
     randomGamerCallsList:GamerCallsList?,
     navController: NavHostController,
     gamerID: String,
@@ -388,7 +390,8 @@ fun HomepageContent(
                 color = colorResource(id = R.color.DarkBG),
                 shape = RoundedCornerShape(15.dp)
             ),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Find Your Allies",
@@ -398,33 +401,27 @@ fun HomepageContent(
                     .padding(dimensionResource(id = R.dimen.main_padding))
             )
 
-            ////        Replace myCallsCount with the length of the list of the GamerCalls
-////        replace items(4) with items(myCallsCount.length) ie the count of items in the list
-////        Add Parameter to My_Calls_Mini() for GamerID n stuff
-//            if (myCallsCount != null || myCallsCount != 0) {
-//                LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-//                    items(4) {
-//                        G_Calls_Mini()
-//                    }
-//                }
-//            } else {
-//                Text(
-//                    text = "No Gamer Calls Active",
-//                    style = MaterialTheme.typography.titleSmall,
-//                    color = colorResource(id = R.color.white),
-//                    modifier = Modifier.padding(bottom = 24.dp)
-//                )
-//            }
 
-            LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-                items(randomGamerCallsList!!.gamerCalls.values.toList()){
+            if (randomGamerCallsList!!.gamerCalls.values.isNotEmpty()) {
+                LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
+                    items(randomGamerCallsList!!.gamerCalls.values.toList()){
                         G_Calls_Mini(
                             onJoinClick = {
-                            chatScreenViewModel.onNewChatClicked(chatScreenViewModel.currentUserUID.value!!,it.userUID,false)
-                             navController.navigate("ChatsScreen")
+                                chatScreenViewModel.onNewChatClicked(chatScreenViewModel.currentUserUID.value!!,it.userUID,false)
+                                navController.navigate("ChatsScreen")
                             }, gamerCall = it)
+                    }
                 }
+            } else {
+                Text(
+                    text = "No Gamer Calls Active",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.white),
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
             }
+
+
         }
 
 
@@ -465,39 +462,32 @@ fun HomepageContent(
                     )
                 }
             }
-            LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-                items(myGamerCallsList!!.gamerCalls.values.toList()){
-                    My_Calls_Mini(gamerCall = it, onDeleteClick = { /*TODO*/ })
+
+
+
+            if (myGamerCallsList!!.gamerCalls.values.isNotEmpty()) {
+                LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
+
+                    items(myGamerCallsList!!.gamerCalls.values.toList()){
+                        My_Calls_Mini(gamerCall = it, onDeleteClick = {
+                            createGamerCallsViewModel.deleteGamerCall(it.gamerCallID,
+                                createGamerCallsViewModel.currentUserUID.value!!
+                            )
+                        })
+                    }
                 }
+            } else {
+                Text(
+                    text = "No Gamer Calls Active",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.white),
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
             }
 
-////        Replace myCallsCount with the length of the list of the GamerCalls
-////        replace items(4) with items(myCallsCount.length) ie the count of items in the list
-////        Add Parameter to My_Calls_Mini() for GamerID n stuff
-//            if (myCallsCount != null || myCallsCount != 0) {
-//                LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-//                    items(4) {
-//                        My_Calls_Mini()
-//                    }
-//                }
-//            } else {
-//                Text(
-//                    text = "No Gamer Calls Active",
-//                    style = MaterialTheme.typography.titleSmall,
-//                    color = colorResource(id = R.color.white),
-//                    modifier = Modifier.padding(bottom = 24.dp)
-//                )
-//            }
 
 
-////        Code commented above is the correct and real code
 
-            Text(
-                text = "No Gamer Calls Active",
-                style = MaterialTheme.typography.titleSmall,
-                color = colorResource(id = R.color.white),
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
         }
 
 

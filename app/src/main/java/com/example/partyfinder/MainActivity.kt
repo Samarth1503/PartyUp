@@ -1,6 +1,7 @@
 package com.example.partyfinder
 
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -82,14 +83,18 @@ class MainActivity : ComponentActivity() {
                             Log.d("MainActivity Debug", "Before running PartyFinderApp")
                             val sharedUserViewModel = UserUIDSharedViewModel()
                             val registrationViewModel = RegistrationViewModel(nonNullUserRepository,sharedUserViewModel)
-                            val loginViewModel = LoginViewModel(nonNullUserRepository)
+                            val loginViewModel = LoginViewModel(sharedUserViewModel, nonNullUserRepository)
                             val chatScreenViewModel = chatScreenViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
                             val partyFinderViewModel = PartyFinderViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
                             val gamersCallViewModel = GamerCallsViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel, chatScreenViewModel = chatScreenViewModel)
                             val profileViewModel = ProfileViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
-                            val createGamerCallViewModel = CreateGamerCallsViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
+                            val createGamerCallViewModel = CreateGamerCallsViewModel(
+                                retrievedUserUID = retrievedUserUID,
+                                userUIDSharedViewModel = sharedUserViewModel,
+                                application = Application()
+                            )
                             val filterGamerCallsViewModel = FilteredGamerCallsViewModel(nonNullUserRepository)
-                            val communityViewModel = CommunityViewModel(nonNullUserRepository)
+                            val communityViewModel = CommunityViewModel(profileViewModel)
 
                             if(retrievedUserUID != null || retrievedUserUID != ""){
                                 Log.d("MainActivity LocalUserData TestCase 2", " $retrievedUserUID")

@@ -164,8 +164,7 @@ fun PartyFinderApp(
                 registrationViewModel = registrationViewModel,
                 loginViewModel = loginViewModel,
                 navigateToRegisterScreen = { navController.navigate(PartyFinderScreen.RegisterScreen.name) },
-                onLogInClicked = { loginViewModel.onEvent(LoginUIEvent.LoginButtonCLicked) } ,
-                navigateToHomeScreen = { navController.navigate(PartyFinderScreen.HomeScreen.name) }
+                onLogInClicked = { loginViewModel.onEvent(LoginUIEvent.LoginButtonCLicked) }
             )
         }
 
@@ -199,9 +198,10 @@ fun PartyFinderApp(
 
         composable(route = PartyFinderScreen.GamerCallsScreen.name){
             GamersCall(
-                gamersCallsTopBar = { GamersCallTopBar {
-                    navController.navigateUp()
-                }},
+                gamersCallsTopBar = { GamersCallTopBar (
+                    onBackClick = { navController.navigateUp() },
+                    onFilteClick = { navController.navigate(PartyFinderScreen.FilteredGamerCallsScreen.name) }
+                ) },
                 gamersCallContent = { GamersCallContent(
                     listOfGamerCalls = gamerCallsUiState.listOfGamersCall,
                     context = LocalContext.current,
@@ -237,12 +237,12 @@ fun PartyFinderApp(
 
         composable( route= PartyFinderScreen.FilteredGamerCallsScreen.name){
             FilteredGamersCallScreen(
-                filteredGamersCallsTopBar = { FilteredGamersCallTopBar(onBackClick = {})},
+                filteredGamersCallsTopBar = { FilteredGamersCallTopBar(onBackClick = { navController.navigateUp() })},
                 filteredGamersCallsContent = {
                     FilteredGamersCallContent(
                         FilterGamerCallGameMenu = { CustomExposedDropDownMenu(
                             placeholder = "Select the Game",
-                            isDropDownExpanded =filteredGamerCallsUiState.isFGameNameDropDownExpanded ,
+                            isDropDownExpanded = filteredGamerCallsUiState.isFGameNameDropDownExpanded ,
                             onExpandChange = {newValue -> filterGamerCallsViewModel.onGameNameExapandedChange(newValue)  },
                             DropDownSelectedValue =filteredGamerCallsUiState.FGameNameDropDownValue,
                             onValueChange = {newValue -> filterGamerCallsViewModel.onGameNameValueChange(newValue)  },
@@ -291,7 +291,7 @@ fun PartyFinderApp(
                 chats = { Chats(
                     chatChannelList = chatScreenUiState.channelList,
                     navController = navController,
-                    onNewChatClicked = {chatScreenViewModel.onNewChatClicked(currentUserGamerID = profileUiState.gamerID, isGroupChatpara = false, user2UUID = "8llkiilC3QTG1O3JlB51eChAm083")},
+                    onNewChatClicked = {navController.navigate(PartyFinderScreen.SearchUserChatScreen.name)},
                     chatScreenViewModel = chatScreenViewModel
 
                     )
@@ -324,7 +324,7 @@ fun PartyFinderApp(
             if (userAccount != null) {
                 DmScreen(
                     currentChatChannel = chatScreenUiState.currentChannelObject!!,
-                    UserTag = profileUiState.gamerID,
+                    userTag = profileUiState.gamerID,
                     dmTopBar ={
                         DmTopBar(
                             isMenuClicked = chatScreenViewModel.isDmScreenMenuClicked,
@@ -462,8 +462,12 @@ fun PartyFinderApp(
         }
 
         composable(route = PartyFinderScreen.SearchUserChatScreen.name){
-            SearchUserChatScreen(searchUserChatTopBar = { SearchUserChatTopBar(navigateUp = { navigateBack(navController)})},
-                searchUserChatContent = { SearchUserChatContent(viewModel = chatScreenViewModel)}
+            SearchUserChatScreen(
+                searchUserChatTopBar = { SearchUserChatTopBar(navigateUp = { navigateBack(navController)})},
+                searchUserChatContent = { SearchUserChatContent(
+                    viewModel = chatScreenViewModel,
+                    navController = navController
+                )}
             )
         }
     }

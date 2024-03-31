@@ -3,6 +3,7 @@ package com.example.partyfinder.ui.theme.LoginAndRegisterScreens
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,12 +35,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.partyfinder.MainActivity
 import com.example.partyfinder.R
 import com.example.partyfinder.model.uiEvent.LoginUIEvent
 import com.example.partyfinder.ui.theme.ButtonComponent
@@ -54,15 +57,16 @@ import com.example.partyfinder.ui.theme.ViewModels.RegistrationViewModel
 
 @SuppressLint("SetTextI18n","InflateParams", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LogInPage( registrationViewModel : RegistrationViewModel,
+fun LogInPage(
+    registrationViewModel : RegistrationViewModel,
     loginViewModel: LoginViewModel,
     navigateToRegisterScreen: () -> Unit,
-    onLogInClicked: () -> Unit,
-    navigateToHomeScreen:()->Unit
+    onLogInClicked: () -> Unit
 ) {
     val emailState = remember { mutableStateOf(TextFieldValue()) }
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     Scaffold( snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) {
@@ -152,19 +156,22 @@ fun LogInPage( registrationViewModel : RegistrationViewModel,
                     navigateToRegisterScreen()
                 })
             }
-            if (loginViewModel.loginInProgress.value) {
+            if (loginViewModel.loginInProgress.value || loginViewModel.loginIsSuccessful.value) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
                     color = colorResource(id = R.color.primary)
                 )
             }
 
-            // For prompting login
+            // For prompting login and redirecting
             LaunchedEffect(key1 = loginViewModel.loginIsSuccessful.value) {
                 if (loginViewModel.loginIsSuccessful.value) {
                     Log.d(ContentValues.TAG, "Snackbar Prompted")
                     snackbarHostState.showSnackbar("Signed In!", duration = SnackbarDuration.Short)
-                    navigateToHomeScreen()
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)
+                    loginViewModel.loginIsSuccessful.value = false
+                    loginViewModel.loginInProgress.value = false
                 }
                 if (loginViewModel.loginFailed.value){
                     Log.d(ContentValues.TAG, "Snackbar Prompted")
@@ -186,7 +193,6 @@ fun Preview(){
             navigateToRegisterScreen = {},
             onLogInClicked = {},
             registrationViewModel = viewModel(),
-            navigateToHomeScreen = {}
         )
     }
 }

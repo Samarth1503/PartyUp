@@ -1,3 +1,5 @@
+@file:Suppress("PackageName", "KotlinConstantConditions")
+
 package com.example.partyfinder.ui.theme.ChatScreens
 
 import androidx.compose.foundation.BorderStroke
@@ -57,7 +59,7 @@ import com.example.partyfinder.model.UserAccount
 @Composable
 fun DmScreen(
     modifier:Modifier=Modifier,
-    UserTag:String,
+    userTag:String,
     dmTopBar:@Composable ()->Unit,
     dmChatInput:@Composable ()->Unit,
     currentChatChannel : ChatChannel
@@ -77,7 +79,7 @@ fun DmScreen(
                 .padding(bottom = 8.dp),
                 verticalArrangement = Arrangement.Bottom) {
                items(currentChatChannel.content.toList()){
-                    if (it.author == UserTag){
+                    if (it.author == userTag){
                         SenderDM(content=it.content)
                     }
                     else{
@@ -100,7 +102,7 @@ fun DmTopBar(
     currentChatChannel: ChatChannel,
     navigateBack:() -> Unit,
     onMenuClicked:()->Unit,
-    retreivedGamerAccount: UserAccount?
+    retrievedGamerAccount: UserAccount?
 ) {
 
     Box(modifier = modifier
@@ -153,7 +155,7 @@ fun DmTopBar(
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
                     .data(if (currentChatChannel.isGroupChat){currentChatChannel.channelProfile}else{
-                        retreivedGamerAccount!!.profilePic})
+                        retrievedGamerAccount!!.profilePic})
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
@@ -174,7 +176,7 @@ fun DmTopBar(
                     currentChatChannel.channelName
                 }else
                 {
-                    retreivedGamerAccount!!.gamerID
+                    retrievedGamerAccount!!.gamerID
                 },
                 style = MaterialTheme.typography.titleSmall,
                 color = colorResource(id = R.color.primary)
@@ -236,9 +238,10 @@ val SenderTriangle = object : Shape {
 @Composable
 fun ReceiverDm(
     modifier: Modifier = Modifier,
-    content: String) {
+    content: String
+) {
 
-    val bgcolor_of_dm = colorResource(id = R.color.DarkBG)
+    val colorOfDmg = colorResource(id = R.color.DarkBG)
 
     Box(modifier = modifier
         .padding(0.dp, 8.dp, 0.dp, 0.dp)
@@ -251,7 +254,7 @@ fun ReceiverDm(
                 .heightIn(min = 28.dp, max = 300.dp)
                 .widthIn(min = 24.dp, max = 360.dp)
                 .background(
-                    bgcolor_of_dm,
+                    colorOfDmg,
                     shape = RoundedCornerShape(12.dp, 12.dp, 12.dp, 0.dp)
                 )
                 .align(Alignment.BottomStart)
@@ -272,7 +275,7 @@ fun ReceiverDm(
                     .width(16.dp)
                     .height(20.dp)
                     .background(
-                        color = bgcolor_of_dm,
+                        color = colorOfDmg,
                         ReceiverTriangle
                     )
             )
@@ -288,7 +291,7 @@ fun SenderDM(
     modifier: Modifier = Modifier,
     content:String) {
 
-    val bgcolor_of_dm = colorResource(id = R.color.receiverDmBackground)
+    val colorOfDm = colorResource(id = R.color.receiverDmBackground)
 
     Box(modifier = modifier
         .padding(0.dp, 8.dp, 0.dp, 0.dp)
@@ -301,7 +304,7 @@ fun SenderDM(
                 .heightIn(min = 28.dp, max = 300.dp)
                 .widthIn(min = 24.dp, max = 360.dp)
                 .background(
-                    bgcolor_of_dm,
+                    colorOfDm,
                     shape = RoundedCornerShape(12.dp, 12.dp, 0.dp, 12.dp)
                 )
                 .align(Alignment.BottomEnd)
@@ -330,7 +333,7 @@ fun SenderDM(
                     .width(16.dp)
                     .height(20.dp)
                     .background(
-                        color = bgcolor_of_dm,
+                        color = colorOfDm,
                         SenderTriangle
                     )
             )
@@ -395,35 +398,6 @@ fun DmChatInput(
 
 
 
-
-
-//
-//@Composable
-//fun DmChatInput(modifier: Modifier = Modifier) {
-//    Row(
-//        modifier = modifier
-//            .height(dimensionResource(id = (R.dimen.top_bar_height)))
-//            .fillMaxWidth()
-//            .background(color = colorResource(id = R.color.DarkBG)),
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//        Text(
-//            text = "TF",
-//            style = MaterialTheme.typography.bodyMedium,
-//            color = colorResource(id = R.color.white),
-//        )
-//        Image (
-//            painter = painterResource(id = R.drawable.send_4),
-//            contentDescription = "Send",
-//            modifier = Modifier
-//                .padding(20.dp, 0.dp, 10.dp, 0.dp)
-//                .size(40.dp),
-//            alignment = Alignment.CenterEnd
-//        )
-//    }
-//}
-
-
 //@Preview
 //@Composable
 //fun PreviewDmScreen(){
@@ -438,7 +412,7 @@ fun DmChatInput(
 //                isMenuClicked = true,
 //            currentChatChannel = datasource.chatChannelList.chatChannels.get("-1")!!,
 //            onMenuClicked = { /*TODO*/ },
-//            retreivedGamerAccount = datasource.UserAccounts.get(0),
+//            retrievedGamerAccount = datasource.UserAccounts.get(0),
 //        )
 //            },
 //            dmChatInput = {DmChatInput(onSendButtonClick = {}, message = "", onMessageChange = {})})

@@ -313,7 +313,7 @@ fun PartyFinderApp(
             if (userAccount != null) {
                 DmScreen(
                     currentChatChannel = chatScreenUiState.currentChannelObject!!,
-                    UserTag = profileUiState.gamerID,
+                    userTag = profileUiState.gamerID,
                     dmTopBar ={
                         DmTopBar(
                             isMenuClicked = chatScreenViewModel.isDmScreenMenuClicked,
@@ -321,7 +321,7 @@ fun PartyFinderApp(
                             currentChatChannel = chatScreenUiState.currentChannelObject!!,
                             onMenuClicked = {chatScreenViewModel.onDmScreenMenuClicked()},
                             navigateBack = { navigateBack(navController) },
-                            retreivedGamerAccount = userAccount
+                            retrievedGamerAccount = userAccount
                         )
                     },
                     dmChatInput = {

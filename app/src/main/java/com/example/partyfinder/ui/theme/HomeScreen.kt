@@ -24,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -809,38 +811,48 @@ fun My_Calls_Mini(
             Spacer(modifier = Modifier.weight(0.00001f))
         }
         Box(modifier = Modifier.padding(bottom =  8.dp)){
-            Row(
+
+            LinearProgressIndicator(
                 modifier = Modifier
-                    .padding(16.dp, 0.dp)
-                    .background(
-                        color = colorResource(id = R.color.SubliminalText),
-                        shape = RoundedCornerShape(15.dp)
-                    )
-                    .height(3.dp)
                     .fillMaxWidth()
-                    .border(
-                        width = 1.dp,
-                        color = colorResource(id = R.color.SubliminalText),
-                        shape = RoundedCornerShape(10.dp)
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ){}
-            Row(
-                modifier = Modifier
-                    .padding(16.dp, 0.dp)
-                    .background(
-                        color = colorResource(id = R.color.progressBarGreen),
-                        shape = RoundedCornerShape(15.dp)
-                    )
-                    .height(3.dp)
-                    .fillMaxWidth(0.5f)
-                    .border(
-                        width = 1.dp,
-                        color = colorResource(id = R.color.progressBarGreen),
-                        shape = RoundedCornerShape(10.dp)
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ){}
+                    .padding(start = 16.dp, end = 16.dp)
+                    .height(3.dp),
+                color = colorResource(id = R.color.progressBarGreen),
+                strokeCap = StrokeCap.Round
+
+            )
+//            Row(
+//                modifier = Modifier
+//                    .padding(16.dp, 0.dp)
+//                    .background(
+//                        color = colorResource(id = R.color.SubliminalText),
+//                        shape = RoundedCornerShape(15.dp)
+//                    )
+//                    .height(3.dp)
+//                    .fillMaxWidth()
+//                    .border(
+//                        width = 1.dp,
+//                        color = colorResource(id = R.color.SubliminalText),
+//                        shape = RoundedCornerShape(10.dp)
+//                    ),
+//                verticalAlignment = Alignment.CenterVertically
+//            ){}
+//            Row(
+//                modifier = Modifier
+//                    .padding(16.dp, 0.dp)
+//                    .background(
+//                        color = colorResource(id = R.color.progressBarGreen),
+//                        shape = RoundedCornerShape(15.dp)
+//                    )
+//                    .height(3.dp)
+//                    .fillMaxWidth(0.5f)
+//                    .border(
+//                        width = 1.dp,
+//                        color = colorResource(id = R.color.progressBarGreen),
+//                        shape = RoundedCornerShape(10.dp)
+//                    ),
+//                verticalAlignment = Alignment.CenterVertically
+//            ){}
             Text(
                 text = gamerCall.callDuration + "hrs",
                 style = MaterialTheme.typography.titleSmall,

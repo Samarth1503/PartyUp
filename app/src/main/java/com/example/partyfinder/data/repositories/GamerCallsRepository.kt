@@ -74,7 +74,6 @@ object networkGamerCallsRepository : GamerCallsRepository {
     var gamerCallList = mutableMapOf<String,GamerCalls>()
 
     //filtering gamerCalls for not containing users own gamerCalls
-
     if (unfilteredGamerCallList != null) {
      unfilteredGamerCallList.gamerCalls.values.forEach {
       if ( it.userUID != currentUserUID){
@@ -89,6 +88,7 @@ object networkGamerCallsRepository : GamerCallsRepository {
    }
    return gamerCallsToDisplay
   }
+
 
   suspend fun getRandom4GamerCalls(currentUserUID: String): GamerCallsList {
    val response = GamerCallApiService.getGamerCalls()

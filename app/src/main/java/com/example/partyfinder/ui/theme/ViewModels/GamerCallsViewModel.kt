@@ -22,7 +22,7 @@ class GamerCallsViewModel (val userUIDSharedViewModel : UserUIDSharedViewModel, 
     val _currentUserUID = MutableLiveData<String>()
     val currentUserUID :LiveData<String> get() = _currentUserUID
 
-    private var _gamerCallListToDisplay = MutableLiveData<GamerCallsList>()
+    var _gamerCallListToDisplay = MutableLiveData<GamerCallsList>()
     val gamerCallListToDisplay: LiveData<GamerCallsList> get() = _gamerCallListToDisplay
 
     init{
@@ -49,21 +49,26 @@ class GamerCallsViewModel (val userUIDSharedViewModel : UserUIDSharedViewModel, 
         }
     }
 
-     fun onPartyUpClicked(user2UID:String):String{
+    fun fetchUserID(): String {
+        return _currentUserUID.value!!
+    }
+
+    fun onPartyUpClicked(user2UID:String):String{
         var channelId = chatScreenViewModel.onNewChatClicked(currentUserGamerID = currentUserUID.value!!, user2UUID = user2UID,isGroupChatpara = false)
         return channelId
-            }
+    }
+
     suspend fun getGamerCallsToDisplay(){
         _gamerCallListToDisplay.value = networkGamerCallsRepository.getGamerCallsToDisplay(currentUserUID = currentUserUID.value!!).value
 
-            val response = gamerCallListToDisplay.value
-            if (response != null ){
-                gamerCallListToDisplay.observeForever { response ->
-                    _GamerCallsUiState.update { currentState -> currentState.copy(
-                        listOfGamersCall = response
-                    ) }
-                }
+        val response = gamerCallListToDisplay.value
+        if (response != null ){
+            gamerCallListToDisplay.observeForever { response ->
+                _GamerCallsUiState.update { currentState -> currentState.copy(
+                    listOfGamersCall = response
+                ) }
             }
+        }
     }
 }
 

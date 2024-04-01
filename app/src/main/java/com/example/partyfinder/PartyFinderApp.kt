@@ -207,7 +207,8 @@ fun PartyFinderApp(
                     listOfGamerCalls = gamerCallsUiState.listOfGamersCall,
                     context = LocalContext.current,
                     chatScreenViewModel = chatScreenViewModel,
-                    navController = navController)},
+                    navController = navController
+                ) },
                 onCreateClick = {navController.navigate(PartyFinderScreen.CreateGamerCallsScreen.name)}
             )
         }
@@ -241,6 +242,8 @@ fun PartyFinderApp(
                 filteredGamersCallsTopBar = { FilteredGamersCallTopBar(onBackClick = { navController.navigateUp() })},
                 filteredGamersCallsContent = {
                     FilteredGamersCallContent(
+                        filterOnClick = { filterGamerCallsViewModel.onFilterButtonClicked() },
+                        listOfGamersCall = filterGamerCallsViewModel.FilteredGamerCallUiState.value.listOfGamersCall,
                         FilterGamerCallGameMenu = { CustomExposedDropDownMenu(
                             placeholder = "Select the Game",
                             isDropDownExpanded = filteredGamerCallsUiState.isFGameNameDropDownExpanded ,
@@ -268,9 +271,13 @@ fun PartyFinderApp(
                                             onClick = {filterGamerCallsViewModel.onFNoOfGamersItemClick(item)})
                                     }
                             }
-                        })
+                        },
+                        context = LocalContext.current,
+                        chatScreenViewModel = chatScreenViewModel,
+                        navController = navController
+                    )
                 }
-                 )
+            )
         }
 
         composable(route = PartyFinderScreen.ChatsScreen.name){

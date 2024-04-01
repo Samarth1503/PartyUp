@@ -59,6 +59,7 @@ import com.example.partyfinder.model.LiveGamerCall
 import com.example.partyfinder.model.LiveGamerCallSearchResult
 import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun FindPartyScreen(
@@ -367,13 +368,12 @@ fun PartyFinderContent(
                     liveGamerCallObject = it.liveGamerCallObject,
                     userAccountObject = it.userAccount,
                     onClickJoin = {
-                      var chatChannelID = chatScreenViewModel.onNewChatClicked(
-                          currentUserGamerID = it.liveGamerCallObject.uid,
-                          user2UUID = it.userAccount.gamerID,
-                          isGroupChatpara = false)
-                        if (chatChannelID != ""){
-                            navController.navigate("DMScreen/ChatsScreen")
-                        }
+                        runBlocking {chatScreenViewModel.onNewChatClicked(
+                            currentUserGamerID = chatScreenViewModel.currentUserUID.value!!,
+                            user2UUID = it.userAccount.uid,
+                            isGroupChatpara = false)  }
+                          navController.navigate("ChatsScreen")
+
                     })
             }
         }

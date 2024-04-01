@@ -27,10 +27,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +47,7 @@ import coil.request.ImageRequest
 import com.example.partyfinder.R
 import com.example.partyfinder.model.UserAccount
 import com.example.partyfinder.ui.theme.ViewModels.chatScreenViewModel
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 
@@ -185,7 +184,6 @@ fun ItemList(
     navController: NavController
 ) {
     val searchedText = textState.value.text
-    var chatChannelID by remember { mutableStateOf("") }
 
     val filteredItems = if (searchedText.isEmpty()) {
         userListState.value
@@ -214,16 +212,16 @@ fun ItemList(
                 userTag = user.gamerTag,
                 userProfilePic = user.profilePic,
                 onItemClick = {
-                    viewModel.currentUserUID.value?.let {
-                        val channelID = viewModel.onNewChatClicked(
-                            currentUserGamerID = it,
-                            isGroupChatpara = false,
-                            user2UUID = user.gamerID
-                        )
-                        if (channelID.isNotEmpty()) {
-                            navController.navigate("ChatsScreen")
-                        }
-                    }
+                       runBlocking {
+                            viewModel.onNewChatClicked(
+                               currentUserGamerID = viewModel.currentUserUID.value!!,
+                               isGroupChatpara = false,
+                               user2UUID = user.uid
+                           )
+                       }
+                        navController.navigate("ChatsScreen")
+
+
                 }
             )
         }

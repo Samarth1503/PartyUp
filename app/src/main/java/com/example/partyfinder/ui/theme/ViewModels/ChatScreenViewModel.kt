@@ -360,8 +360,10 @@ class chatScreenViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, v
 
         for (userSnapshot in snapshot.children) {
             val user = userSnapshot.getValue(UserAccount::class.java)
-            user?.let {
-                userList.add(UserAccount(gamerID = it.gamerID, gamerTag =  it.gamerTag, profilePic =  it.profilePic))
+            if(user!!.uid != currentUserUID.value){
+                user?.let {
+                    userList.add(user)
+                }
             }
         }
         return userList

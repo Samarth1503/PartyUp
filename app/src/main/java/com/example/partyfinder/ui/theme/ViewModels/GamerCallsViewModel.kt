@@ -40,8 +40,10 @@ class GamerCallsViewModel (val userUIDSharedViewModel : UserUIDSharedViewModel, 
              }
          }
         viewModelScope.launch {
-            getGamerCallsToDisplay()
-            delay(5000)
+            if(currentUserUID.value != null){
+                getGamerCallsToDisplay()
+                delay(5000)
+            }
         }
     }
 

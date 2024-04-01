@@ -113,15 +113,17 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     }
 
     suspend fun backGroundGetGamerCall() {
-        _gamerCallList.value = networkGamerCallsRepository.getUserGamerCalls(currentUserUID.value!!).value
-        val response = _gamerCallList.value
-        if (response != null) {
-            gamerCallList.observeForever { response ->
-                _profileUiState.update { currentState -> currentState.copy(
-                    UserGamerCalls = response
-                ) }
-            }
-        }
+       if(currentUserUID.value != null){
+           _gamerCallList.value = networkGamerCallsRepository.getUserGamerCalls(currentUserUID.value!!).value
+           val response = _gamerCallList.value
+           if (response != null) {
+               gamerCallList.observeForever { response ->
+                   _profileUiState.update { currentState -> currentState.copy(
+                       UserGamerCalls = response
+                   ) }
+               }
+           }
+       }
     }
 
     fun onGamerIDChanged(gamerID: String) {
@@ -312,12 +314,14 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
     }
 
     suspend fun getHomeScreenGamerCalls(){
-            viewModelScope.launch {
-                val list = networkGamerCallsRepository.getRandom4GamerCalls(currentUserUID.value!!)
-                _profileUiState.update { currentState -> currentState.copy(
-                    random4GamerCallsOnHomeScreen = list
-                ) }
-            }
+           if (currentUserUID.value != null){
+               viewModelScope.launch {
+                   val list = networkGamerCallsRepository.getRandom4GamerCalls(currentUserUID.value!!)
+                   _profileUiState.update { currentState -> currentState.copy(
+                       random4GamerCallsOnHomeScreen = list
+                   ) }
+               }
+           }
     }
     fun logoutUser(redirectToLogin:()->Unit) {
         FirebaseAuth.getInstance().signOut()

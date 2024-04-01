@@ -21,9 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -64,7 +62,7 @@ fun GamersCall(
         Box(modifier=Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
-                    .verticalScroll(rememberScrollState(), true)
+//                    .verticalScroll(rememberScrollState(), true)
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
@@ -147,7 +145,7 @@ fun GamersCallContent(
     var isChatChannelLoading by remember {
         mutableStateOf(false)
     }
-    Box(modifier = modifier){
+    Box(modifier = modifier.fillMaxHeight().fillMaxWidth()){
         LazyColumn(
             modifier = modifier
                 .padding(0.dp, 5.dp)

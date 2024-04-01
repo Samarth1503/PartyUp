@@ -445,6 +445,7 @@ fun CommunityPosts(
                     if (!isLiked){
                         postViewModel.onEvent(PostUIEvent.PostUnLiked)
                     }
+                    likeIsClicked = false
                 }
 
                 Row(

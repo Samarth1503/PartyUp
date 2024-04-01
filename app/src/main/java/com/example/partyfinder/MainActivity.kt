@@ -88,13 +88,13 @@ class MainActivity : ComponentActivity() {
                             val partyFinderViewModel = PartyFinderViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
                             val gamersCallViewModel = GamerCallsViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel, chatScreenViewModel = chatScreenViewModel)
                             val profileViewModel = ProfileViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
+                            val filterGamerCallsViewModel = FilteredGamerCallsViewModel(gamerCallsViewModel = gamersCallViewModel, chatScreenViewModel = chatScreenViewModel)
+                            val communityViewModel = CommunityViewModel(profileViewModel)
                             val createGamerCallViewModel = CreateGamerCallsViewModel(
                                 retrievedUserUID = retrievedUserUID,
                                 userUIDSharedViewModel = sharedUserViewModel,
                                 application = Application()
                             )
-                            val filterGamerCallsViewModel = FilteredGamerCallsViewModel(nonNullUserRepository)
-                            val communityViewModel = CommunityViewModel(profileViewModel)
 
                             if(retrievedUserUID != null || retrievedUserUID != ""){
                                 Log.d("MainActivity LocalUserData TestCase 2", " $retrievedUserUID")

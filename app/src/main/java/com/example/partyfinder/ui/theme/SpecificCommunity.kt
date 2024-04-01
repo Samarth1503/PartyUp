@@ -117,7 +117,6 @@ fun SpecificCommunityScreen(
                             onTextSelected = { communityViewModel.onEvent(CommunityUIEvent.ContentChanged(it))} )
 
                         Spacer(modifier = Modifier.height(20.dp))
-
                         Row (
                             modifier = Modifier
                                 .padding(

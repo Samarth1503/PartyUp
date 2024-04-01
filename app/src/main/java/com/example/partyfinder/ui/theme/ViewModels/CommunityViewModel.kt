@@ -34,19 +34,16 @@ class CommunityViewModel( val profileViewModel: ProfileViewModel): ViewModel() {
 
     private val dbref = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app").reference
 
-
-    var newPostOverlayOn by mutableStateOf(false)
-
-    var userID by mutableStateOf("")
-    var userProfilePic by mutableStateOf("")
+    private var userID  by mutableStateOf("")
+    private var userProfilePic by mutableStateOf("")
 
     private val _communityList = MutableLiveData<CommunitiesList> ()
     val communityList : LiveData<CommunitiesList> get() = _communityList
     init {
         viewModelScope.launch {
             while (isActive) {
-                userID = profileViewModel._profileUiState.value.gamerID
-                userProfilePic = profileViewModel._profileUiState.value.profilePic
+                userID = profileViewModel.profileState.value.gamerID
+                userProfilePic = profileViewModel.profileState.value.profilePic
                 retreiveCurrentCommunityData(communityUiState.value.communityName)
                 fetchCommunitiesData()
                 communityList.observeForever { response ->

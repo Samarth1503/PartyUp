@@ -75,6 +75,7 @@ class PostViewModel: ViewModel() {
         ) }
     }
 
+
     private fun updatePostDetails(){
         val db = FirebaseDatabase.getInstance().getReference("communities").child("data").child(_communityPostUIState.value.communityName).child("communityPosts").child(_communityPostUIState.value.postId)
 

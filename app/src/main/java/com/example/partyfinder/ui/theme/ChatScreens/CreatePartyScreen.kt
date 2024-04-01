@@ -95,7 +95,7 @@ fun CreatePartyContent(modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(15.dp)
             )
             .padding(dimensionResource(id = R.dimen.main_padding), 0.dp)
-            .fillMaxHeight()
+//            .fillMaxHeight()
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

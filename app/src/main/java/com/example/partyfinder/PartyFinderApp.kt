@@ -259,7 +259,7 @@ fun PartyFinderApp(
                         },
                         FilterNoOfGamerMenu = {
                             CustomExposedDropDownMenu(
-                                placeholder = "Count" ,
+                                placeholder = "Size" ,
                                 isDropDownExpanded =filteredGamerCallsUiState.isFNoOfGamersDropDownExpanded ,
                                 onExpandChange ={newValue -> filterGamerCallsViewModel.onNoOfGamersExapandedChange(newValue)} ,
                                 onValueChange = {newValue ->  filterGamerCallsViewModel.onNoOfPlayersvalueChange(newValue)},

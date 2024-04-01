@@ -1,7 +1,6 @@
 package com.example.partyfinder
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,8 +17,8 @@ fun TF(
     text:String) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
+            .fillMaxWidth(),
+//            .fillMaxHeight(),
         contentAlignment = Alignment.Center
     ) {
                 Text(text = text)

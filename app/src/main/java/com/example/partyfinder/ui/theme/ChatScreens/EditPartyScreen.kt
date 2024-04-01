@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -98,7 +97,7 @@ fun EditPartyContent(modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(15.dp)
             )
             .padding(dimensionResource(id = R.dimen.main_padding), 0.dp)
-            .fillMaxHeight()
+//            .fillMaxHeight()
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

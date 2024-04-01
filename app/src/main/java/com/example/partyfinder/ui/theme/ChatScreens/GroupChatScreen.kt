@@ -47,7 +47,7 @@ fun GroupChatScreen(){
         Column(modifier = Modifier
             .padding(top = dimensionResource(id = R.dimen.top_bar_height))
             .fillMaxWidth()
-            .fillMaxHeight()
+//            .fillMaxHeight()
             .background(color = colorResource(id = R.color.black))
         ) {
             LazyColumn(modifier = Modifier.weight(1f)) {

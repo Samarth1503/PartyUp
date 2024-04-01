@@ -301,7 +301,7 @@ fun HomepageContent(
     Column(modifier = Modifier
         .verticalScroll(rememberScrollState())
         .fillMaxWidth()
-        .fillMaxHeight()
+//        .fillMaxHeight()
         .background(color = colorResource(id = R.color.black))
         .zIndex(1f)
     ) {

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,7 +26,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,7 +52,11 @@ fun FilteredGamersCallScreen(
     filteredGamersCallsTopBar:@Composable ()->Unit,
     filteredGamersCallsContent:@Composable ()->Unit,
 ) {
-    Surface(modifier = Modifier) {
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.black))
+    ) {
         filteredGamersCallsTopBar()
         filteredGamersCallsContent()
     }
@@ -63,10 +65,10 @@ fun FilteredGamersCallScreen(
 
 @Composable
 fun FilteredGamersCallTopBar(
-    modifier: Modifier = Modifier,
-    onBackClick:()->Unit) {
+    onBackClick:()->Unit
+) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .height(dimensionResource(id = (R.dimen.top_bar_height)))
             .fillMaxWidth()
             .background(color = colorResource(id = R.color.DarkBG)),
@@ -75,7 +77,7 @@ fun FilteredGamersCallTopBar(
         Image(
             painter = painterResource(id = (R.drawable.back_blue)),
             contentDescription = "BackIcon",
-            modifier = modifier
+            modifier = Modifier
                 .padding(25.dp, 5.dp, 0.dp, 0.dp)
                 .size(26.dp)
                 .align(Alignment.CenterStart)
@@ -104,124 +106,117 @@ fun FilteredGamersCallContent(
     context: Context,
 ) {
     Column(modifier = Modifier
-        .padding(top = dimensionResource(id = R.dimen.top_bar_height))
         .fillMaxWidth()
-        .fillMaxHeight()
+//        .fillMaxHeight()
         .background(color = colorResource(id = R.color.black))
     ) {
 
         Text(text = "Select Filters",
             style = MaterialTheme.typography.titleMedium,
             color = colorResource(id = R.color.primary),
-            modifier = modifier
+            modifier = Modifier
                 .padding(dimensionResource(id = R.dimen.main_padding))
                 .align(Alignment.CenterHorizontally)
         )
 
-        Box(modifier = modifier){
+        Row(modifier = Modifier
+            .padding(
+                dimensionResource(id = R.dimen.main_padding),
+                0.dp,
+                dimensionResource(id = R.dimen.main_padding),
+                dimensionResource(id = R.dimen.main_padding)
+            )
+            .fillMaxWidth()
+            .zIndex(2f)
+        ){
+            Row(modifier = Modifier.weight(2f)) {
+                FilterGamerCallGameMenu()
+            }
+            Spacer(modifier = Modifier.weight(0.1f))
+            Row(modifier = Modifier.weight(1f)) {
+                FilterNoOfGamerMenu()
+            }
+        }
+
+        Column {
             Row(modifier = Modifier
-                .padding(
-                    dimensionResource(id = R.dimen.main_padding),
-                    0.dp,
-                    dimensionResource(id = R.dimen.main_padding),
-                    dimensionResource(id = R.dimen.main_padding)
-                )
+                .padding(dimensionResource(id = R.dimen.main_padding))
                 .fillMaxWidth()
-                .zIndex(2f)
-            ){
-                Row(modifier = Modifier.weight(2f)) {
-                    FilterGamerCallGameMenu()
-                }
-                Spacer(modifier = Modifier.weight(0.1f))
-                Row(modifier = Modifier.weight(1f)) {
-                    FilterNoOfGamerMenu()
+                .zIndex(1f),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    modifier = modifier
+                        .height(40.dp),
+                    shape = RoundedCornerShape(5.dp),
+                    onClick = { filterOnClick() },
+                    border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
+                ) {
+                    Text(text = "Search",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = colorResource(id = R.color.primary),
+                        modifier = modifier
+                            .padding(bottom = 4.dp)
+                    )
                 }
             }
 
-            Column {
-                Row(modifier = Modifier
-                    .padding(
-                        dimensionResource(id = R.dimen.main_padding),
-                        80.dp,
-                        dimensionResource(id = R.dimen.main_padding),
-                        dimensionResource(id = R.dimen.main_padding)
-                    )
-                    .fillMaxWidth()
-                    .zIndex(1f),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        modifier = modifier
-                            .height(40.dp),
-                        shape = RoundedCornerShape(5.dp),
-                        onClick = { filterOnClick() },
-                        border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.primary))
-                    ) {
-                        Text(text = "Search",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = colorResource(id = R.color.primary),
-                            modifier = modifier
-                                .padding(bottom = 4.dp)
-                        )
-                    }
-                }
-
-                Row(modifier = Modifier
+            Row(
+                modifier = Modifier
                     .padding(
                         dimensionResource(id = R.dimen.main_padding) + dimensionResource(id = R.dimen.main_padding),
                         dimensionResource(id = R.dimen.main_padding)
                     )
                     .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Results",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = colorResource(id = R.color.primary),
-                        modifier = modifier
-                    )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Text(text = "Clear",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = colorResource(id = R.color.primary),
-                        modifier = modifier.clickable { clearFilterOnClick() }
-                    )
-                }
-
-
-                LazyColumn(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Results",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = colorResource(id = R.color.primary),
                     modifier = modifier
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(text = "Clear",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(id = R.color.primary),
+                    modifier = modifier.clickable { clearFilterOnClick() }
+                )
+            }
+
+
+            LazyColumn(
+                modifier = modifier
 //                        .padding(0.dp, 5.dp)
-                        .background(
-                            color = colorResource(id = R.color.black),
-                            shape = RoundedCornerShape(15.dp)
-                        )
-                        .padding(dimensionResource(id = R.dimen.main_padding))
-                        .weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(listOfGamersCall.gamerCalls.values.toList()) { gamerCall ->
-                        G_Calls(
-                            gameName = gamerCall.gameName,
-                            callDes = gamerCall.callDes,
-                            partySize = gamerCall.partySize,
-                            profilePic = gamerCall.ProfilePic,
-                            gamerID = gamerCall.gamerID,
-                            context = context,
-                            onPartyUpClicked = {
-                                runBlocking {
-                                    chatScreenViewModel.onNewChatClicked(chatScreenViewModel.currentUserUID.value!!, gamerCall.userUID, false)
-                                }
-
-                                navController.navigate("ChatsScreen")
+                    .background(
+                        color = colorResource(id = R.color.black),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                    .padding(dimensionResource(id = R.dimen.main_padding))
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(listOfGamersCall.gamerCalls.values.toList()) { gamerCall ->
+                    G_Calls(
+                        gameName = gamerCall.gameName,
+                        callDes = gamerCall.callDes,
+                        partySize = gamerCall.partySize,
+                        profilePic = gamerCall.ProfilePic,
+                        gamerID = gamerCall.gamerID,
+                        context = context,
+                        onPartyUpClicked = {
+                            runBlocking {
+                                chatScreenViewModel.onNewChatClicked(chatScreenViewModel.currentUserUID.value!!, gamerCall.userUID, false)
                             }
-                        )
 
-                    }
+                            navController.navigate("ChatsScreen")
+                        }
+                    )
 
                 }
+
             }
         }
     }

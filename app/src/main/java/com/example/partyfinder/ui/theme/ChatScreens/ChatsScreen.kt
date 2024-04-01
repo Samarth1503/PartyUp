@@ -244,7 +244,7 @@ fun Chats(
 ) {
     Box(
         modifier = modifier.fillMaxHeight()
-    ) {
+        ) {
         LazyColumn(
             modifier = modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)
         ) {

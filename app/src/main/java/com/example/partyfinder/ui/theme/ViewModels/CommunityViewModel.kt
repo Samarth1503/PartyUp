@@ -2,6 +2,9 @@ package com.example.partyfinder.ui.theme.ViewModels
 
 import android.content.ContentValues
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,14 +34,22 @@ class CommunityViewModel( val profileViewModel: ProfileViewModel): ViewModel() {
 
     private val dbref = FirebaseDatabase.getInstance("https://partyup-sam-default-rtdb.asia-southeast1.firebasedatabase.app").reference
 
-    private val userID = profileViewModel._currentUserUID
-    private val userProfilePic = profileViewModel._profileUiState.value.profilePic
+
+
+
+
+    private var userID  by mutableStateOf("")
+
+
+    private var userProfilePic by mutableStateOf("")
 
     private val _communityList = MutableLiveData<CommunitiesList> ()
     val communityList : LiveData<CommunitiesList> get() = _communityList
     init {
         viewModelScope.launch {
             while (isActive) {
+                userID = profileViewModel.profileState.value.gamerID
+                userProfilePic = profileViewModel.profileState.value.profilePic
                 retreiveCurrentCommunityData(communityUiState.value.communityName)
                 fetchCommunitiesData()
                 communityList.observeForever { response ->
@@ -95,10 +106,15 @@ class CommunityViewModel( val profileViewModel: ProfileViewModel): ViewModel() {
                 printState()
             }
             is CommunityUIEvent.NewPostAdded -> {
-////                Add this as value for the database of new post
-//                _communityUIState.value.newPostContent
                postAndUpdateUserCommunityPost()
             }
+
+            is CommunityUIEvent.clearData -> {
+                _communityUIState.update { currentState -> currentState.copy(
+                    newPostContent = "") }
+                printState()
+            }
+
         }
     }
 
@@ -106,7 +122,7 @@ class CommunityViewModel( val profileViewModel: ProfileViewModel): ViewModel() {
         var tempUserPost = CommunityPost(
             postContent = communityUiState.value.newPostContent,
             postId = "default",
-            userName = userID.value!!,
+            userName = userID,
             userProfilepic = userProfilePic,
         )
         viewModelScope.launch {
@@ -117,6 +133,7 @@ class CommunityViewModel( val profileViewModel: ProfileViewModel): ViewModel() {
 
             if (updateResponse.isSuccessful){
                 Log.d("Community Posts","CommunityPost Posted and Updated Successfully")
+                onEvent(event = CommunityUIEvent.clearData)
             }
             else{
                 Log.d("Community Posts","Failed to post or update Community Post")

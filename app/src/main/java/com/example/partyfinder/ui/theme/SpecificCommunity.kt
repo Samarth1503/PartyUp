@@ -117,7 +117,6 @@ fun SpecificCommunityScreen(
                             onTextSelected = { communityViewModel.onEvent(CommunityUIEvent.ContentChanged(it))} )
 
                         Spacer(modifier = Modifier.height(20.dp))
-
                         Row (
                             modifier = Modifier
                                 .padding(
@@ -127,19 +126,8 @@ fun SpecificCommunityScreen(
                                     12.dp
                                 )
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly) {
-                            Button(
-                                shape = RoundedCornerShape(4.dp),
-                                onClick = { communityViewModel.onEvent(CommunityUIEvent.NewPostAdded) },
-                                border = BorderStroke(1.dp, colorResource(id = R.color.primary)),
-                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.DarkBG))
-                            ) {
-                                Text(modifier = Modifier
-                                    .padding(bottom = 4.dp),
-                                    text = "Add Image",
-                                    color = colorResource(id = R.color.primary) )
-                            }
-
+                            horizontalArrangement = Arrangement.Center
+                        ) {
                             Button(
                                 modifier = Modifier
                                     .padding(bottom = 24.dp),
@@ -360,19 +348,6 @@ fun CommunityPosts(
                             color = colorResource(id = R.color.primary),
                             modifier = modifier
                                 .padding(start = 8.dp)
-                        )
-                    }
-                    Row(
-                        modifier = modifier
-                            .padding(0.dp, 4.dp, 6.dp, 0.dp),
-                        verticalAlignment = Alignment.Top
-                    ) {
-                        Text(
-                            text = "8 hrs ago",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = colorResource(id = R.color.SubliminalText),
-                            modifier = modifier
-                                .padding(0.dp, 0.dp, 0.dp, 0.dp)
                         )
                     }
                 }

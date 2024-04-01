@@ -144,7 +144,7 @@ fun GamersCallContent(
     var isChatChannelLoading by remember {
         mutableStateOf(false)
     }
-    Box(modifier = modifier.fillMaxHeight().fillMaxWidth()){
+    Box(modifier = modifier.fillMaxWidth()){
         LazyColumn(
             modifier = modifier
                 .padding(0.dp, 5.dp)

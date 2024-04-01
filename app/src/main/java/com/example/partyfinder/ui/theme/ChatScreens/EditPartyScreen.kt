@@ -50,8 +50,8 @@ fun EditPartyScreen(){
     Surface(color= colorResource(id = R.color.black)){
         Column(modifier = Modifier
             .verticalScroll(rememberScrollState(), true)
-            .height(808.dp)
-            .width(393.dp)
+            .fillMaxWidth()
+            .fillMaxHeight()
         ) {
             EditPartyTopBar()
             EditPartyContent()

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -50,8 +49,8 @@ fun CreatePartyScreen(){
     Surface(color= colorResource(id = R.color.black)){
         Column(modifier = Modifier
             .verticalScroll(rememberScrollState(), true)
-            .height(808.dp)
-            .width(393.dp)
+            .fillMaxWidth()
+            .fillMaxHeight()
         ) {
             CreatePartyTopBar()
             CreatePartyContent()

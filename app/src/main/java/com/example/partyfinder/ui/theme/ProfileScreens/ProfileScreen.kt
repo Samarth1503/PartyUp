@@ -137,38 +137,26 @@ fun ProfileBannerWidget(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.pngtreeblack_edit_icon_4422168),
-                contentDescription =null,
+                contentDescription = null,
                 modifier=Modifier.padding(bottom = 4.dp, start = 1.dp))
         }
-        if (profilePic == null || profilePic == ""){
-            Image(
-                painter = painterResource(id = R.drawable.luffy),
-                contentDescription =null,
-                modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.main_padding))
-                    .height(dimensionResource(id = R.dimen.profile_picture_height))
-                    .width(dimensionResource(id = R.dimen.profile_picture_height))
-                    .clip(RoundedCornerShape(50))
-                    .align(Alignment.BottomStart),
-            )
-        } else {
-            AsyncImage(
-                model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(profilePic)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "Profile Picture",
-                modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.main_padding))
-                    .height(dimensionResource(id = R.dimen.profile_picture_height))
-                    .width(dimensionResource(id = R.dimen.profile_picture_height))
-                    .clip(RoundedCornerShape(50))
-                    .align(Alignment.BottomStart),
-                error = painterResource(id = R.drawable.close_blue),
-                placeholder = painterResource(id = R.drawable.usericon_white),
-                contentScale =  ContentScale.Crop
-            )
-        }
+
+        AsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(profilePic)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Profile Picture",
+            modifier = Modifier
+                .padding(start = dimensionResource(id = R.dimen.main_padding))
+                .height(dimensionResource(id = R.dimen.profile_picture_height))
+                .width(dimensionResource(id = R.dimen.profile_picture_height))
+                .clip(RoundedCornerShape(50))
+                .align(Alignment.BottomStart),
+            error = painterResource(id = R.drawable.sadpaprx),
+            placeholder = painterResource(id = R.drawable.defaultpp),
+            contentScale =  ContentScale.Crop
+        )
     }
 }
 

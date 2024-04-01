@@ -95,6 +95,7 @@ fun FilteredGamersCallTopBar(
 fun FilteredGamersCallContent(
     modifier: Modifier = Modifier,
     filterOnClick: () -> Unit,
+    clearFilterOnClick: () -> Unit,
     FilterGamerCallGameMenu: @Composable () -> Unit,
     FilterNoOfGamerMenu: @Composable () -> Unit,
     listOfGamersCall: GamerCallsList,
@@ -182,10 +183,10 @@ fun FilteredGamersCallContent(
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    Text(text = "Sort",
+                    Text(text = "Clear",
                         style = MaterialTheme.typography.titleSmall,
                         color = colorResource(id = R.color.primary),
-                        modifier = modifier
+                        modifier = modifier.clickable { clearFilterOnClick() }
                     )
                 }
 
@@ -213,6 +214,7 @@ fun FilteredGamersCallContent(
                                 runBlocking {
                                     chatScreenViewModel.onNewChatClicked(chatScreenViewModel.currentUserUID.value!!, gamerCall.userUID, false)
                                 }
+
                                 navController.navigate("ChatsScreen")
                             }
                         )

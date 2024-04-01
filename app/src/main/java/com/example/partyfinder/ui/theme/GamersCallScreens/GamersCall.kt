@@ -65,8 +65,8 @@ fun GamersCall(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState(), true)
-                    .height(808.dp)
-                    .width(393.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
             ) {
                 gamersCallsTopBar()
                 gamersCallContent()
@@ -250,8 +250,8 @@ fun G_Calls(
                         .padding(top = 12.dp, end = 8.dp)
                         .size(60.dp)
                         .clip(RoundedCornerShape(50)),
-                    error = painterResource(id = R.drawable.close_blue),
-                    placeholder = painterResource(id = R.drawable.usericon_white)
+                    error = painterResource(id = R.drawable.sadpaprx),
+                    placeholder = painterResource(id = R.drawable.defaultpp)
                 )
 
                 Column {
@@ -517,8 +517,8 @@ fun User_G_Calls(
                         .padding(top = 12.dp, end = 8.dp)
                         .size(60.dp)
                         .clip(RoundedCornerShape(50)),
-                    error = painterResource(id = R.drawable.close_blue),
-                    placeholder = painterResource(id = R.drawable.usericon_white)
+                    error = painterResource(id = R.drawable.sadpaprx),
+                    placeholder = painterResource(id = R.drawable.defaultpp)
                 )
 
                 Column {

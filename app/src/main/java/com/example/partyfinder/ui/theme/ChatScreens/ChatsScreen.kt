@@ -65,8 +65,6 @@ fun ChatsScreen(
 
     Surface(color= colorResource(id = R.color.black)){
         Column(modifier = Modifier
-            .height(808.dp)
-            .width(393.dp)
         )
         {
             Box(modifier = Modifier){
@@ -314,8 +312,8 @@ fun Chat(
                     (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
                     RoundedCornerShape(50.dp)
                 ).clip(RoundedCornerShape(50.dp)),
-            error= painterResource(id = R.drawable.close_blue),
-            placeholder = painterResource(id = R.drawable.usericon_white)
+            error = painterResource(id = R.drawable.sadpaprx),
+            placeholder = painterResource(id = R.drawable.defaultpp)
         )
 
 

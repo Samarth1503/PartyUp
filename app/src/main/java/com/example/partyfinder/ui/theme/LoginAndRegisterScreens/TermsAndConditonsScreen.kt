@@ -7,11 +7,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -90,8 +90,8 @@ fun TermsAndConditons(closeTermsScreen:()->Unit) {
 
     Column(
         modifier = Modifier
-            .height(808.dp)
-            .width(393.dp)
+            .fillMaxWidth()
+            .fillMaxHeight()
             .background(color = colorResource(id = R.color.black)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

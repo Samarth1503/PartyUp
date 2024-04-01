@@ -272,8 +272,8 @@ fun ItemListItem(
                     (BorderStroke(1.4.dp, colorResource(id = R.color.primary))),
                     RoundedCornerShape(50.dp)
                 ),
-            error = painterResource(id = R.drawable.close_blue),
-            placeholder = painterResource(id = R.drawable.usericon_white)
+            error = painterResource(id = R.drawable.sadpaprx),
+            placeholder = painterResource(id = R.drawable.defaultpp)
         )
 
 

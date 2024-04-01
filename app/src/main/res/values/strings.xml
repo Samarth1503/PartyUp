@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Party Finder</string>
+    <string name="app_name">Party Up</string>
     <string name="partyUp">Party\nUp!</string>
     <string name="login">Login</string>
     <string name="register">Register</string>

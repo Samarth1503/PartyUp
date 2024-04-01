@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -70,8 +71,8 @@ fun DmScreen(
 
         Column(modifier = Modifier
             .padding(top = dimensionResource(id = R.dimen.top_bar_height))
-            .height(808.dp)
-            .width(393.dp)
+            .fillMaxWidth()
+            .fillMaxHeight()
             .background(color = colorResource(id = R.color.black))
         ) {
 
@@ -172,10 +173,8 @@ fun DmTopBar(
                         (BorderStroke(1.5.dp, colorResource(id = R.color.primary))),
                         RoundedCornerShape(50.dp)
                     ).clip(RoundedCornerShape(50.dp)),
-                error= painterResource(id = R.drawable.close_blue),
-                placeholder = painterResource(id = R.drawable.usericon_white)
-
-
+                error = painterResource(id = R.drawable.sadpaprx),
+                placeholder = painterResource(id = R.drawable.defaultpp)
             )
             Text(
                 text = if(currentChatChannel.isGroupChat){

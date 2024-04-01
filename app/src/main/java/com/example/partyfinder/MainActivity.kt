@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
                             val chatScreenViewModel = chatScreenViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
                             val partyFinderViewModel = PartyFinderViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
                             val gamersCallViewModel = GamerCallsViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel, chatScreenViewModel = chatScreenViewModel)
-                            val profileViewModel = ProfileViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel)
+                            val profileViewModel = ProfileViewModel(retrievedUserUID = retrievedUserUID, userUIDSharedViewModel = sharedUserViewModel, userRepository = nonNullUserRepository)
                             val filterGamerCallsViewModel = FilteredGamerCallsViewModel(gamerCallsViewModel = gamersCallViewModel, chatScreenViewModel = chatScreenViewModel)
                             val communityViewModel = CommunityViewModel(profileViewModel)
                             val createGamerCallViewModel = CreateGamerCallsViewModel(

@@ -351,8 +351,9 @@ fun CommunityPosts(
                                 .crossfade(true)
                                 .build() ,
                             contentDescription = null,
-                            error= painterResource(id = R.drawable.close_blue),
-                            placeholder = painterResource(id = R.drawable.usericon_white))
+                            error = painterResource(id = R.drawable.sadpaprx),
+                            placeholder = painterResource(id = R.drawable.defaultpp)
+                        )
                         Text(
                             text = userName,
                             style = MaterialTheme.typography.bodyLarge,

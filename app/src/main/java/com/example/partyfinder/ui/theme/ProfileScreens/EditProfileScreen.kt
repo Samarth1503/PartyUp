@@ -134,8 +134,8 @@ fun EditProfileScreen(
                                 .width(dimensionResource(id = R.dimen.profile_picture_height))
                                 .clip(RoundedCornerShape(50))
                                 .align(Alignment.BottomStart),
-                            error = painterResource(id = R.drawable.close_blue),
-                            placeholder = painterResource(id = R.drawable.usericon_white),
+                            error = painterResource(id = R.drawable.sadpaprx),
+                            placeholder = painterResource(id = R.drawable.defaultpp),
                             contentScale =  ContentScale.Crop
                         )
                     }
@@ -185,8 +185,8 @@ fun EditProfileScreen(
                                 .width(dimensionResource(id = R.dimen.profile_picture_height))
                                 .clip(RoundedCornerShape(50))
                                 .align(Alignment.BottomStart),
-                            error = painterResource(id = R.drawable.close_blue),
-                            placeholder = painterResource(id = R.drawable.usericon_white),
+                            error = painterResource(id = R.drawable.sadpaprx),
+                            placeholder = painterResource(id = R.drawable.defaultpp),
                             contentScale =  ContentScale.Crop
                         )
                     }

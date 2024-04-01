@@ -9,9 +9,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.partyfinder.data.repositories.LocalUserRepository
 import com.example.partyfinder.data.repositories.networkGamerCallsRepository
 import com.example.partyfinder.model.GamerCallsList
 import com.example.partyfinder.model.Status
+import com.example.partyfinder.model.local.LocalUser
 import com.example.partyfinder.model.uiState.ProfileUiState
 import com.example.partyfinder.model.uiState.Ranks
 import com.google.android.gms.tasks.Tasks
@@ -30,9 +32,7 @@ import kotlinx.coroutines.withContext
 
 
 @Suppress("NAME_SHADOWING")
-class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val retrievedUserUID:String?) : ViewModel() {
-
-//    val userUID = "dtU0UnHSqgaM5BMsdsVqyQwaHW22"
+class ProfileViewModel(val userUIDSharedViewModel : UserUIDSharedViewModel, val retrievedUserUID:String?, private val userRepository: LocalUserRepository) : ViewModel() {
 
     val _profileUiState = MutableStateFlow(ProfileUiState())
     val profileState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
@@ -323,8 +323,14 @@ class ProfileViewModel( val userUIDSharedViewModel : UserUIDSharedViewModel, val
                }
            }
     }
+
     fun logoutUser(redirectToLogin:()->Unit) {
         FirebaseAuth.getInstance().signOut()
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("LoginProcessTestCase", "upsert() started")
+            userRepository.upsert(LocalUser(id = 0, userEmail = "", userUID = ""))
+            Log.d("LoginProcessTestCase", "upsert() ended")
+        }
         redirectToLogin()
     }
 }

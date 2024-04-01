@@ -65,8 +65,6 @@ fun ChatsScreen(
 
     Surface(color= colorResource(id = R.color.black)){
         Column(modifier = Modifier
-            .height(808.dp)
-            .width(393.dp)
         )
         {
             Box(modifier = Modifier){

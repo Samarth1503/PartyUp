@@ -243,7 +243,7 @@ fun PartyFinderApp(
                 filteredGamersCallsContent = {
                     FilteredGamersCallContent(
                         filterOnClick = { filterGamerCallsViewModel.onFilterButtonClicked() },
-                        listOfGamersCall = filterGamerCallsViewModel.FilteredGamerCallUiState.value.listOfGamersCall,
+                        listOfGamersCall = filteredGamerCallsUiState.listOfGamersCall,
                         FilterGamerCallGameMenu = { CustomExposedDropDownMenu(
                             placeholder = "Select the Game",
                             isDropDownExpanded = filteredGamerCallsUiState.isFGameNameDropDownExpanded ,
@@ -274,7 +274,8 @@ fun PartyFinderApp(
                         },
                         context = LocalContext.current,
                         chatScreenViewModel = chatScreenViewModel,
-                        navController = navController
+                        navController = navController,
+                        clearFilterOnClick = { filterGamerCallsViewModel.clearFilterOnClick() }
                     )
                 }
             )

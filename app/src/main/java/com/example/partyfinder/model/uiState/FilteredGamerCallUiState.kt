@@ -10,6 +10,6 @@ data class FilteredGamerCallUiState(
     val FNoOfGamersDropDownvalue :String ="",
     val listOfGameNameItems:List<String> = datasource.FindPartyGamesMenuItems,
     val listofNoOfGamersItems:List<String> = datasource.FindPartyNoOfPlayerMenuItems,
-
+    val isFilterOn: Boolean = false,
     val listOfGamersCall: GamerCallsList = datasource.gamerCallsList
 )
